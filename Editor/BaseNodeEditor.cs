@@ -91,8 +91,8 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
     protected bool LocalPositionIsVisable(Vector2 position)
     {
         position -= panelScrollPosition;
-
-        return position.x > 0f && position.x < panelRect.position.x && position.y > 0f && position.y < panelRect.position.y;
+        Debug.Log( position );
+        return position.x > 0f && position.x < panelRect.width && position.y > 0f && position.y < panelRect.height;
 
     }
 
@@ -103,7 +103,7 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
     protected bool PositionIsVisable ( Vector2 position )
     {
         position -= panelRect.position;
-
+        
         return LocalPositionIsVisable( position );
 
     }
