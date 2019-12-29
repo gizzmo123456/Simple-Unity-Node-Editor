@@ -7,5 +7,5 @@ Simple Node window class for unity!
 [ ] Make BaseVerticalNodeEditor Abstract
 [ ] Make BaseNodeGraphEditor Abstract
 
-[ ] Apple window position to node position 
-[ ] Add Scrol bar to node window
+[C] Apple window position to node position 
+[C] Add Scrol bar to node window
