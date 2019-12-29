@@ -10,6 +10,7 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
     public event nodeSelected nodeReleased;
 
     public Rect pannelRect { get; set; }
+    private Vector2 pannelScrollPosition;
 
     protected List<T> nodes;
     protected int pressedNode = -1; // < 0 == none
@@ -33,6 +34,7 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
     public void Draw ( EditorWindow window ) 
     {
 
+        pannelScrollPosition = GUI.BeginScrollView( pannelRect, pannelScrollPosition, GetPannelViewRect() );
         window.BeginWindows();
         
         for ( int i = 0; i < nodes.Count; i++ )
@@ -43,12 +45,29 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
         }
         
         window.EndWindows();
+        GUI.EndScrollView();
 
     }
 
+    /// <summary>
+    /// The viewable area within the pannel. if larger than pannel rect scroll bars will be added :D
+    /// </summary>
+    /// <returns></returns>
+    protected Rect GetPannelViewRect()
+    {
+        return pannelRect;
+    }
 
+    /// <summary>
+    /// defines how a node should be sized.
+    /// </summary>
+    /// <returns></returns>
     protected abstract Vector2 NodeSize ();
 
+    /// <summary>
+    /// Defines where a node should be spawned
+    /// </summary>
+    /// <returns></returns>
     protected virtual Vector2 NodeStartPosition()
     {
         return Vector2.zero;
