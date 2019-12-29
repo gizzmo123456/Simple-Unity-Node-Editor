@@ -104,12 +104,12 @@ public class BaseNodeGraphData : BaseNodeData
 
 	}
 
-	public void RemoveNode( int connectionId )
+	public void RemoveConnection( int connectionId )
 	{
 		nodeConnections.RemoveAt( connectionId );
 	}
 
-	public void RemoveNode( NodeConnection nodeConn )
+	public void RemoveConnection( NodeConnection nodeConn )
 	{
 		nodeConnections.Remove( nodeConn );
 	}
@@ -121,6 +121,8 @@ public class NodeConnection
 	public int connectedNodeId;
 
 	public bool alwaysForwardControlPoints = true;
+
+	public Color curveColor = Color.black;
 
 	// Catch the start and end positions so we only update the curve when they change
 	Vector2 connectionStartPosition = Vector2.zero;
@@ -144,6 +146,8 @@ public class NodeConnection
 			GenerateBezierCurve();
 		}
 
+		Handles.color = curveColor;
+		
 		for ( int i = 1; i < curvePoints + 1; i++ )
 		{
 			Handles.DrawLine( connectionCurve[ i-1 ], connectionCurve[ i ] );
