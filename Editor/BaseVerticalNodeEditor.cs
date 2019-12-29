@@ -17,7 +17,7 @@ public class BaseVerticalEditor : BaseNodeEditor<BaseVerticalNodeData>
 
     protected override Vector2 NodeSize ()
     {
-        return new Vector2( pannelRect.width, nodeHeight );
+        return new Vector2( panelRect.width, nodeHeight );
     }
 
     protected override Vector2 NodeStartPosition ()

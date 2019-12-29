@@ -8,6 +8,14 @@ public class BaseNodeGraphEditor : BaseNodeEditor<BaseNodeGraphData>
 	public BaseNodeGraphEditor () : base() { }
 	public BaseNodeGraphEditor (Rect pannelRect) : base(pannelRect) { }
 
+	public override void Draw ( EditorWindow window )
+	{
+		base.Draw( window );
+
+		DrawNodeConnections();
+
+	}
+
 	protected override Vector2 NodeSize ()
 	{
 		return new Vector2( 75, 50 );
@@ -45,12 +53,28 @@ public class BaseNodeGraphEditor : BaseNodeEditor<BaseNodeGraphData>
 		base.NodeWindow( windowId );
 	}
 
+////////// Node Connections
+	protected virtual void DrawNodeConnections()
+	{
+
+		foreach( BaseNodeGraphData node in nodes )
+		{
+			Vector2 startPos = node.GetNodePosition();
+			foreach ( NodeConnection nodeConn in node.NodeConnections )
+			{
+				Vector2 endPos = nodes[ nodeConn.connectedNodeId ].GetNodePosition();
+				nodeConn.DrawConnection(startPos, endPos);
+			}
+		}
+
+	}
 
 }
 
 public class BaseNodeGraphData : BaseNodeData
 {
 	List<NodeConnection> nodeConnections = new List<NodeConnection>();
+	public List<NodeConnection> NodeConnections { get => nodeConnections; }
 
 	public NodeConnection AddConnection(int connectToNodeId)
 	{
@@ -76,9 +100,25 @@ public class NodeConnection
 	public int connectedNodeId;
 
 	// TODO: When it comes to the bezier we should catch the start and end point so it is only updated when the position changes.
-	
+	Vector2 connectionStartPosition = Vector2.zero;
+	Vector2 connectionEndPosition = Vector2.one;
+
 	public NodeConnection(int connNodeId)
 	{
 		connectedNodeId = connNodeId;
 	}
+
+	public void DrawConnection(Vector2 startPosition, Vector2 endPosition)
+	{
+		if ( startPosition != connectionStartPosition || endPosition != connectionEndPosition )
+		{
+			connectionStartPosition = startPosition;
+			connectionEndPosition = endPosition;
+			Debug.LogWarning( "Nop, Nop, Nop..." );
+		}
+
+		Handles.DrawLine( connectionStartPosition, connectionEndPosition );
+		Debug.Log( "DrawLine" );
+	}
+
 }

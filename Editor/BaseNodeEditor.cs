@@ -9,8 +9,8 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
     public event nodeSelected nodePressed;
     public event nodeSelected nodeReleased;
 
-    public Rect pannelRect { get; set; }
-    private Vector2 pannelScrollPosition;
+    public Rect panelRect { get; set; }
+    private Vector2 panelScrollPosition;
 
     protected List<T> nodes;
     protected int pressedNode = -1; // < 0 == none
@@ -22,7 +22,7 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
 
     public BaseNodeEditor (Rect holdRect) : this ()
     {
-        pannelRect = holdRect;
+        panelRect = holdRect;
     }
 
     public virtual void Update () { }
@@ -34,7 +34,7 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
     public virtual void Draw ( EditorWindow window ) 
     {
 
-        pannelScrollPosition = GUI.BeginScrollView( pannelRect, pannelScrollPosition, GetPannelViewRect() );
+        panelScrollPosition = GUI.BeginScrollView( panelRect, panelScrollPosition, GetPannelViewRect() );
         window.BeginWindows();
         
         for ( int i = 0; i < nodes.Count; i++ )
@@ -55,7 +55,7 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
     /// <returns></returns>
     protected Rect GetPannelViewRect()
     {
-        return new Rect(Vector2.zero, pannelRect.size);
+        return new Rect(Vector2.zero, panelRect.size);
     }
 
     /// <summary>
@@ -74,15 +74,38 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
     }
 
     /// <summary>
-    /// Get the rect for node relevent to the editorWindow. ie. take pannelRect into account
+    /// Get the Panel and scroll position offset
     /// </summary>
     /// <returns></returns>
-    protected Rect GetNodeWindowPosition(int winId)
+    protected Vector2 GetNodeOffset()
     {
-        Rect rect = nodes[ winId ].NodeRect;
-        rect.position += pannelRect.position;
+        Vector2 offset = panelRect.position + panelScrollPosition;
 
-        return rect;
+        return offset;
+    }
+
+    /// <summary>
+    /// Check if local scroll view position is visable
+    /// </summary>
+    /// <param name="position">Local position in scroll view</param>
+    protected bool LocalPositionIsVisable(Vector2 position)
+    {
+        position -= panelScrollPosition;
+
+        return position.x > 0f && position.x < panelRect.position.x && position.y > 0f && position.y < panelRect.position.y;
+
+    }
+
+    /// <summary>
+    /// Check if position is visable within the scroll view
+    /// </summary>
+    /// <param name="position">position in Editor Window</param>
+    protected bool PositionIsVisable ( Vector2 position )
+    {
+        position -= panelRect.position;
+
+        return LocalPositionIsVisable( position );
+
     }
 
     /// <summary>
