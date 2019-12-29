@@ -120,6 +120,8 @@ public class NodeConnection
 	public int id;
 	public int connectedNodeId;
 
+	public bool alwaysForwardControlPoints = true;
+
 	// Catch the start and end positions so we only update the curve when they change
 	Vector2 connectionStartPosition = Vector2.zero;
 	Vector2 connectionEndPosition = Vector2.one;
@@ -151,7 +153,11 @@ public class NodeConnection
 
 	public void GenerateBezierCurve()
 	{
-		float xOffset = ( connectionEndPosition.x - connectionStartPosition.x ) * (0.75f + (0.1f * (Mathf.Abs( connectionEndPosition.y - connectionStartPosition.y ) / 200f) )) ;
+		float xOffset = ( connectionEndPosition.x - connectionStartPosition.x ) * (0.75f + (0.1f * (Mathf.Abs( connectionEndPosition.y - connectionStartPosition.y ) / 150f) )) ;
+
+		if ( alwaysForwardControlPoints )
+			xOffset = Mathf.Abs( xOffset );
+
 		Vector2 startControlPoint = connectionStartPosition + new Vector2( xOffset, 0 );
 		Vector2 endControlPoint = connectionEndPosition + new Vector2( -xOffset, 0 );
 
