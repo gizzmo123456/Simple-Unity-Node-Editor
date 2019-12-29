@@ -57,22 +57,36 @@ public class BaseNodeGraphEditor : BaseNodeEditor<BaseNodeGraphData>
 	protected virtual void DrawNodeConnections()
 	{
 
-		foreach( BaseNodeGraphData node in nodes )
+		for( int i = 0; i < nodes.Count; i++ )
 		{
-			Vector2 startPos = node.NodeRect.center + GetNodeOffset();
-
-			if ( !PositionIsVisable( startPos ) ) continue;	// TODO: it should draw upto the point it is not visable any more :)
-
-			foreach ( NodeConnection nodeConn in node.NodeConnections )
+			
+			foreach ( NodeConnection nodeConn in nodes[i].NodeConnections )
 			{
-				Vector2 endPos = nodes[ nodeConn.connectedNodeId ].NodeRect.center + GetNodeOffset();
+				Vector2 startPos = GetConnectionPosition( i, true, nodeConn );
+				Vector2 endPos = GetConnectionPosition( nodeConn.connectedNodeId, false, nodeConn );
 
-				if ( !PositionIsVisable( endPos ) ) continue;
+				if ( !PositionIsVisable( startPos ) || !PositionIsVisable( endPos ) ) continue; // TODO: it should draw upto the point it is not visable any more :)
 
 				nodeConn.DrawConnection(startPos, endPos);
 			}
 		}
 
+	}
+
+	protected virtual Vector2 GetConnectionPosition(int nodeId, bool output, NodeConnection connectionData)
+	{
+		// return nodes[ nodeId ].NodeRect.center + GetNodeOffset();  // default when abstract
+
+		Rect nodeRect = nodes[ nodeId ].NodeRect;
+
+		if (output)
+		{
+			return new Vector2( nodeRect.x, nodeRect.center.y ) + GetNodeOffset();
+		}
+		else
+		{
+			return new Vector2( (nodeRect.x + nodeRect.width), nodeRect.center.y ) + GetNodeOffset();
+		}
 	}
 
 }
@@ -105,7 +119,7 @@ public class NodeConnection
 {
 	public int connectedNodeId;
 
-	// TODO: When it comes to the bezier we should catch the start and end point so it is only updated when the position changes.
+	// Catch the start and end positions so we only update the curve when they change
 	Vector2 connectionStartPosition = Vector2.zero;
 	Vector2 connectionEndPosition = Vector2.one;
 
