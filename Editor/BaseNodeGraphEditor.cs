@@ -59,10 +59,16 @@ public class BaseNodeGraphEditor : BaseNodeEditor<BaseNodeGraphData>
 
 		foreach( BaseNodeGraphData node in nodes )
 		{
-			Vector2 startPos = node.GetNodePosition();
+			Vector2 startPos = node.NodeRect.center + GetNodeOffset();
+
+			if ( !PositionIsVisable( startPos ) ) continue;	// TODO: it should draw upto the point it is not visable any more :)
+
 			foreach ( NodeConnection nodeConn in node.NodeConnections )
 			{
-				Vector2 endPos = nodes[ nodeConn.connectedNodeId ].GetNodePosition();
+				Vector2 endPos = nodes[ nodeConn.connectedNodeId ].NodeRect.center + GetNodeOffset();
+
+				if ( !PositionIsVisable( endPos ) ) continue;
+
 				nodeConn.DrawConnection(startPos, endPos);
 			}
 		}
@@ -103,6 +109,9 @@ public class NodeConnection
 	Vector2 connectionStartPosition = Vector2.zero;
 	Vector2 connectionEndPosition = Vector2.one;
 
+	const int curvePoints = 20;
+	Vector2[] connectionCurve = new Vector2[ curvePoints + 1 ];
+
 	public NodeConnection(int connNodeId)
 	{
 		connectedNodeId = connNodeId;
@@ -114,11 +123,33 @@ public class NodeConnection
 		{
 			connectionStartPosition = startPosition;
 			connectionEndPosition = endPosition;
+			GenerateBezierCurve();
 			Debug.LogWarning( "Nop, Nop, Nop..." );
 		}
 
-		Handles.DrawLine( connectionStartPosition, connectionEndPosition );
+		for ( int i = 1; i < curvePoints + 1; i++ )
+		{
+			Handles.DrawLine( connectionCurve[ i-1 ], connectionCurve[ i ] );
+		}
+
 		Debug.Log( "DrawLine" );
+	}
+
+	public void GenerateBezierCurve()
+	{
+		float xOffset = ( connectionEndPosition.x - connectionStartPosition.x ) * (0.75f + (0.1f * (Mathf.Abs( connectionEndPosition.y - connectionStartPosition.y ) / 200f) )) ;
+		Vector2 startControlPoint = connectionStartPosition + new Vector2( xOffset, 0 );
+		Vector2 endControlPoint = connectionEndPosition + new Vector2( -xOffset, 0 );
+
+		for ( int i = 0; i < curvePoints + 1; i++ ) 
+		{
+			float t = (float)i / (float)curvePoints;
+			connectionCurve[ i ] = ( Mathf.Pow( 1f - t, 3 ) * connectionStartPosition ) +
+								   ( 3f * Mathf.Pow( 1f - t, 2 ) * t * startControlPoint ) + 
+								   ( 3f * ( 1 - t ) * Mathf.Pow( t, 2 ) * endControlPoint ) + 
+								   ( Mathf.Pow( t, 3 ) * connectionEndPosition );
+
+		}
 	}
 
 }
