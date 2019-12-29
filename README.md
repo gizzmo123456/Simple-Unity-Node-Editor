@@ -3,4 +3,5 @@ Simple Node window class for unity!
 
 # TODO:
 [ ] Fix issue in BaseNodeEditor.NodeWindow  
-[ ] Add standered node editor
+[ ] Add node graph editor
+[ ] Make BaseVerticalNodeEditor Abstract
