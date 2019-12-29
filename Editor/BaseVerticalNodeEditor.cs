@@ -13,10 +13,6 @@ public class BaseVerticalEditor : BaseNodeEditor<BaseVerticalNodeData>
         nodeReleased += NodeReleased;
     }
 
-    public override void Update ()
-    {
-    }
-
     protected override Vector2 NodeSize ()
     {
         return new Vector2( pannelRect.width, nodeHeight );

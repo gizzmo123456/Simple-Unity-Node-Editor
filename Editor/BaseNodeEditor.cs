@@ -24,7 +24,7 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
         pannelRect = holdRect;
     }
 
-    public abstract void Update ();
+    public virtual void Update () { }
 
     /// <summary>
     /// Draws the node window to editorWindow.
