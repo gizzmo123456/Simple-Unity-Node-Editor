@@ -55,7 +55,7 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
     /// <returns></returns>
     protected Rect GetPannelViewRect()
     {
-        return pannelRect;
+        return new Rect(Vector2.zero, pannelRect.size);
     }
 
     /// <summary>
@@ -71,6 +71,18 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
     protected virtual Vector2 NodeStartPosition()
     {
         return Vector2.zero;
+    }
+
+    /// <summary>
+    /// Get the rect for node relevent to the editorWindow. ie. take pannelRect into account
+    /// </summary>
+    /// <returns></returns>
+    protected Rect GetNodeWindowPosition(int winId)
+    {
+        Rect rect = nodes[ winId ].NodeRect;
+        rect.position += pannelRect.position;
+
+        return rect;
     }
 
     /// <summary>
