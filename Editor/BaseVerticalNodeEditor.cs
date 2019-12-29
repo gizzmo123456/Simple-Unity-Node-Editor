@@ -6,11 +6,11 @@ public class BaseVerticalEditor : BaseNodeEditor<BaseVerticalNodeData>
 {
     public virtual float nodeHeight { get => 40; }
 
-    public BaseVerticalEditor () : base() {
+    public BaseVerticalEditor (int uid) : base(uid) {
         
         nodeReleased += NodeReleased;
     }
-    public BaseVerticalEditor(Rect pannelRect) : base(pannelRect) {
+    public BaseVerticalEditor(int uid, Rect pannelRect) : base(uid, pannelRect) {
         
         nodeReleased += NodeReleased;
     }

@@ -5,8 +5,8 @@ using UnityEditor;
 
 public class BaseNodeGraphEditor : BaseNodeEditor<BaseNodeGraphData>
 {
-	public BaseNodeGraphEditor () : base() { }
-	public BaseNodeGraphEditor (Rect pannelRect) : base(pannelRect) { }
+	public BaseNodeGraphEditor (int uid) : base(uid) { }
+	public BaseNodeGraphEditor (int uid, Rect pannelRect) : base(uid, pannelRect) { }
 
 	public override void Draw ( EditorWindow window )
 	{

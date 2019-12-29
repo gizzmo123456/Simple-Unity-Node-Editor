@@ -9,18 +9,21 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
     public event nodeSelected nodePressed;
     public event nodeSelected nodeReleased;
 
+    int uniqueID;
+
     public Rect panelRect { get; set; }
     private Vector2 panelScrollPosition;
 
     protected List<T> nodes;
     protected int pressedNode = -1; // < 0 == none
 
-    public BaseNodeEditor ()
+    public BaseNodeEditor (int uid)
     {
+        uniqueID = uid * 1000;
         nodes = new List<T>();
     }
 
-    public BaseNodeEditor (Rect holdRect) : this ()
+    public BaseNodeEditor (int uid, Rect holdRect) : this (uid)
     {
         panelRect = holdRect;
     }
