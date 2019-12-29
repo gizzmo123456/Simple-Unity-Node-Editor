@@ -50,5 +50,35 @@ public class BaseNodeGraphEditor : BaseNodeEditor<BaseNodeGraphData>
 
 public class BaseNodeGraphData : BaseNodeData
 {
+	List<NodeConnection> nodeConnections = new List<NodeConnection>();
 
+	public NodeConnection AddConnection(int connectToNodeId)
+	{
+		nodeConnections.Add( new NodeConnection( connectToNodeId ) );
+
+		return nodeConnections[ nodeConnections.Count - 1 ];
+
+	}
+
+	public void RemoveNode( int connectionId )
+	{
+		nodeConnections.RemoveAt( connectionId );
+	}
+
+	public void RemoveNode( NodeConnection nodeConn )
+	{
+		nodeConnections.Remove( nodeConn );
+	}
+}
+
+public class NodeConnection
+{
+	public int connectedNodeId;
+
+	// TODO: When it comes to the bezier we should catch the start and end point so it is only updated when the position changes.
+	
+	public NodeConnection(int connNodeId)
+	{
+		connectedNodeId = connNodeId;
+	}
 }
