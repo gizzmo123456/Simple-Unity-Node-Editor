@@ -7,9 +7,11 @@ public class BaseVerticalEditor : BaseNodeEditor<BaseVerticalNodeData>
     public virtual float nodeHeight { get => 40; }
 
     public BaseVerticalEditor () : base() {
+        
         nodeReleased += NodeReleased;
     }
     public BaseVerticalEditor(Rect pannelRect) : base(pannelRect) {
+        
         nodeReleased += NodeReleased;
     }
 
@@ -32,9 +34,7 @@ public class BaseVerticalEditor : BaseNodeEditor<BaseVerticalNodeData>
             yId = nodes.Count
         };
 
-        AddNode( data );
-
-        return data;
+        return AddNode( data );
 
     }
 
