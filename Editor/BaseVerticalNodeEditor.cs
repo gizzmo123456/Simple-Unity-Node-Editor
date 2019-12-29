@@ -31,11 +31,18 @@ public class BaseVerticalEditor : BaseNodeEditor<BaseVerticalNodeData>
     {
         BaseVerticalNodeData data = new BaseVerticalNodeData()
         {
-            rect = new Rect( NodeStartPosition(), NodeSize() ),
             dragable = isDragable,
             title = title,
             yId = nodes.Count
         };
+
+        AddNode( data );
+
+    }
+
+    public override void AddNode ( BaseVerticalNodeData data )
+    {
+        data.rect = new Rect( NodeStartPosition(), NodeSize() );
 
         nodes.Add( data );
 
