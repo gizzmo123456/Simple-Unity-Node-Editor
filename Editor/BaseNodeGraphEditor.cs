@@ -81,11 +81,11 @@ public class BaseNodeGraphEditor : BaseNodeEditor<BaseNodeGraphData>
 
 		if (output)
 		{
-			return new Vector2( nodeRect.x, nodeRect.center.y ) + GetNodeOffset();
+			return new Vector2( nodeRect.x + nodeRect.width, nodeRect.center.y ) + GetNodeOffset();
 		}
 		else
 		{
-			return new Vector2( (nodeRect.x + nodeRect.width), nodeRect.center.y ) + GetNodeOffset();
+			return new Vector2( nodeRect.x, nodeRect.center.y ) + GetNodeOffset();
 		}
 	}
 
@@ -98,7 +98,7 @@ public class BaseNodeGraphData : BaseNodeData
 
 	public NodeConnection AddConnection(int connectToNodeId)
 	{
-		nodeConnections.Add( new NodeConnection( connectToNodeId ) );
+		nodeConnections.Add( new NodeConnection( nodeConnections.Count, connectToNodeId ) );
 
 		return nodeConnections[ nodeConnections.Count - 1 ];
 
@@ -117,6 +117,7 @@ public class BaseNodeGraphData : BaseNodeData
 
 public class NodeConnection
 {
+	public int id;
 	public int connectedNodeId;
 
 	// Catch the start and end positions so we only update the curve when they change
@@ -126,8 +127,9 @@ public class NodeConnection
 	const int curvePoints = 20;
 	Vector2[] connectionCurve = new Vector2[ curvePoints + 1 ];
 
-	public NodeConnection(int connNodeId)
+	public NodeConnection(int _id, int connNodeId)
 	{
+		id = _id;
 		connectedNodeId = connNodeId;
 	}
 
@@ -138,7 +140,6 @@ public class NodeConnection
 			connectionStartPosition = startPosition;
 			connectionEndPosition = endPosition;
 			GenerateBezierCurve();
-			Debug.LogWarning( "Nop, Nop, Nop..." );
 		}
 
 		for ( int i = 1; i < curvePoints + 1; i++ )
@@ -146,7 +147,6 @@ public class NodeConnection
 			Handles.DrawLine( connectionCurve[ i-1 ], connectionCurve[ i ] );
 		}
 
-		Debug.Log( "DrawLine" );
 	}
 
 	public void GenerateBezierCurve()
