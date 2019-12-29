@@ -31,7 +31,7 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
     /// Draws the node window to editorWindow.
     /// </summary>
     /// <param name="window"></param>
-    public void Draw ( EditorWindow window ) 
+    public virtual void Draw ( EditorWindow window ) 
     {
 
         pannelScrollPosition = GUI.BeginScrollView( pannelRect, pannelScrollPosition, GetPannelViewRect() );
