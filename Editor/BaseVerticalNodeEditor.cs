@@ -40,7 +40,8 @@ public class BaseVerticalEditor : BaseNodeEditor<BaseVerticalNodeData>
 
     public override BaseVerticalNodeData AddNode ( BaseVerticalNodeData data )
     {
-        data.rect = new Rect( NodeStartPosition(), NodeSize() );
+        data.SetNodePosition( NodeStartPosition() );
+        data.SetNodeSize( NodeSize() );
 
         nodes.Add( data );
 
@@ -68,11 +69,11 @@ public class BaseVerticalEditor : BaseNodeEditor<BaseVerticalNodeData>
 
     protected virtual void NodeReleased( int winId ) 
     {
-        Rect rect = nodes[ winId ].rect;
+        Vector2 winPos = nodes[ winId ].GetNodePosition();
         int lastId = nodes[ winId ].yId;
-        int newId = Mathf.FloorToInt( rect.y / nodeHeight );
+        int newId = Mathf.FloorToInt( winPos.y / nodeHeight );
 
-        rect.y = newId * nodeHeight;
+        winPos.y = newId * nodeHeight;
 
         if ( lastId != newId )
         {
@@ -89,26 +90,26 @@ public class BaseVerticalEditor : BaseNodeEditor<BaseVerticalNodeData>
 
                 if ( yId >= startId && yId <= endId )
                 {
-                    Rect nRect = nodes[ i ].rect;
+                    Vector2 nPos = nodes[ i ].GetNodePosition();
                     if (startId == lastId)
                     {
-                        nRect.y -= nodeHeight;
+                        nPos.y -= nodeHeight;
                         yId--;
                     }
                     else 
                     {
-                        nRect.y += nodeHeight;
+                        nPos.y += nodeHeight;
                         yId++;
 
                     }
-                    nodes[ i ].rect = nRect;
+                    nodes[ i ].SetNodePosition( nPos );
                     nodes[ i ].yId = yId;
                 }
                     
             }
         }
 
-        nodes[ winId ].rect = rect;
+        nodes[ winId ].SetNodePosition( winPos );
         nodes[ winId ].yId = newId;
 
     }

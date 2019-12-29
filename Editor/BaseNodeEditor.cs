@@ -37,8 +37,8 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
         
         for ( int i = 0; i < nodes.Count; i++ )
         {
-            nodes[ i ].rect = GUI.Window( i, nodes[ i ].rect, NodeWindow, nodes[i].title );
-            nodes[ i ].rect = ClampNodePosition( nodes[ i ].rect, i );
+            nodes[ i ].NodeRect = GUI.Window( i, nodes[ i ].NodeRect, NodeWindow, nodes[i].title );
+            nodes[ i ].NodeRect = ClampNodePosition( nodes[ i ].NodeRect, i );
             
         }
         
@@ -105,7 +105,7 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
         {
             nodePressed?.Invoke( windowId );
             pressedNode = windowId;
-            nodes[ windowId ].pressedPosition = nodes[ windowId ].rect.position;
+            nodes[ windowId ].pressedPosition = nodes[ windowId ].GetNodePosition();
             Debug.Log( windowId + " Pressed" );
         }
         else if ( Event.current.type == EventType.MouseUp)
@@ -127,8 +127,32 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
 
 public class BaseNodeData
 {
-    public Rect rect;
-    public Vector2 pressedPosition;
-    public string title;
+    private Rect rect = Rect.zero;
+    public Rect NodeRect { get => rect; set => rect = value; }
+
+    public Vector2 pressedPosition = Vector2.zero;
+    public string title = "title";
     public bool dragable = true;
+
+    public void SetNodePosition(Vector2 position)
+    {
+        rect.position = position;
+    }
+
+    public Vector2 GetNodePosition()
+    {
+        return rect.position;
+    }
+
+    public void SetNodeSize(Vector2 size)
+    {
+        rect.size = size;
+    }
+
+    public Vector2 GetNodeSize()
+    {
+        return rect.size;
+    }
+
+
 }
