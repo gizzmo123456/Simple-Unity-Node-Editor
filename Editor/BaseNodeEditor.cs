@@ -66,9 +66,9 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
     /// <summary>
     /// Adds a new node
     /// </summary>
-    public abstract void AddNode ( string title, bool isDragable );
+    public abstract T AddNode ( string title, bool isDragable );
 
-    public abstract void AddNode ( T data );
+    public abstract T AddNode ( T data );
 
     /// <summary>
     /// removes nodes of nodeData

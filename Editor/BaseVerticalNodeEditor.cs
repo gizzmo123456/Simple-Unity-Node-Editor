@@ -27,7 +27,7 @@ public class BaseVerticalEditor : BaseNodeEditor<BaseVerticalNodeData>
         return new Vector2( 0, nodes.Count  * nodeHeight );
     }
 
-    public override void AddNode ( string title, bool isDragable )
+    public override BaseVerticalNodeData AddNode ( string title, bool isDragable )
     {
         BaseVerticalNodeData data = new BaseVerticalNodeData()
         {
@@ -38,13 +38,17 @@ public class BaseVerticalEditor : BaseNodeEditor<BaseVerticalNodeData>
 
         AddNode( data );
 
+        return data;
+
     }
 
-    public override void AddNode ( BaseVerticalNodeData data )
+    public override BaseVerticalNodeData AddNode ( BaseVerticalNodeData data )
     {
         data.rect = new Rect( NodeStartPosition(), NodeSize() );
 
         nodes.Add( data );
+
+        return data;
 
     }
 
