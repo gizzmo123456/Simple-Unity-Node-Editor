@@ -35,9 +35,10 @@ public class NodeWindow : EditorWindow
 		nodeGraphEditor.AddNode( "Node 2", true );
 		nodeGraphEditor.AddNode( "Node 3", true );
 
-		nodeGraphEditor.GetNode( 0 ).AddConnection( 1 );
-		nodeGraphEditor.GetNode( 1 ).AddConnection( 2 );
-		nodeGraphEditor.GetNode( 2 ).AddConnection( 0 );
+		nodeGraphEditor.GetNode( 0 ).AddConnection( 1, "Out Pin 0" );
+		nodeGraphEditor.GetNode( 0 ).AddConnection( 2, "Out Pin 3" );
+		nodeGraphEditor.GetNode( 1 ).AddConnection( 2, "Out Pin 1" );
+		//nodeGraphEditor.GetNode( 2 ).AddConnection( 0, "Out Pin 2" );
 
 	}
 

@@ -9,7 +9,7 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
     public event nodeSelected nodePressed;
     public event nodeSelected nodeReleased;
 
-    int uniqueID;
+    protected int uniqueID;
 
     public Rect panelRect { get; set; }
     public virtual Vector2 topLeftpadding { get => new Vector2( 18, 18 ); }

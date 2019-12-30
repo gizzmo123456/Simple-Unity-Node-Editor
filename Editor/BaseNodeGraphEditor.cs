@@ -55,16 +55,52 @@ public class BaseNodeGraphEditor : BaseNodeEditor<BaseNodeGraphData>
 	protected override void NodeWindow ( int windowId )
 	{
 		base.NodeWindow( windowId );
+
+		int node_id = windowId - uniqueID;
+
+		DrawNodePins( node_id, true );
+
 	}
 
-////////// Node Connections
+	protected virtual void DrawNodePins(int node_id, bool output)
+	{
+
+		// output pins are drawn on the lhs of the node.
+		// inputs pins are drawn on the rhs of the node.
+
+		NodeConnection_Input[] nodeConnectionPins = nodes[ node_id ].NodeConnections.ToArray(); // connections output inherit from input and we only need the data that inputs class have.
+
+		// TODO: these need to be set in the class...
+		Vector2 pinPosition = new Vector2( NodeSize().x - ( NodeSize().x / 4f ) , 20 );
+		Vector2 pinSize = new Vector2(NodeSize().x / 4f, 20);
+
+		for (int i = 0; i < nodeConnectionPins.Length; i++ )
+		{
+			string lable = nodeConnectionPins[ i ].connectionLable;
+
+			if ( output ) lable += "*" + lable;
+			else lable = "*" + lable;
+
+			GUI.Label( new Rect( pinPosition, pinSize ), lable );
+			pinPosition.y += pinSize.y;
+		}
+
+
+	}
+
+
+	////////// Node Connections
+	/* Node outputs connect to node inputs, the connections are draw by the outputing node.
+	 * 
+	 * 
+	 */
 	protected virtual void DrawNodeConnections()
 	{
 
 		for( int i = 0; i < nodes.Count; i++ )
 		{
 			
-			foreach ( NodeConnection nodeConn in nodes[i].NodeConnections )
+			foreach ( NodeConnection_Output nodeConn in nodes[i].NodeConnections )
 			{
 				Vector2 startPos = GetConnectionPosition( i, true, nodeConn );
 				Vector2 endPos = GetConnectionPosition( nodeConn.connectedNodeId, false, nodeConn );
@@ -77,7 +113,7 @@ public class BaseNodeGraphEditor : BaseNodeEditor<BaseNodeGraphData>
 
 	}
 
-	protected virtual Vector2 GetConnectionPosition(int nodeId, bool output, NodeConnection connectionData)
+	protected virtual Vector2 GetConnectionPosition(int nodeId, bool output, NodeConnection_Output connectionData )
 	{
 		// return nodes[ nodeId ].NodeRect.center + GetNodeOffset();  // default when abstract
 
@@ -97,12 +133,12 @@ public class BaseNodeGraphEditor : BaseNodeEditor<BaseNodeGraphData>
 
 public class BaseNodeGraphData : BaseNodeData
 {
-	List<NodeConnection> nodeConnections = new List<NodeConnection>();
-	public List<NodeConnection> NodeConnections { get => nodeConnections; }
+	List<NodeConnection_Output> nodeConnections = new List<NodeConnection_Output>();
+	public List<NodeConnection_Output> NodeConnections { get => nodeConnections; }
 
-	public NodeConnection AddConnection(int connectToNodeId)
+	public NodeConnection_Output AddConnection (int connectToNodeId, string connectionLable)
 	{
-		nodeConnections.Add( new NodeConnection( nodeConnections.Count, connectToNodeId ) );
+		nodeConnections.Add( new NodeConnection_Output( nodeConnections.Count, connectionLable, connectToNodeId ) );
 
 		return nodeConnections[ nodeConnections.Count - 1 ];
 
@@ -113,18 +149,31 @@ public class BaseNodeGraphData : BaseNodeData
 		nodeConnections.RemoveAt( connectionId );
 	}
 
-	public void RemoveConnection( NodeConnection nodeConn )
+	public void RemoveConnection( NodeConnection_Output nodeConn )
 	{
 		nodeConnections.Remove( nodeConn );
 	}
 }
 
-public class NodeConnection
+public class NodeConnection_Input
+{
+	public int id;
+	public string connectionLable;
+
+	public NodeConnection_Input(int _id, string connLable)
+	{
+		id = _id;
+		connectionLable = connLable;
+	}
+
+}
+
+public class NodeConnection_Output : NodeConnection_Input
 {
 	public delegate bool isVisableFunct ( Vector2 position );
 	
-	public int id;
-	public int connectedNodeId;
+	public int connectedNodeId;		// the node id to connect to.
+	public int connectedSlotId;		// the input slot that the node is connected to.
 
 	public bool alwaysForwardControlPoints = true;
 
@@ -137,9 +186,8 @@ public class NodeConnection
 	const int curvePoints = 20;
 	Vector2[] connectionCurve = new Vector2[ curvePoints + 1 ];
 
-	public NodeConnection(int _id, int connNodeId)
+	public NodeConnection_Output(int _id, string connLable, int connNodeId) : base(_id, connLable)
 	{
-		id = _id;
 		connectedNodeId = connNodeId;
 	}
 
