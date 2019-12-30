@@ -12,6 +12,8 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
     int uniqueID;
 
     public Rect panelRect { get; set; }
+    public Vector2 padding = new Vector2( 18, 18 );
+
     protected Vector2 panelScrollPosition;
 
     protected List<T> nodes;
@@ -39,16 +41,25 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
     public virtual void Draw ( EditorWindow window ) 
     {
 
+        // Draw background box
+        Vector3[] v = { panelRect.position - padding,   panelRect.position + new Vector2( panelRect.size.x + padding.x, -padding.y ),
+                        panelRect.position + panelRect.size + padding, panelRect.position + new Vector2(-padding.x, panelRect.size.y + padding.y) };
+        Handles.DrawSolidRectangleWithOutline( v, new Color(0.8f, 0.8f, 0.8f), Color.gray );
 
+        // get scroll position
         Rect scrollRect = panelRect;
         scrollRect.size += new Vector2( 18, 18 );
+
         panelScrollPosition = GUI.BeginScrollView( scrollRect, panelScrollPosition, GetPannelViewRect() );
+
         Vector2 scrolDelta = panelScrollPosition - lastScrolBarPosition;
         scrolDelta.y = -scrolDelta.y;
 
+        // draw nodes if visable
         for ( int i = 0; i < nodes.Count; i++ )
         {
             nodes[ i ].MoveNode(scrolDelta);
+
             if ( !PositionIsVisable( nodes[ i ].GetCenter() ) )
                 continue;
 
