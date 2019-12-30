@@ -68,7 +68,7 @@ public class BaseNodeGraphEditor : BaseNodeEditor<BaseNodeGraphData>
 		// output pins are drawn on the lhs of the node.
 		// inputs pins are drawn on the rhs of the node.
 
-		NodeConnection_Input[] nodeConnectionPins = nodes[ node_id ].NodeConnections.ToArray(); // connections output inherit from input and we only need the data that inputs class have.
+		NodeConnection_Input[] nodeConnectionPins = nodes[ node_id ].NodeConnections_outputs.ToArray(); // connections output inherit from input and we only need the data that inputs class have.
 
 		// TODO: these need to be set in the class...
 		Vector2 pinPosition = new Vector2( NodeSize().x - ( NodeSize().x / 4f ) , 20 );
@@ -100,7 +100,7 @@ public class BaseNodeGraphEditor : BaseNodeEditor<BaseNodeGraphData>
 		for( int i = 0; i < nodes.Count; i++ )
 		{
 			
-			foreach ( NodeConnection_Output nodeConn in nodes[i].NodeConnections )
+			foreach ( NodeConnection_Output nodeConn in nodes[i].NodeConnections_outputs )
 			{
 				Vector2 startPos = GetConnectionPosition( i, true, nodeConn );
 				Vector2 endPos = GetConnectionPosition( nodeConn.connectedNodeId, false, nodeConn );
@@ -133,25 +133,25 @@ public class BaseNodeGraphEditor : BaseNodeEditor<BaseNodeGraphData>
 
 public class BaseNodeGraphData : BaseNodeData
 {
-	List<NodeConnection_Output> nodeConnections = new List<NodeConnection_Output>();
-	public List<NodeConnection_Output> NodeConnections { get => nodeConnections; }
+	List<NodeConnection_Output> nodeConnections_outputs = new List<NodeConnection_Output>();
+	public List<NodeConnection_Output> NodeConnections_outputs { get => nodeConnections_outputs; }
 
 	public NodeConnection_Output AddConnection (int connectToNodeId, string connectionLable)
 	{
-		nodeConnections.Add( new NodeConnection_Output( nodeConnections.Count, connectionLable, connectToNodeId ) );
+		nodeConnections_outputs.Add( new NodeConnection_Output( nodeConnections_outputs.Count, connectionLable, connectToNodeId ) );
 
-		return nodeConnections[ nodeConnections.Count - 1 ];
+		return nodeConnections_outputs[ nodeConnections_outputs.Count - 1 ];
 
 	}
 
 	public void RemoveConnection( int connectionId )
 	{
-		nodeConnections.RemoveAt( connectionId );
+		nodeConnections_outputs.RemoveAt( connectionId );
 	}
 
 	public void RemoveConnection( NodeConnection_Output nodeConn )
 	{
-		nodeConnections.Remove( nodeConn );
+		nodeConnections_outputs.Remove( nodeConn );
 	}
 }
 
