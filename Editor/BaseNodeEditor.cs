@@ -12,7 +12,8 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
     int uniqueID;
 
     public Rect panelRect { get; set; }
-    public Vector2 padding = new Vector2( 18, 18 );
+    public virtual Vector2 topLeftpadding { get => new Vector2( 18, 18 ); }
+    public virtual Vector2 bottomRightpadding { get => new Vector2( 18, 18 ); }
 
     protected Vector2 panelScrollPosition;
 
@@ -42,8 +43,8 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
     {
 
         // Draw background box
-        Vector3[] v = { panelRect.position - padding,   panelRect.position + new Vector2( panelRect.size.x + padding.x, -padding.y ),
-                        panelRect.position + panelRect.size + padding, panelRect.position + new Vector2(-padding.x, panelRect.size.y + padding.y) };
+        Vector3[] v = { panelRect.position - topLeftpadding,   panelRect.position + new Vector2( panelRect.size.x + bottomRightpadding.x, -topLeftpadding.y ),
+                        panelRect.position + panelRect.size + bottomRightpadding, panelRect.position + new Vector2(-topLeftpadding.x, panelRect.size.y + bottomRightpadding.y) };
         Handles.DrawSolidRectangleWithOutline( v, new Color(0.8f, 0.8f, 0.8f), Color.gray );
 
         // get scroll position
@@ -51,6 +52,7 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
         scrollRect.size += new Vector2( 18, 18 );
 
         panelScrollPosition = GUI.BeginScrollView( scrollRect, panelScrollPosition, GetPannelViewRect() );
+        GUI.EndScrollView();
 
         Vector2 scrolDelta = panelScrollPosition - lastScrolBarPosition;
         scrolDelta = -scrolDelta;
@@ -63,15 +65,19 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
             if ( !PositionIsVisable( nodes[ i ].GetCenter() ) )
                 continue;
 
-            nodes[ i ].NodeRect = GUI.Window( uniqueID + i, nodes[ i ].NodeRect, NodeWindow, nodes[i].title );
-            nodes[ i ].NodeRect = ClampNodePosition( nodes[ i ].NodeRect, i );
+            DrawNode( i );
             
         }
         
-        GUI.EndScrollView();
 
         lastScrolBarPosition = panelScrollPosition;
 
+    }
+
+    protected virtual void DrawNode( int nodeId )
+    {
+        nodes[ nodeId ].NodeRect = GUI.Window( uniqueID + nodeId, nodes[ nodeId ].NodeRect, NodeWindow, nodes[ nodeId ].title );
+        nodes[ nodeId ].NodeRect = ClampNodePosition( nodes[ nodeId ].NodeRect, nodeId );
     }
 
     /// <summary>

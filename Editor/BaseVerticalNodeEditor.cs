@@ -5,6 +5,7 @@ using UnityEngine;
 public class BaseVerticalEditor : BaseNodeEditor<BaseVerticalNodeData>
 {
     public virtual float nodeHeight { get => 40; }
+    public override Vector2 topLeftpadding { get => new Vector2( 25, 18 ); }
 
     public BaseVerticalEditor (int uid) : base(uid) {
         
@@ -13,6 +14,15 @@ public class BaseVerticalEditor : BaseNodeEditor<BaseVerticalNodeData>
     public BaseVerticalEditor(int uid, Rect pannelRect) : base(uid, pannelRect) {
         
         nodeReleased += NodeReleased;
+    }
+
+    protected override void DrawNode ( int nodeId )
+    {
+        base.DrawNode( nodeId );
+        Rect lableRect = nodes[ nodeId ].NodeRect;
+        lableRect.x -= 20;
+        lableRect.width = 20;
+        GUI.Label( lableRect, nodes[ nodeId ].yId.ToString() );
     }
 
     protected override Rect GetPannelViewRect ()
