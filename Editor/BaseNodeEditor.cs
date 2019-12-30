@@ -53,7 +53,7 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
         panelScrollPosition = GUI.BeginScrollView( scrollRect, panelScrollPosition, GetPannelViewRect() );
 
         Vector2 scrolDelta = panelScrollPosition - lastScrolBarPosition;
-        scrolDelta.y = -scrolDelta.y;
+        scrolDelta = -scrolDelta;
 
         // draw nodes if visable
         for ( int i = 0; i < nodes.Count; i++ )

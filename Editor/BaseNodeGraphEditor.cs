@@ -46,8 +46,8 @@ public class BaseNodeGraphEditor : BaseNodeEditor<BaseNodeGraphData>
 	protected override Rect ClampNodePosition ( Rect nodeRect, int winId = 0 )	// TODO: should be default?
 	{
 
-		if ( nodeRect.x < 0 ) nodeRect.x = 0;
-		if ( nodeRect.y < 0 ) nodeRect.y = 0;
+		if ( nodeRect.x < panelRect.x - panelScrollPosition.x ) nodeRect.x = panelRect.x - panelScrollPosition.x;
+		if ( nodeRect.y < panelRect.y - panelScrollPosition.y ) nodeRect.y = panelRect.y - panelScrollPosition.y;
 
 		return nodeRect;
 	}
