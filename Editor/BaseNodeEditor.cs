@@ -12,10 +12,12 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
     int uniqueID;
 
     public Rect panelRect { get; set; }
-    private Vector2 panelScrollPosition;
+    protected Vector2 panelScrollPosition;
 
     protected List<T> nodes;
     protected int pressedNode = -1; // < 0 == none
+
+    Vector2 lastScrolBarPosition = Vector2.zero;
 
     public BaseNodeEditor (int uid)
     {
@@ -37,18 +39,24 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
     public virtual void Draw ( EditorWindow window ) 
     {
 
-        panelScrollPosition = GUI.BeginScrollView( panelRect, panelScrollPosition, GetPannelViewRect() );
-        window.BeginWindows();
-        
+
+        Rect scrollRect = panelRect;
+        scrollRect.size += new Vector2( 18, 18 );
+        panelScrollPosition = GUI.BeginScrollView( scrollRect, panelScrollPosition, GetPannelViewRect() );
+        Vector2 scrolDelta = panelScrollPosition - lastScrolBarPosition;
+        scrolDelta.y = -scrolDelta.y;
+        Debug.Log( "delta: " + scrolDelta.y );
         for ( int i = 0; i < nodes.Count; i++ )
         {
-            nodes[ i ].NodeRect = GUI.Window( i, nodes[ i ].NodeRect, NodeWindow, nodes[i].title );
+            nodes[ i ].MoveNode(scrolDelta);
+            nodes[ i ].NodeRect = GUI.Window( uniqueID + i, nodes[ i ].NodeRect, NodeWindow, nodes[i].title );
             nodes[ i ].NodeRect = ClampNodePosition( nodes[ i ].NodeRect, i );
             
         }
         
-        window.EndWindows();
         GUI.EndScrollView();
+
+        lastScrolBarPosition = panelScrollPosition;
 
     }
 
@@ -56,9 +64,14 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
     /// The viewable area within the pannel. if larger than pannel rect scroll bars will be added :D
     /// </summary>
     /// <returns></returns>
-    protected Rect GetPannelViewRect()
+    protected virtual Rect GetPannelViewRect()
     {
-        return new Rect(Vector2.zero, panelRect.size);
+        return new Rect(Vector2.zero, panelRect.size*2);
+    }
+
+    protected virtual Vector2 GetPanelOffset()
+    {
+        return panelRect.position + panelScrollPosition;
     }
 
     /// <summary>
@@ -73,18 +86,7 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
     /// <returns></returns>
     protected virtual Vector2 NodeStartPosition()
     {
-        return Vector2.zero;
-    }
-
-    /// <summary>
-    /// Get the Panel and scroll position offset
-    /// </summary>
-    /// <returns></returns>
-    protected Vector2 GetNodeOffset()
-    {
-        Vector2 offset = panelRect.position + panelScrollPosition;
-
-        return offset;
+        return panelRect.position;
     }
 
     /// <summary>
@@ -94,7 +96,7 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
     protected bool LocalPositionIsVisable(Vector2 position)
     {
         position -= panelScrollPosition;
-        Debug.Log( position );
+
         return position.x > 0f && position.x < panelRect.width && position.y > 0f && position.y < panelRect.height;
 
     }
@@ -149,43 +151,51 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
     /// </summary>
     /// <param name="nodeRect"></param>
     /// <returns></returns>
-    protected abstract Rect ClampNodePosition ( Rect nodeRect, int winId = 0 ); // NOTE: winId is only used to fix the issue in node window.
+    protected abstract Rect ClampNodePosition ( Rect nodeRect, int nodeId = 0 ); // NOTE: winId is only used to fix the issue in node window.
 
     /// <summary>
     /// draws node data for windowId
     /// </summary>
-    /// <param name="windowId"></param>
-    protected virtual void NodeWindow ( int windowId )
+    /// <param name="winId"></param>
+    protected virtual void NodeWindow ( int winId )
     {
+
+        int nodeId = winId - uniqueID;
+
         // BUG: if the cursor leaves the node when pressed the release is not triggered.
         if ( Event.current.type == EventType.MouseDown )
         {
-            nodePressed?.Invoke( windowId );
-            pressedNode = windowId;
-            nodes[ windowId ].pressedPosition = nodes[ windowId ].GetNodePosition();
-            Debug.Log( windowId + " Pressed" );
+            nodePressed?.Invoke( nodeId );
+            pressedNode = nodeId;
+            nodes[ nodeId ].pressedPosition = nodes[ nodeId ].GetNodePosition();
+            Debug.Log( nodeId + " Pressed" );
         }
         else if ( Event.current.type == EventType.MouseUp)
         {
-            nodeReleased?.Invoke( windowId );
+            nodeReleased?.Invoke( nodeId );
             pressedNode = -1;
-            Debug.Log( windowId + " Released" );
+            Debug.Log( nodeId + " Released" );
         }
         
 
 
-        if ( nodes[windowId].dragable )
+        if ( nodes[nodeId].dragable )
         {
             GUI.DragWindow();
         }
+
+        GUI.BringWindowToBack(winId);
+
     }
 
 }
 
 public class BaseNodeData
 {
+    
     private Rect rect = Rect.zero;
     public Rect NodeRect { get => rect; set => rect = value; }
+
 
     public Vector2 pressedPosition = Vector2.zero;
     public string title = "title";
@@ -194,6 +204,11 @@ public class BaseNodeData
     public void SetNodePosition(Vector2 position)
     {
         rect.position = position;
+    }
+
+    public void MoveNode(Vector2 amountToMove)
+    {
+        rect.position += amountToMove;
     }
 
     public Vector2 GetNodePosition()

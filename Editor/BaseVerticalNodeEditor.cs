@@ -15,6 +15,11 @@ public class BaseVerticalEditor : BaseNodeEditor<BaseVerticalNodeData>
         nodeReleased += NodeReleased;
     }
 
+    protected override Rect GetPannelViewRect ()
+    {
+        return new Rect( Vector2.zero, new Vector2(panelRect.width, nodes.Count * nodeHeight) );
+    }
+
     protected override Vector2 NodeSize ()
     {
         return new Vector2( panelRect.width, nodeHeight );
@@ -51,26 +56,36 @@ public class BaseVerticalEditor : BaseNodeEditor<BaseVerticalNodeData>
 
     protected override Rect ClampNodePosition(Rect rect, int winId)
     {
-        rect.x = 0;
+        
+        Vector2 localPosition = rect.position + GetPanelOffset();
+        rect.x = localPosition.x = panelRect.x;
 
-        if ( rect.y < 0 )
+        if (winId == 0)
+            Debug.Log( "a: "+ localPosition + " b: "+ panelScrollPosition );
+
+
+        if ( localPosition.y < 0 )
         {
-            rect.y = 0;
+            rect.y = -GetPanelOffset().y;
             NodeReleased( winId );  // Temp fix for issue in BaseNodeEditor.NodeWindow
         }
-        else if ( rect.y > nodeHeight * ( nodes.Count - 1 ) )
+        else if ( localPosition.y > nodeHeight * ( nodes.Count - 1 ) )
         {
-            rect.y = nodeHeight * ( nodes.Count - 1 );
+            rect.y = -GetPanelOffset().y + nodeHeight * ( nodes.Count - 1 );
             NodeReleased( winId );  // Temp fix for issue in BaseNodeEditor.NodeWindow
         }
 
         return rect;
     }
 
-    protected virtual void NodeReleased( int winId ) 
+    protected virtual void NodeReleased( int nodeId ) 
     {
-        Vector2 winPos = nodes[ winId ].GetNodePosition();
-        int lastId = nodes[ winId ].yId;
+        Vector2 winPos = nodes[ nodeId ].GetNodePosition() + GetPanelOffset();
+
+        if ( nodeId == 0 )
+            Debug.LogError( nodes[ nodeId ].GetNodePosition() + GetPanelOffset() + " :: "+ nodes[ nodeId ].GetNodePosition() +" + "+ GetPanelOffset() );
+
+        int lastId = nodes[ nodeId ].yId;
         int newId = Mathf.FloorToInt( winPos.y / nodeHeight );
 
         winPos.y = newId * nodeHeight;
@@ -84,13 +99,13 @@ public class BaseVerticalEditor : BaseNodeEditor<BaseVerticalNodeData>
             // move all nodes in between last and new id                 
             for ( int i = 0; i < nodes.Count; i++)
             {
-                if ( i == winId ) continue;
+                if ( i == nodeId ) continue;
 
                 int yId = nodes[i].yId;
 
                 if ( yId >= startId && yId <= endId )
                 {
-                    Vector2 nPos = nodes[ i ].GetNodePosition();
+                    Vector2 nPos = nodes[ i ].GetNodePosition() + GetPanelOffset();
                     if (startId == lastId)
                     {
                         nPos.y -= nodeHeight;
@@ -102,15 +117,15 @@ public class BaseVerticalEditor : BaseNodeEditor<BaseVerticalNodeData>
                         yId++;
 
                     }
-                    nodes[ i ].SetNodePosition( nPos );
+                    nodes[ i ].SetNodePosition( nPos - GetPanelOffset() ) ;
                     nodes[ i ].yId = yId;
                 }
                     
             }
         }
 
-        nodes[ winId ].SetNodePosition( winPos );
-        nodes[ winId ].yId = newId;
+        nodes[ nodeId ].SetNodePosition( winPos - GetPanelOffset() );
+        nodes[ nodeId ].yId = newId;
 
     }
 

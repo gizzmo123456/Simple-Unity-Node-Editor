@@ -18,3 +18,10 @@ Simple Node window class for unity!
 
 [C] Add Connections to BaseNodeGraphEditor and its base data nodes
 [C] Add Bezier curves to BaseNodeGraph Editor
+
+# BUGS:
+[ ] Can only have one Node Editor instance active at a time
+	Since all need to be draw in 1 set of StartWindow and EndWindows
+	and they must all have a unique ID
+	[C] Give all windows a unique ID
+	[ ] Apply position offset to all node positions ect...
