@@ -45,7 +45,7 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
         panelScrollPosition = GUI.BeginScrollView( scrollRect, panelScrollPosition, GetPannelViewRect() );
         Vector2 scrolDelta = panelScrollPosition - lastScrolBarPosition;
         scrolDelta.y = -scrolDelta.y;
-        Debug.Log( "delta: " + scrolDelta.y );
+
         for ( int i = 0; i < nodes.Count; i++ )
         {
             nodes[ i ].MoveNode(scrolDelta);
@@ -176,15 +176,13 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
             GUI.DragWindow();
         }
 
-        GUI.BringWindowToBack(winId);
-
     }
 
 }
 
 public class BaseNodeData
 {
-    
+
     private Rect rect = Rect.zero;
     public Rect NodeRect { get => rect; set => rect = value; }
 

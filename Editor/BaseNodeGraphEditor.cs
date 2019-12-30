@@ -69,9 +69,9 @@ public class BaseNodeGraphEditor : BaseNodeEditor<BaseNodeGraphData>
 				Vector2 startPos = GetConnectionPosition( i, true, nodeConn );
 				Vector2 endPos = GetConnectionPosition( nodeConn.connectedNodeId, false, nodeConn );
 
-				if ( !PositionIsVisable( startPos ) || !PositionIsVisable( endPos ) ) continue; // TODO: it should draw upto the point it is not visable any more :)
+				if ( !PositionIsVisable( startPos ) && !PositionIsVisable( endPos ) ) continue; // do not draw connect if both start and end points are not visable
 
-				nodeConn.DrawConnection(startPos, endPos);
+				nodeConn.DrawConnection(startPos, endPos, PositionIsVisable);
 			}
 		}
 
@@ -121,6 +121,8 @@ public class BaseNodeGraphData : BaseNodeData
 
 public class NodeConnection
 {
+	public delegate bool isVisableFunct ( Vector2 position );
+	
 	public int id;
 	public int connectedNodeId;
 
@@ -141,7 +143,7 @@ public class NodeConnection
 		connectedNodeId = connNodeId;
 	}
 
-	public void DrawConnection(Vector2 startPosition, Vector2 endPosition)
+	public void DrawConnection(Vector2 startPosition, Vector2 endPosition, isVisableFunct isVisable )
 	{
 		if ( startPosition != connectionStartPosition || endPosition != connectionEndPosition )
 		{
@@ -154,7 +156,9 @@ public class NodeConnection
 		
 		for ( int i = 1; i < curvePoints + 1; i++ )
 		{
-			Handles.DrawLine( connectionCurve[ i-1 ], connectionCurve[ i ] );
+			Vector2 lineCenter = connectionCurve[ i - 1 ] + ( ( connectionCurve[ i ] - connectionCurve[ i - 1 ] ) / 2f );
+			if (isVisable( lineCenter ) )
+				Handles.DrawLine( connectionCurve[ i-1 ], connectionCurve[ i ] );
 		}
 
 	}

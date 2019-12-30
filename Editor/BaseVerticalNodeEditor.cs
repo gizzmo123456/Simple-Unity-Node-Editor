@@ -60,10 +60,6 @@ public class BaseVerticalEditor : BaseNodeEditor<BaseVerticalNodeData>
         Vector2 localPosition = rect.position + GetPanelOffset();
         rect.x = localPosition.x = panelRect.x;
 
-        if (winId == 0)
-            Debug.Log( "a: "+ localPosition + " b: "+ panelScrollPosition );
-
-
         if ( localPosition.y < 0 )
         {
             rect.y = -GetPanelOffset().y;
