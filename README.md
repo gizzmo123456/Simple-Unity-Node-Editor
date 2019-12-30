@@ -2,7 +2,7 @@
 Simple Node window class for unity!
 
 # TODO:
-[ ] Fix issue in BaseNodeEditor.NodeWindow  
+[C] Fix issue in BaseNodeEditor.NodeWindow  
 [C] Add node graph editor
 [ ] Make BaseVerticalNodeEditor Abstract
 [ ] Make BaseNodeGraphEditor Abstract
@@ -11,7 +11,7 @@ Simple Node window class for unity!
 [C] Add Scrol bar to node window
 
 [ ] Add some basic UI bits
-	[ ] Pannel Frame
+	[C] Pannel Frame
 	[ ] Text types, ie. normal, bold ect...
 	[ ] Node Frame
 [ ] Add handle position to nodes
