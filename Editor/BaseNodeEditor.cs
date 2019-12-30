@@ -49,9 +49,9 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
         for ( int i = 0; i < nodes.Count; i++ )
         {
             nodes[ i ].MoveNode(scrolDelta);
-            if ( nodes[ i ].GetCenter().x < panelRect.x || nodes[ i ].GetCenter().x > panelRect.x + panelRect.width ||
-                nodes[ i ].GetCenter().y < panelRect.y || nodes[ i ].GetCenter().y > panelRect.y + panelRect.height )
+            if ( !PositionIsVisable( nodes[ i ].GetCenter() ) )
                 continue;
+
             nodes[ i ].NodeRect = GUI.Window( uniqueID + i, nodes[ i ].NodeRect, NodeWindow, nodes[i].title );
             nodes[ i ].NodeRect = ClampNodePosition( nodes[ i ].NodeRect, i );
             
@@ -93,26 +93,15 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
     }
 
     /// <summary>
-    /// Check if local scroll view position is visable
-    /// </summary>
-    /// <param name="position">Local position in scroll view</param>
-    protected bool LocalPositionIsVisable(Vector2 position)
-    {
-        position -= panelScrollPosition;
-
-        return position.x > 0f && position.x < panelRect.width && position.y > 0f && position.y < panelRect.height;
-
-    }
-
-    /// <summary>
     /// Check if position is visable within the scroll view
     /// </summary>
     /// <param name="position">position in Editor Window</param>
     protected bool PositionIsVisable ( Vector2 position )
     {
-        position -= panelRect.position;
-        
-        return LocalPositionIsVisable( position );
+        //position -= panelRect.position;
+
+        return !(position.x < panelRect.x || position.x > panelRect.x + panelRect.width ||
+               position.y < panelRect.y || position.y > panelRect.y + panelRect.height);
 
     }
 
