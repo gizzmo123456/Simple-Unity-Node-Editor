@@ -67,20 +67,16 @@ public class BaseVerticalEditor : BaseNodeEditor<BaseVerticalNodeData>
     protected override Rect ClampNodePosition(Rect rect, int nodeId)
     {
 
-        //if ( nodeId == 0 )
-        //    Debug.LogWarning( rect );
-
         rect.x = panelRect.x;
         
         if ( rect.y < panelRect.y - panelScrollPosition.y )
         {
             rect.y = panelRect.y - panelScrollPosition.y;
-        //    NodeReleased( nodeId );  // Temp fix for issue in BaseNodeEditor.NodeWindow
         }
         else if ( rect.y > (panelRect.y - panelScrollPosition.y) + (nodeHeight * ( nodes.Count - 1 )) )
         {
             rect.y = ( panelRect.y - panelScrollPosition.y ) + ( nodeHeight * ( nodes.Count - 1 ) );
-        //    NodeReleased( nodeId );  // Temp fix for issue in BaseNodeEditor.NodeWindow
+            
         }
         
         return rect;
@@ -88,7 +84,6 @@ public class BaseVerticalEditor : BaseNodeEditor<BaseVerticalNodeData>
 
     protected virtual void NodeReleased( int nodeId ) 
     {
-        //(nodes[ nodeId ].GetNodePosition() - panelRect.position) // id whiting the local rect
 
         Vector2 winPos = ( nodes[ nodeId ].GetNodePosition() - panelRect.position + panelScrollPosition );
 
@@ -96,6 +91,8 @@ public class BaseVerticalEditor : BaseNodeEditor<BaseVerticalNodeData>
         int newId = Mathf.FloorToInt( winPos.y / nodeHeight );
 
         winPos.y = newId * nodeHeight;
+        if (lastId == 0)
+            Debug.Log( ":::::::::::" + lastId + " :: " + newId );
 
         if ( lastId != newId )
         {

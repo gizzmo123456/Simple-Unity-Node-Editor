@@ -19,6 +19,7 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
 
     protected List<T> nodes;
     protected int pressedNode = -1; // < 0 == none
+    protected int releasedNode = -1; // < 0 == none
 
     Vector2 lastScrolBarPosition = Vector2.zero;
 
@@ -57,13 +58,30 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
         Vector2 scrolDelta = panelScrollPosition - lastScrolBarPosition;
         scrolDelta = -scrolDelta;
 
+        // Fix nodes not calling release when cursor leaves window ( Note: we dont get the event if we do this in Update :| )
+        // release the pressed node preventing it from geting drawn for one update so the cursor no longer has focus of the node
+        // then trigger a repaint at the end to trigger the released node event
+        if ( pressedNode > -1 && Event.current != null && !PositionIsVisable( Event.current.mousePosition  ) )
+        {
+            // make the release the pressed n
+            releasedNode = pressedNode;
+            pressedNode = -1;
+        }
+        else if( releasedNode > -1 )
+        {
+            // call the released node event
+            nodeReleased?.Invoke( releasedNode ); 
+            releasedNode = -1;
+        }
+
         // draw nodes if visable
         for ( int i = 0; i < nodes.Count; i++ )
         {
             nodes[ i ].MoveNode(scrolDelta);
 
-            if ( !PositionIsVisable( nodes[ i ].GetCenter() ) )
-                continue;
+            // hide node if not viable of if the node has been releassed due to the mouse leaveing the node area.
+            if ( (!PositionIsVisable( nodes[ i ].GetCenter() ) && pressedNode != i ) || (pressedNode < 0 && releasedNode > -1) )
+                continue; 
 
             DrawNode( i );
             
@@ -71,6 +89,10 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
         
 
         lastScrolBarPosition = panelScrollPosition;
+
+        // trigger repaint if node has been released.
+        if ( releasedNode > -1 )
+            window.Repaint();
 
     }
 
