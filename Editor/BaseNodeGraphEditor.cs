@@ -45,6 +45,10 @@ public class BaseNodeGraphEditor : BaseNodeEditor<BaseNodeGraphData>
 
 	protected override Rect ClampNodePosition ( Rect nodeRect, int winId = 0 )	// TODO: should be default?
 	{
+
+		if ( nodeRect.x < 0 ) nodeRect.x = 0;
+		if ( nodeRect.y < 0 ) nodeRect.y = 0;
+
 		return nodeRect;
 	}
 
@@ -81,11 +85,11 @@ public class BaseNodeGraphEditor : BaseNodeEditor<BaseNodeGraphData>
 
 		if (output)
 		{
-			return new Vector2( nodeRect.x + nodeRect.width, nodeRect.center.y ) + GetNodeOffset();
+			return new Vector2( nodeRect.x + nodeRect.width, nodeRect.center.y );
 		}
 		else
 		{
-			return new Vector2( nodeRect.x, nodeRect.center.y ) + GetNodeOffset();
+			return new Vector2( nodeRect.x, nodeRect.center.y );
 		}
 	}
 

@@ -49,6 +49,9 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
         for ( int i = 0; i < nodes.Count; i++ )
         {
             nodes[ i ].MoveNode(scrolDelta);
+            if ( nodes[ i ].GetCenter().x < panelRect.x || nodes[ i ].GetCenter().x > panelRect.x + panelRect.width ||
+                nodes[ i ].GetCenter().y < panelRect.y || nodes[ i ].GetCenter().y > panelRect.y + panelRect.height )
+                continue;
             nodes[ i ].NodeRect = GUI.Window( uniqueID + i, nodes[ i ].NodeRect, NodeWindow, nodes[i].title );
             nodes[ i ].NodeRect = ClampNodePosition( nodes[ i ].NodeRect, i );
             
@@ -214,6 +217,11 @@ public class BaseNodeData
     public Vector2 GetNodePosition()
     {
         return rect.position;
+    }
+
+    public Vector2 GetCenter()
+    {
+        return rect.center;
     }
 
     public void SetNodeSize(Vector2 size)
