@@ -14,7 +14,7 @@ Simple Node window class for unity!
 	[C] Pannel Frame
 	[ ] Text types, ie. normal, bold ect...
 	[ ] Node Frame
-[ ] Add handle position to nodes
+[C] Add handle position to nodes
 
 [C] Add Connections to BaseNodeGraphEditor and its base data nodes
 [C] Add Bezier curves to BaseNodeGraph Editor

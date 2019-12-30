@@ -212,9 +212,14 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
 
         if ( nodes[nodeId].dragable )
         {
-            GUI.DragWindow();
+            GUI.DragWindow(GetNodeDragableArea(nodeId));
         }
 
+    }
+
+    protected virtual Rect GetNodeDragableArea(int nodeId)
+    {
+        return new Rect(Vector2.zero, nodes[ nodeId ].NodeRect.size);
     }
 
 }

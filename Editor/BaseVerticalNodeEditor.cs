@@ -139,6 +139,11 @@ public class BaseVerticalEditor : BaseNodeEditor<BaseVerticalNodeData>
         base.NodeWindow( windowId );
     }
 
+    protected override Rect GetNodeDragableArea ( int nodeId )
+    {
+        return new Rect( Vector2.zero, new Vector2( 50, nodeHeight ) );
+    }
+
 }
 
 public class BaseVerticalNodeData : BaseNodeData
