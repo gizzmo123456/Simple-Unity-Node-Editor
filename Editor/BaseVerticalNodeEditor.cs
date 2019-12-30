@@ -27,7 +27,7 @@ public class BaseVerticalEditor : BaseNodeEditor<BaseVerticalNodeData>
 
     protected override Vector2 NodeStartPosition ()
     {
-        return new Vector2( 0, nodes.Count  * nodeHeight );
+        return new Vector2( panelRect.x, panelRect.y + nodes.Count  * nodeHeight );
     }
 
     public override BaseVerticalNodeData AddNode ( string title, bool isDragable )
@@ -54,32 +54,33 @@ public class BaseVerticalEditor : BaseNodeEditor<BaseVerticalNodeData>
 
     }
 
-    protected override Rect ClampNodePosition(Rect rect, int winId)
+    protected override Rect ClampNodePosition(Rect rect, int nodeId)
     {
+
+        //if ( nodeId == 0 )
+        //    Debug.LogWarning( rect );
+
+        rect.x = panelRect.x;
         
-        Vector2 localPosition = rect.position + GetPanelOffset();
-        rect.x = localPosition.x = panelRect.x;
-
-        if ( localPosition.y < 0 )
+        if ( rect.y < panelRect.y - panelScrollPosition.y )
         {
-            rect.y = -GetPanelOffset().y;
-            NodeReleased( winId );  // Temp fix for issue in BaseNodeEditor.NodeWindow
+            rect.y = panelRect.y - panelScrollPosition.y;
+        //    NodeReleased( nodeId );  // Temp fix for issue in BaseNodeEditor.NodeWindow
         }
-        else if ( localPosition.y > nodeHeight * ( nodes.Count - 1 ) )
+        else if ( rect.y > (panelRect.y - panelScrollPosition.y) + (nodeHeight * ( nodes.Count - 1 )) )
         {
-            rect.y = -GetPanelOffset().y + nodeHeight * ( nodes.Count - 1 );
-            NodeReleased( winId );  // Temp fix for issue in BaseNodeEditor.NodeWindow
+            rect.y = ( panelRect.y - panelScrollPosition.y ) + ( nodeHeight * ( nodes.Count - 1 ) );
+        //    NodeReleased( nodeId );  // Temp fix for issue in BaseNodeEditor.NodeWindow
         }
-
+        
         return rect;
     }
 
     protected virtual void NodeReleased( int nodeId ) 
     {
-        Vector2 winPos = nodes[ nodeId ].GetNodePosition() + GetPanelOffset();
+        //(nodes[ nodeId ].GetNodePosition() - panelRect.position) // id whiting the local rect
 
-        if ( nodeId == 0 )
-            Debug.LogError( nodes[ nodeId ].GetNodePosition() + GetPanelOffset() + " :: "+ nodes[ nodeId ].GetNodePosition() +" + "+ GetPanelOffset() );
+        Vector2 winPos = ( nodes[ nodeId ].GetNodePosition() - panelRect.position + panelScrollPosition );
 
         int lastId = nodes[ nodeId ].yId;
         int newId = Mathf.FloorToInt( winPos.y / nodeHeight );
@@ -101,7 +102,7 @@ public class BaseVerticalEditor : BaseNodeEditor<BaseVerticalNodeData>
 
                 if ( yId >= startId && yId <= endId )
                 {
-                    Vector2 nPos = nodes[ i ].GetNodePosition() + GetPanelOffset();
+                    Vector2 nPos = nodes[ i ].GetNodePosition() ;
                     if (startId == lastId)
                     {
                         nPos.y -= nodeHeight;
@@ -113,14 +114,14 @@ public class BaseVerticalEditor : BaseNodeEditor<BaseVerticalNodeData>
                         yId++;
 
                     }
-                    nodes[ i ].SetNodePosition( nPos - GetPanelOffset() ) ;
+                    nodes[ i ].SetNodePosition( nPos ) ;
                     nodes[ i ].yId = yId;
                 }
                     
             }
         }
 
-        nodes[ nodeId ].SetNodePosition( winPos - GetPanelOffset() );
+        nodes[ nodeId ].SetNodePosition( winPos + panelRect.position - panelScrollPosition );
         nodes[ nodeId ].yId = newId;
 
     }
