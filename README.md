@@ -21,9 +21,13 @@ Simple Node window class for unity!
 
 [C] Draw Node Pins
 
+[ ] Add order changed callback to Vertical Editor
+[ ] Add NodeConnection changed callback to graph editor 
+
 # BUGS:
 [C] Can only have one Node Editor instance active at a time
 	Since all need to be draw in 1 set of StartWindow and EndWindows
 	and they must all have a unique ID
 	[C] Give all windows a unique ID
 	[C] Apply position offset to all node positions ect...
+[ ] Fixed input positions in node graph
