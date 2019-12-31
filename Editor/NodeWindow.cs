@@ -48,14 +48,11 @@ public class NodeWindow : EditorWindow
 		nodeGraphEditor.AddPin_toNode( 2, "IN 1", BaseNodeGraphData.PinMode.Input );
 
 
-		nodeGraphEditor.GetNode( 0 ).AddConnection( 0, 1, 0 );
-		nodeGraphEditor.GetNode( 0 ).AddConnection( 1, 1, 2 );
-		nodeGraphEditor.GetNode( 0 ).AddConnection( 2, 2, 0 ); 
-		nodeGraphEditor.GetNode( 0 ).AddConnection( 0, 2, 0 ); 
-		nodeGraphEditor.GetNode( 1 ).AddConnection( 0, 2, 0 ); 
-		//nodeGraphEditor.GetNode( 0 ).AddConnection( 2, "Out Pin 3" );
-		//nodeGraphEditor.GetNode( 1 ).AddConnection( 2, "Out Pin 1" );
-		//nodeGraphEditor.GetNode( 2 ).AddConnection( 0, "Out Pin 2" );
+		//nodeGraphEditor.GetNode( 0 ).AddConnection( 0, 1, 0 );
+		//nodeGraphEditor.GetNode( 0 ).AddConnection( 1, 1, 2 );
+		//nodeGraphEditor.GetNode( 0 ).AddConnection( 2, 2, 0 ); 
+		//nodeGraphEditor.GetNode( 0 ).AddConnection( 0, 2, 0 ); 
+		//nodeGraphEditor.GetNode( 1 ).AddConnection( 0, 2, 0 ); 
 
 	}
 

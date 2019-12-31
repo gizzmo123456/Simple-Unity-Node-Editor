@@ -5,6 +5,14 @@ using UnityEditor;
 
 public class BaseNodeGraphEditor : BaseNodeEditor<BaseNodeGraphData>
 {
+
+	int connectingFromNode = -1;    // < 0 is none 
+	int connectingFromSlot = -1;
+	int connectingToNode = -1;
+	int connectingToSlot = -1;
+
+	Vector2[] connectionPointsToMouse = new Vector2[ 21 ];
+
 	public BaseNodeGraphEditor (int uid) : base(uid) { }
 	public BaseNodeGraphEditor (int uid, Rect pannelRect) : base(uid, pannelRect) 
 	{
@@ -16,6 +24,7 @@ public class BaseNodeGraphEditor : BaseNodeEditor<BaseNodeGraphData>
 		base.Draw( window );
 
 		DrawNodeConnections();
+		ConnectNodes(window);
 
 	}
 
@@ -144,6 +153,48 @@ public class BaseNodeGraphEditor : BaseNodeEditor<BaseNodeGraphData>
 
 	}
 
+	protected virtual void ConnectNodes(EditorWindow window)
+	{
+
+		if ( connectingToNode != -1 )
+		{
+
+			if ( nodes[ connectingFromNode ].HasConnection( connectingFromSlot, connectingToNode, connectingToSlot ) )
+			{
+				nodes[ connectingFromNode ].RemoveConnection( connectingFromSlot, connectingToNode, connectingToSlot );
+				Debug.LogWarning( "I Have :)" );
+			}
+			else // Create a new connection.
+			{
+				nodes[ connectingFromNode ].AddConnection( connectingFromSlot, connectingToNode, connectingFromSlot );
+			}
+			// reset connecting :)
+			connectingFromNode = -1;   
+			connectingFromSlot = -1;
+			connectingToNode = -1;
+			connectingToSlot = -1;
+
+		}
+		else if ( connectingFromNode != -1 )
+		{
+			// Draw curve to mouse.
+			// Fake the output to mouse when connecting nodes.
+			NodePin_Output curve = new NodePin_Output(0, null, "");	
+			Vector2 startPos = nodes[ connectingFromNode ].GetPinPosition( connectingFromSlot, BaseNodeGraphData.PinMode.Output ) + new Vector2( nodes[ connectingFromNode ].pinSize.x, 0 );
+			Vector2 endPos = startPos;
+
+			if ( Event.current != null )
+				endPos = Event.current.mousePosition;
+
+			curve.GenerateBezierCurve( startPos, endPos, ref connectionPointsToMouse );
+			curve.DrawConnectionLines( connectionPointsToMouse, PositionIsVisable );
+
+			window.Repaint();
+
+		}
+
+	}
+
 	/// <summary>
 	/// Adds a new pin to node, resizeing the node if necessary
 	/// </summary>
@@ -174,20 +225,36 @@ public class BaseNodeGraphEditor : BaseNodeEditor<BaseNodeGraphData>
 	protected virtual void NodeReleased( int nodeId, Vector2 mousePosition )
 	{
 
+		int inputPinCount = nodes[ nodeId ].GetPinCount( BaseNodeGraphData.PinMode.Input );
+		int outputPinCount = nodes[ nodeId ].GetPinCount( BaseNodeGraphData.PinMode.Output );
+
 		// did we press an output pin of nodeId?
-		for ( int i = 0; i < nodes[nodeId].GetPinCount(BaseNodeGraphData.PinMode.Output); i++ )
-			if (nodes[nodeId].GetPinRect(i, BaseNodeGraphData.PinMode.Output).Contains(mousePosition))
+		for ( int i = 0; i < Mathf.Max(inputPinCount, outputPinCount); i++ )
+			if (i < outputPinCount && nodes[nodeId].GetPinRect(i, BaseNodeGraphData.PinMode.Output).Contains(mousePosition))
 			{
-				Debug.LogWarning( "Helllllloo World" );
+				if ( connectingFromNode < 0 )
+				{
+					connectingFromNode = nodeId;
+					connectingFromSlot = i;
+					Debug.LogWarning( "yes" );
+
+				}
+				else if ( connectingFromNode == nodeId && i == connectingFromSlot)
+				{
+					connectingFromNode = -1;
+					connectingFromSlot = -1;
+					Debug.LogWarning( "No" );
+
+				}
+
+				Debug.LogWarning("Node: "+nodeId +" slot "+ i +" was pressed");
+
 			}
-			else
+			else if (i < inputPinCount && connectingFromNode > -1 && connectingFromNode != nodeId && nodes[ nodeId ].GetPinRect( i, BaseNodeGraphData.PinMode.Input ).Contains( mousePosition ) )
 			{
-				Debug.Log( "Nonono" + nodes[ nodeId ].GetPinRect( i, BaseNodeGraphData.PinMode.Output ) );
+				connectingToNode = nodeId;
+				connectingToSlot = i;
 			}
-
-
-
-
 	}
 
 }
@@ -302,10 +369,16 @@ public class BaseNodeGraphData : BaseNodeData
 
 	}
 
-	// TODO: ATM this will remove the pin it needs to be updated to remove the connection :)
-	public void RemoveConnection( int pinId, int connectionId )
+	public bool HasConnection( int from_pinId, int toNodeId, int toSlotId )
 	{
-		nodeConnections_output[ pinId ].RemoveConnection( connectionId );
+
+		return nodeConnections_output[ from_pinId ].HasConnection( toNodeId, toSlotId );		
+
+	}
+
+	public void RemoveConnection( int pinId, int toNodeId, int toNodeSlot )
+	{
+		nodeConnections_output[ pinId ].RemoveConnection( toNodeId, toNodeSlot );
 	}
 
 	public int GetConnectionCount( PinMode pinMode )
@@ -352,10 +425,25 @@ public class NodePin_Output : NodePin_Input
 		connections.Add( new NodeConnectionData( nodeId, slotId, curvePoints ) );
 	}
 
-	public void RemoveConnection(int connId)
+	public bool HasConnection(int nodeId, int slotId)
 	{
-		if ( connId >= 0 && connId < connections.Count )
-			connections.RemoveAt( connId );
+		foreach ( NodeConnectionData conn in connections )
+			if ( conn.connectedNodeId == nodeId && conn.connectedSlotId == slotId )
+				return true;
+
+		return false;
+
+	}
+
+	public void RemoveConnection(int inputNodeId, int slotId)
+	{
+		for ( int i = 0; i < connections.Count; i++ )
+			if ( connections[i].connectedNodeId == inputNodeId && connections[i].connectedSlotId == slotId )
+			{
+				connections.RemoveAt( i );
+				Debug.LogError("Dead");
+				return;
+			}
 	}
 
 	/// <summary>
@@ -394,13 +482,13 @@ public class NodePin_Output : NodePin_Input
 									 ref connection.connectionCurve );	//NOTE: Make sure this remembers the curve :/
 			}
 
-			DrawConnection(connections[i].connectionCurve, isVisable);
+			DrawConnectionLines(connections[i].connectionCurve, isVisable);
 
 		}
 
 	}
 
-	private void GenerateBezierCurve(Vector2 from, Vector2 to, ref Vector2[] connectionCurve)
+	public void GenerateBezierCurve(Vector2 from, Vector2 to, ref Vector2[] connectionCurve)
 	{
 		float xOffset = ( to.x - from.x ) * (0.75f + (0.1f * (Mathf.Abs( to.y - from.y ) / 150f) )) ;
 
@@ -421,7 +509,7 @@ public class NodePin_Output : NodePin_Input
 		}
 	}
 
-	private void DrawConnection(Vector2[] connectionPoints, isVisableFunct isVisable )
+	public void DrawConnectionLines(Vector2[] connectionPoints, isVisableFunct isVisable )
 	{
 		if ( connectionPoints.Length < 1 )
 		{
