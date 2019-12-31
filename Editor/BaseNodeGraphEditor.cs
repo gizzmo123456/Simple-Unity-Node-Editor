@@ -441,7 +441,6 @@ public class NodePin_Output : NodePin_Input
 			if ( connections[i].connectedNodeId == inputNodeId && connections[i].connectedSlotId == slotId )
 			{
 				connections.RemoveAt( i );
-				Debug.LogError("Dead");
 				return;
 			}
 	}
