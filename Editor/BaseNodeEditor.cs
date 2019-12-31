@@ -117,10 +117,17 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
     }
 
     /// <summary>
-    /// defines how a node should be sized.
+    /// default node size
     /// </summary>
     /// <returns></returns>
     protected abstract Vector2 NodeSize ();
+
+    /// <summary>
+    /// Gets node size for given node id.
+    /// </summary>
+    /// <param name="nodeId"></param>
+    /// <returns></returns>
+    protected virtual Vector2 NodeSize ( int nodeId ) { return NodeSize(); }
 
     /// <summary>
     /// Defines where a node should be spawned
@@ -227,7 +234,7 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
 public class BaseNodeData
 {
 
-    private Rect rect = Rect.zero;
+    protected Rect rect = Rect.zero;
     public Rect NodeRect { get => rect; set => rect = value; }
 
 

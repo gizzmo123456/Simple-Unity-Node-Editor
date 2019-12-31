@@ -18,7 +18,25 @@ public class BaseNodeGraphEditor : BaseNodeEditor<BaseNodeGraphData>
 
 	protected override Vector2 NodeSize ()
 	{
-		return new Vector2( 75, 50 );
+		return new Vector2( 125, 100 );
+	}
+
+	protected override Vector2 NodeSize( int nodeId )
+	{
+
+		Vector2 maxSize = new Vector2(400, 800);
+		Vector2 nodeSize = new Vector2( 300, 20 );
+
+		// get the node size by the amount of connections is has.
+		float maxPinPos = Mathf.Max( nodes[ nodeId ].GetPinLocalPosition( nodes[ nodeId ].GetConnectionCound( BaseNodeGraphData.PinMode.Input  ) - 1, BaseNodeGraphData.PinMode.Input  ).y,
+									 nodes[ nodeId ].GetPinLocalPosition( nodes[ nodeId ].GetConnectionCound( BaseNodeGraphData.PinMode.Output ) - 1, BaseNodeGraphData.PinMode.Output ).y );
+
+
+
+		nodeSize.y += maxPinPos;
+
+		return nodeSize;
+
 	}
 
 	public override BaseNodeGraphData AddNode ( string title, bool isDragable )
@@ -58,33 +76,48 @@ public class BaseNodeGraphEditor : BaseNodeEditor<BaseNodeGraphData>
 
 		int node_id = windowId - uniqueID;
 
-		DrawNodePins( node_id, true );
+		DrawNodePins( node_id );
 
 	}
 
-	protected virtual void DrawNodePins(int node_id, bool output)
+	protected virtual void DrawNodePins(int node_id)
 	{
 
-		// output pins are drawn on the lhs of the node.
-		// inputs pins are drawn on the rhs of the node.
+		// inputs pins are drawn on the lhs of the node.
+		// output pins are drawn on the rhs of the node.
 
-		NodeConnection_Input[] nodeConnectionPins = nodes[ node_id ].NodeConnections_outputs.ToArray(); // connections output inherit from input and we only need the data that inputs class have.
+		NodePin_Input[] nodeInputPins = nodes[ node_id ].NodeConnections_input.ToArray(); 
+		NodePin_Input[] nodeOutputPins = nodes[ node_id ].NodeConnections_output.ToArray(); // connections output inherit from input and we only need the data that inputs class have.
 
-		// TODO: these need to be set in the class...
-		Vector2 pinPosition = new Vector2( NodeSize().x - ( NodeSize().x / 4f ) , 20 );
-		Vector2 pinSize = new Vector2(NodeSize().x / 4f, 20);
+		int maxPins = Mathf.Max( nodeOutputPins.Length, nodeInputPins.Length);
 
-		for (int i = 0; i < nodeConnectionPins.Length; i++ )
+		for (int i = 0; i < maxPins; i++ )
 		{
-			string lable = nodeConnectionPins[ i ].connectionLable;
+			string lable = "";
+			Rect pinRect;
 
-			if ( output ) lable += "*" + lable;
-			else lable = "*" + lable;
+			if ( i < nodeInputPins.Length)
+			{
+				lable = nodeInputPins[ i ].connectionLable;
+				pinRect = nodes[ node_id ].GetPinRect( i, BaseNodeGraphData.PinMode.Input );
+				pinRect.y -= 5;
+				GUI.Label( pinRect, "#" );
+				pinRect.x += 12;
+				GUI.Label( pinRect, lable );
+			}
 
-			GUI.Label( new Rect( pinPosition, pinSize ), lable );
-			pinPosition.y += pinSize.y;
+			if ( i < nodeOutputPins.Length )
+			{
+				lable = nodeOutputPins[ i ].connectionLable;
+				pinRect = nodes[ node_id ].GetPinRect( i, BaseNodeGraphData.PinMode.Output );
+				pinRect.y -= 5;
+				pinRect.x -= 15;
+				GUI.Label( pinRect, "#" );
+				pinRect.x -= pinRect.width + 10;
+				GUI.Label( pinRect, lable );
+			}
+
 		}
-
 
 	}
 
@@ -100,136 +133,308 @@ public class BaseNodeGraphEditor : BaseNodeEditor<BaseNodeGraphData>
 		for( int i = 0; i < nodes.Count; i++ )
 		{
 			
-			foreach ( NodeConnection_Output nodeConn in nodes[i].NodeConnections_outputs )
+			foreach ( NodePin_Output nodeConn in nodes[i].NodeConnections_output )
 			{
-				Vector2 startPos = GetConnectionPosition( i, true, nodeConn );
-				Vector2 endPos = GetConnectionPosition( nodeConn.connectedNodeId, false, nodeConn );
-
-				if ( !PositionIsVisable( startPos ) && !PositionIsVisable( endPos ) ) continue; // do not draw connect if both start and end points are not visable
-
-				nodeConn.DrawConnection(startPos, endPos, PositionIsVisable);
+				nodeConn.DrawConnection(GetNode, PositionIsVisable);
 			}
 		}
 
 	}
 
-	protected virtual Vector2 GetConnectionPosition(int nodeId, bool output, NodeConnection_Output connectionData )
+	/// <summary>
+	/// Adds a new pin to node, resizeing the node if necessary
+	/// </summary>
+	/// <param name="nodeId"></param>
+	/// <param name="connectionLable"></param>
+	/// <param name="pinMode"></param>
+	public virtual void AddPin_toNode(int nodeId, string connectionLable, BaseNodeGraphData.PinMode pinMode)
 	{
-		// return nodes[ nodeId ].NodeRect.center + GetNodeOffset();  // default when abstract
-
-		Rect nodeRect = nodes[ nodeId ].NodeRect;
-
-		if (output)
-		{
-			return new Vector2( nodeRect.x + nodeRect.width, nodeRect.center.y );
-		}
-		else
-		{
-			return new Vector2( nodeRect.x, nodeRect.center.y );
-		}
+		nodes[ nodeId ].AddPin( connectionLable, pinMode );
+		nodes[ nodeId ].SetNodeSize( NodeSize( nodeId ) );
+		nodes[ nodeId ].GeneratePinSizeAndPosition( nodes[ nodeId ].NodeRect.size );
 	}
+
+	/// <summary>
+	/// Removes a pin from node, resizeing the node if necessary
+	/// </summary>
+	/// <param name="nodeId"></param>
+	/// <param name="connectionId"></param>
+	/// <param name="pinMode"></param>
+	public virtual void RemovePin_fromNode(int nodeId, int pinId, BaseNodeGraphData.PinMode pinMode)
+	{
+		nodes[ nodeId ].RemovePin( pinId, pinMode );
+		nodes[ nodeId ].SetNodeSize( NodeSize( nodeId ) );
+		nodes[ nodeId ].GeneratePinSizeAndPosition( nodes[ nodeId ].NodeRect.size );
+
+	}
+
 
 }
 
 public class BaseNodeGraphData : BaseNodeData
 {
-	List<NodeConnection_Output> nodeConnections_outputs = new List<NodeConnection_Output>();
-	public List<NodeConnection_Output> NodeConnections_outputs { get => nodeConnections_outputs; }
+	public enum PinMode { Input, Output }
+	List<NodePin_Input> nodeConnections_input = new List<NodePin_Input>();
+	List<NodePin_Output> nodeConnections_output = new List<NodePin_Output>();
+	public List<NodePin_Input> NodeConnections_input { get => nodeConnections_input; }
+	public List<NodePin_Output> NodeConnections_output { get => nodeConnections_output; }
 
-	public NodeConnection_Output AddConnection (int connectToNodeId, string connectionLable)
+	public Vector2 inputPin_localStartPosition = new Vector2( 0, 15f );
+	public Vector2 outputPin_localStartPosition = new Vector2( 20, 15f );
+	public Vector2 pinSize = new Vector2( 20, 18 );
+
+	public void GeneratePinSizeAndPosition( Vector2 nodeSize )
 	{
-		nodeConnections_outputs.Add( new NodeConnection_Output( nodeConnections_outputs.Count, connectionLable, connectToNodeId ) );
 
-		return nodeConnections_outputs[ nodeConnections_outputs.Count - 1 ];
+		pinSize.x = nodeSize.x / 4f;
+
+		inputPin_localStartPosition.x = -pinSize.x + 3f;
+		inputPin_localStartPosition.y = 5;
+
+		outputPin_localStartPosition.x =  nodeSize.x - pinSize.x;
+		outputPin_localStartPosition.y = 5;
 
 	}
 
-	public void RemoveConnection( int connectionId )
+	public void AddPin (string connectionLable, PinMode pinMode) 
 	{
-		nodeConnections_outputs.RemoveAt( connectionId );
+		if ( pinMode == PinMode.Input )
+			nodeConnections_input.Add( new NodePin_Input( nodeConnections_input.Count, this, connectionLable ) );
+		else
+			nodeConnections_output.Add( new NodePin_Output( nodeConnections_output.Count, this, connectionLable ) );
+
 	}
 
-	public void RemoveConnection( NodeConnection_Output nodeConn )
+	public void RemovePin<T> (T node) where T : NodePin_Input 
 	{
-		nodeConnections_outputs.Remove( nodeConn );
+		if ( node is NodePin_Input )
+			nodeConnections_input.Remove( node );
+		else if ( node is NodePin_Output )
+			nodeConnections_output.Remove( node as NodePin_Output );
+		else
+			Debug.LogError( "Error, can not remove pin NodeConnection type not found!" );
 	}
+
+	public void RemovePin ( int id, PinMode pinMode )
+	{
+		if ( pinMode == PinMode.Input )
+			nodeConnections_input.RemoveAt(id);
+		else
+			nodeConnections_output.RemoveAt(id);
+
+	}
+
+	public Vector2 GetPinLocalPosition ( int pinId, PinMode pinMode )
+	{
+		Vector2 pinOffset = pinSize;
+		pinOffset.y += pinOffset.y * pinId;
+
+		if ( pinMode == PinMode.Input )
+			return inputPin_localStartPosition + pinOffset;
+		else if ( pinMode == PinMode.Output )
+			return outputPin_localStartPosition + pinOffset;
+		else
+			Debug.LogError( "Error: Pin mode not found!" );
+		return rect.position;
+
+	}
+
+	/// <summary>
+	/// Gets the position of the pin in editorWindow space :)
+	/// </summary>
+	/// <param name="pinId"></param>
+	/// <param name="pinMode"></param>
+	/// <returns></returns>
+	public Vector2 GetPinPosition(int pinId, PinMode pinMode)
+	{
+		Vector2 pinOffset = pinSize;
+		pinOffset.y += pinOffset.y * pinId;
+
+		if ( pinMode == PinMode.Input )
+			return rect.position + inputPin_localStartPosition + pinOffset;
+		else if ( pinMode == PinMode.Output )
+			return rect.position + outputPin_localStartPosition + pinOffset;
+		else
+			Debug.LogError( "Error: Pin mode not found!" );
+			return rect.position;
+
+	}
+
+	public Rect GetPinRect (int pinId, PinMode pinMode)
+	{
+		return new Rect( GetPinLocalPosition( pinId, pinMode ), pinSize );
+	}
+
+	public void AddConnection (int from_pinId, int toNodeId, int toSlotId)
+	{
+		nodeConnections_output[ from_pinId ].AddConnection( toNodeId, toSlotId );
+
+	}
+
+	// TODO: ATM this will remove the pin it needs to be updated to remove the connection :)
+	public void RemoveConnection( int pinId, int connectionId )
+	{
+		nodeConnections_output[ pinId ].RemoveConnection( connectionId );
+	}
+
+	public int GetConnectionCound( PinMode pinMode )
+	{
+		return pinMode == PinMode.Input ? nodeConnections_input.Count : nodeConnections_output.Count;
+	}
+
 }
 
-public class NodeConnection_Input
+public class NodePin_Input
 {
 	public int id;
+	public BaseNodeGraphData ownerNode;
 	public string connectionLable;
 
-	public NodeConnection_Input(int _id, string connLable)
+	public NodePin_Input(int _id, BaseNodeGraphData _ownerNode, string connLable)
 	{
 		id = _id;
+		ownerNode = _ownerNode;
 		connectionLable = connLable;
 	}
 
 }
 
-public class NodeConnection_Output : NodeConnection_Input
+public class NodePin_Output : NodePin_Input
 {
 	public delegate bool isVisableFunct ( Vector2 position );
-	
-	public int connectedNodeId;		// the node id to connect to.
-	public int connectedSlotId;		// the input slot that the node is connected to.
+	public delegate BaseNodeGraphData getNodeFunct ( int nodeId );
+
+	List<NodeConnectionData> connections = new List<NodeConnectionData>();
 
 	public bool alwaysForwardControlPoints = true;
 
-	public Color curveColor = Color.black;
-
 	// Catch the start and end positions so we only update the curve when they change
 	Vector2 connectionStartPosition = Vector2.zero;
-	Vector2 connectionEndPosition = Vector2.one;
 
 	const int curvePoints = 20;
-	Vector2[] connectionCurve = new Vector2[ curvePoints + 1 ];
+	public Color curveColor = Color.black;
 
-	public NodeConnection_Output(int _id, string connLable, int connNodeId) : base(_id, connLable)
+	public NodePin_Output ( int _id, BaseNodeGraphData _ownerNode, string connLable ) : base( _id, _ownerNode, connLable ) { }
+
+	public void AddConnection(int nodeId, int slotId)
 	{
-		connectedNodeId = connNodeId;
+		connections.Add( new NodeConnectionData( nodeId, slotId, curvePoints ) );
 	}
 
-	public void DrawConnection(Vector2 startPosition, Vector2 endPosition, isVisableFunct isVisable )
+	public void RemoveConnection(int connId)
 	{
-		if ( startPosition != connectionStartPosition || endPosition != connectionEndPosition )
+		if ( connId >= 0 && connId < connections.Count )
+			connections.RemoveAt( connId );
+	}
+
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="startPosition"></param>
+	/// <param name="endPosition"></param>
+	/// <param name="isVisable"></param>
+	public void DrawConnection(getNodeFunct getNode, isVisableFunct isVisable )
+	{
+
+		bool connMoved = false;
+
+		if ( ownerNode.GetPinPosition(0, BaseNodeGraphData.PinMode.Output) != connectionStartPosition )
 		{
-			connectionStartPosition = startPosition;
-			connectionEndPosition = endPosition;
-			GenerateBezierCurve();
+			connectionStartPosition = ownerNode.GetPinPosition( 0, BaseNodeGraphData.PinMode.Output );
+			connMoved = true;
 		}
 
 		Handles.color = curveColor;
 		
-		for ( int i = 1; i < curvePoints + 1; i++ )
+		for (int i = 0; i < connections.Count; i++)
 		{
-			Vector2 lineCenter = connectionCurve[ i - 1 ] + ( ( connectionCurve[ i ] - connectionCurve[ i - 1 ] ) / 2f );
-			if (isVisable( lineCenter ) )
-				Handles.DrawLine( connectionCurve[ i-1 ], connectionCurve[ i ] );
+			NodeConnectionData connection = connections[ i ];
+			// GenerateCurve if a node has moved.
+			BaseNodeGraphData connectedNode = getNode( connection.connectedNodeId );
+
+			// skip if both nodes are not visable
+			if ( !isVisable( ownerNode.NodeRect.position ) && !isVisable( connectedNode.NodeRect.position ) )
+				continue;
+
+			if ( connMoved || connection.PinMoved( connectedNode.GetPinPosition( 0, BaseNodeGraphData.PinMode.Input ), true ) )
+			{
+				GenerateBezierCurve( ownerNode.GetPinPosition( id, BaseNodeGraphData.PinMode.Output ), 
+									 connectedNode.GetPinPosition( connection.connectedSlotId, BaseNodeGraphData.PinMode.Input ), 
+									 ref connection.connectionCurve );	//NOTE: Make sure this remembers the curve :/
+			}
+
+			DrawConnection(connections[i].connectionCurve, isVisable);
+
 		}
 
 	}
 
-	public void GenerateBezierCurve()
+	private void GenerateBezierCurve(Vector2 from, Vector2 to, ref Vector2[] connectionCurve)
 	{
-		float xOffset = ( connectionEndPosition.x - connectionStartPosition.x ) * (0.75f + (0.1f * (Mathf.Abs( connectionEndPosition.y - connectionStartPosition.y ) / 150f) )) ;
+		float xOffset = ( to.x - from.x ) * (0.75f + (0.1f * (Mathf.Abs( to.y - from.y ) / 150f) )) ;
 
 		if ( alwaysForwardControlPoints )
 			xOffset = Mathf.Abs( xOffset );
 
-		Vector2 startControlPoint = connectionStartPosition + new Vector2( xOffset, 0 );
-		Vector2 endControlPoint = connectionEndPosition + new Vector2( -xOffset, 0 );
+		Vector2 fromControlPoint = from + new Vector2( xOffset, 0 );
+		Vector2 toControlPoint = to + new Vector2( -xOffset, 0 );
 
 		for ( int i = 0; i < curvePoints + 1; i++ ) 
 		{
 			float t = (float)i / (float)curvePoints;
-			connectionCurve[ i ] = ( Mathf.Pow( 1f - t, 3 ) * connectionStartPosition ) +
-								   ( 3f * Mathf.Pow( 1f - t, 2 ) * t * startControlPoint ) + 
-								   ( 3f * ( 1 - t ) * Mathf.Pow( t, 2 ) * endControlPoint ) + 
-								   ( Mathf.Pow( t, 3 ) * connectionEndPosition );
+			connectionCurve[ i ] = ( Mathf.Pow( 1f - t, 3 ) * from ) +
+								   ( 3f * Mathf.Pow( 1f - t, 2 ) * t * fromControlPoint ) + 
+								   ( 3f * ( 1 - t ) * Mathf.Pow( t, 2 ) * toControlPoint ) + 
+								   ( Mathf.Pow( t, 3 ) * to );
 
 		}
+	}
+
+	private void DrawConnection(Vector2[] connectionPoints, isVisableFunct isVisable )
+	{
+		if ( connectionPoints.Length < 1 )
+		{
+			Debug.LogError("Error: Unable to draw conections with less than 2 point");
+			return;
+		}
+
+		for ( int i = 1; i < connectionPoints.Length; i++ )
+		{
+			Vector2 lineCenter = connectionPoints[ i - 1 ] + ( ( connectionPoints[ i ] - connectionPoints[ i - 1 ] ) / 2f );
+
+			if ( isVisable( lineCenter ) )
+				Handles.DrawLine( connectionPoints[ i - 1 ], connectionPoints[ i ] );
+		}
+
+	}
+
+}
+
+struct NodeConnectionData
+{
+	public int connectedNodeId;     // the node id to connect to.
+	public int connectedSlotId;     // the input slot that the node is connected to.
+
+	public Vector2[] connectionCurve;
+
+	public Vector2 inputPin_startPosition;
+
+	public NodeConnectionData(int connNodeId, int connSlotId, int curvePoints)
+	{
+		connectedNodeId = connNodeId;
+		connectedSlotId = connSlotId;
+		connectionCurve = new Vector2[ curvePoints + 1 ];
+		inputPin_startPosition = Vector2.zero;
+	}
+
+	public bool PinMoved(Vector2 position, bool updatePosition = false)
+	{
+		bool moved = position != inputPin_startPosition;
+
+		if ( moved && updatePosition )
+			inputPin_startPosition = position;
+
+		return moved;
 	}
 
 }

@@ -30,14 +30,31 @@ public class NodeWindow : EditorWindow
 		nodeWindow.AddNode("Win 9", true);
 		nodeWindow.AddNode("Win 10", true);
 
-		nodeGraphEditor = new BaseNodeGraphEditor(1, new Rect(100, 400, 500, 600));
+		nodeGraphEditor = new BaseNodeGraphEditor(1, new Rect(50, 400, 900, 500));
 		nodeGraphEditor.AddNode( "Node 1", true );
 		nodeGraphEditor.AddNode( "Node 2", true );
 		nodeGraphEditor.AddNode( "Node 3", true );
 
-		nodeGraphEditor.GetNode( 0 ).AddConnection( 1, "Out Pin 0" );
-		nodeGraphEditor.GetNode( 0 ).AddConnection( 2, "Out Pin 3" );
-		nodeGraphEditor.GetNode( 1 ).AddConnection( 2, "Out Pin 1" );
+		nodeGraphEditor.AddPin_toNode( 0, "OUT 1", BaseNodeGraphData.PinMode.Output );
+		nodeGraphEditor.AddPin_toNode( 0, "OUT 2", BaseNodeGraphData.PinMode.Output );
+		nodeGraphEditor.AddPin_toNode( 0, "OUT 3", BaseNodeGraphData.PinMode.Output );
+		nodeGraphEditor.AddPin_toNode( 0, "IN 1", BaseNodeGraphData.PinMode.Input );
+
+		nodeGraphEditor.AddPin_toNode( 1, "OUT 1", BaseNodeGraphData.PinMode.Output );
+		nodeGraphEditor.AddPin_toNode( 1, "IN 1", BaseNodeGraphData.PinMode.Input );
+		nodeGraphEditor.AddPin_toNode( 1, "IN 2", BaseNodeGraphData.PinMode.Input );
+		nodeGraphEditor.AddPin_toNode( 1, "IN 3", BaseNodeGraphData.PinMode.Input );
+
+		nodeGraphEditor.AddPin_toNode( 2, "IN 1", BaseNodeGraphData.PinMode.Input );
+
+
+		nodeGraphEditor.GetNode( 0 ).AddConnection( 0, 1, 0 );
+		nodeGraphEditor.GetNode( 0 ).AddConnection( 1, 1, 2 );
+		nodeGraphEditor.GetNode( 0 ).AddConnection( 2, 2, 0 ); 
+		nodeGraphEditor.GetNode( 0 ).AddConnection( 0, 2, 0 ); 
+		nodeGraphEditor.GetNode( 1 ).AddConnection( 0, 2, 0 ); 
+		//nodeGraphEditor.GetNode( 0 ).AddConnection( 2, "Out Pin 3" );
+		//nodeGraphEditor.GetNode( 1 ).AddConnection( 2, "Out Pin 1" );
 		//nodeGraphEditor.GetNode( 2 ).AddConnection( 0, "Out Pin 2" );
 
 	}
