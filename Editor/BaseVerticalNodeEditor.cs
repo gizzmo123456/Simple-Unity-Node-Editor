@@ -82,7 +82,7 @@ public class BaseVerticalEditor : BaseNodeEditor<BaseVerticalNodeData>
         return rect;
     }
 
-    protected virtual void NodeReleased( int nodeId ) 
+    protected virtual void NodeReleased( int nodeId, Vector2 mousePosition ) 
     {
 
         Vector2 winPos = ( nodes[ nodeId ].GetNodePosition() - panelRect.position + panelScrollPosition );

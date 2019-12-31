@@ -6,7 +6,10 @@ using UnityEditor;
 public class BaseNodeGraphEditor : BaseNodeEditor<BaseNodeGraphData>
 {
 	public BaseNodeGraphEditor (int uid) : base(uid) { }
-	public BaseNodeGraphEditor (int uid, Rect pannelRect) : base(uid, pannelRect) { }
+	public BaseNodeGraphEditor (int uid, Rect pannelRect) : base(uid, pannelRect) 
+	{
+		nodeReleased += NodeReleased;	
+	}
 
 	public override void Draw ( EditorWindow window )
 	{
@@ -28,8 +31,8 @@ public class BaseNodeGraphEditor : BaseNodeEditor<BaseNodeGraphData>
 		Vector2 nodeSize = new Vector2( 300, 20 );
 
 		// get the node size by the amount of connections is has.
-		float maxPinPos = Mathf.Max( nodes[ nodeId ].GetPinLocalPosition( nodes[ nodeId ].GetConnectionCound( BaseNodeGraphData.PinMode.Input  ) - 1, BaseNodeGraphData.PinMode.Input  ).y,
-									 nodes[ nodeId ].GetPinLocalPosition( nodes[ nodeId ].GetConnectionCound( BaseNodeGraphData.PinMode.Output ) - 1, BaseNodeGraphData.PinMode.Output ).y );
+		float maxPinPos = Mathf.Max( nodes[ nodeId ].GetPinLocalPosition( nodes[ nodeId ].GetConnectionCount( BaseNodeGraphData.PinMode.Input  ) - 1, BaseNodeGraphData.PinMode.Input  ).y,
+									 nodes[ nodeId ].GetPinLocalPosition( nodes[ nodeId ].GetConnectionCount( BaseNodeGraphData.PinMode.Output ) - 1, BaseNodeGraphData.PinMode.Output ).y );
 
 
 
@@ -168,6 +171,20 @@ public class BaseNodeGraphEditor : BaseNodeEditor<BaseNodeGraphData>
 
 	}
 
+	protected virtual void NodeReleased( int nodeId, Vector2 mousePosition )
+	{
+
+		// did we press an output pin of nodeId?
+		for ( int i = 0; i < nodes[nodeId].GetPinCount(BaseNodeGraphData.PinMode.Output); i++ )
+			if (nodes[nodeId].GetPinRect(i, BaseNodeGraphData.PinMode.Output).Contains(mousePosition))
+			{
+				// 
+			}
+			
+			
+			//.Contains(mousePosition) )
+
+	}
 
 }
 
@@ -224,6 +241,16 @@ public class BaseNodeGraphData : BaseNodeData
 
 	}
 
+	public int GetPinCount( PinMode pinMode )
+	{
+		if ( pinMode == PinMode.Input )
+			return nodeConnections_input.Count;
+		else if ( pinMode == PinMode.Output )
+			return nodeConnections_output.Count;
+		else
+			return 0;
+	}
+
 	public Vector2 GetPinLocalPosition ( int pinId, PinMode pinMode )
 	{
 		Vector2 pinOffset = pinSize;
@@ -277,7 +304,7 @@ public class BaseNodeGraphData : BaseNodeData
 		nodeConnections_output[ pinId ].RemoveConnection( connectionId );
 	}
 
-	public int GetConnectionCound( PinMode pinMode )
+	public int GetConnectionCount( PinMode pinMode )
 	{
 		return pinMode == PinMode.Input ? nodeConnections_input.Count : nodeConnections_output.Count;
 	}

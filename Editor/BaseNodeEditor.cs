@@ -5,7 +5,7 @@ using UnityEditor;
 
 public abstract class BaseNodeEditor<T> where T : BaseNodeData
 {
-    public delegate void nodeSelected ( int winId );
+    public delegate void nodeSelected ( int winId, Vector2 mousePosition );
     public event nodeSelected nodePressed;
     public event nodeSelected nodeReleased;
 
@@ -70,7 +70,7 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
         else if( releasedNode > -1 )
         {
             // call the released node event
-            nodeReleased?.Invoke( releasedNode ); 
+            nodeReleased?.Invoke( releasedNode, Vector2.zero ); 
             releasedNode = -1;
         }
 
@@ -203,16 +203,16 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
         // BUG: if the cursor leaves the node when pressed the release is not triggered.
         if ( Event.current.type == EventType.MouseDown )
         {
-            nodePressed?.Invoke( nodeId );
+            nodePressed?.Invoke( nodeId, Event.current.mousePosition );
             pressedNode = nodeId;
             nodes[ nodeId ].pressedPosition = nodes[ nodeId ].GetNodePosition();
-            Debug.Log( nodeId + " Pressed" );
+            Debug.Log( nodeId + " Pressed " + Event.current.mousePosition );
         }
         else if ( Event.current.type == EventType.MouseUp)
         {
-            nodeReleased?.Invoke( nodeId );
+            nodeReleased?.Invoke( nodeId, Event.current.mousePosition );
             pressedNode = -1;
-            Debug.Log( nodeId + " Released" );
+            Debug.Log( nodeId + " Released " + Event.current.mousePosition );
         }
         
 
