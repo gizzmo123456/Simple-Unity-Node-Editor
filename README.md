@@ -19,7 +19,7 @@ Simple Node window class for unity!
 [C] Add Connections to BaseNodeGraphEditor and its base data nodes
 [C] Add Bezier curves to BaseNodeGraph Editor
 
-[ ] Draw Node Pins
+[C] Draw Node Pins
 
 # BUGS:
 [C] Can only have one Node Editor instance active at a time
