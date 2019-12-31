@@ -103,7 +103,7 @@ public class BaseNodeGraphEditor : BaseNodeEditor<BaseNodeGraphData>
 			{
 				lable = nodeInputPins[ i ].connectionLable;
 				pinRect = nodes[ node_id ].GetPinRect( i, BaseNodeGraphData.PinMode.Input );
-				pinRect.y -= 5;
+
 				GUI.Label( pinRect, "#" );
 				pinRect.x += 12;
 				GUI.Label( pinRect, lable );
@@ -113,10 +113,10 @@ public class BaseNodeGraphEditor : BaseNodeEditor<BaseNodeGraphData>
 			{
 				lable = nodeOutputPins[ i ].connectionLable;
 				pinRect = nodes[ node_id ].GetPinRect( i, BaseNodeGraphData.PinMode.Output );
-				pinRect.y -= 5;
-				pinRect.x -= 15;
+
+				pinRect.x += pinRect.width - 15;
 				GUI.Label( pinRect, "#" );
-				pinRect.x -= pinRect.width + 10;
+				pinRect.x -= pinRect.width + 5;
 				GUI.Label( pinRect, lable );
 			}
 
@@ -178,11 +178,15 @@ public class BaseNodeGraphEditor : BaseNodeEditor<BaseNodeGraphData>
 		for ( int i = 0; i < nodes[nodeId].GetPinCount(BaseNodeGraphData.PinMode.Output); i++ )
 			if (nodes[nodeId].GetPinRect(i, BaseNodeGraphData.PinMode.Output).Contains(mousePosition))
 			{
-				// 
+				Debug.LogWarning( "Helllllloo World" );
 			}
-			
-			
-			//.Contains(mousePosition) )
+			else
+			{
+				Debug.Log( "Nonono" + nodes[ nodeId ].GetPinRect( i, BaseNodeGraphData.PinMode.Output ) );
+			}
+
+
+
 
 	}
 
@@ -208,7 +212,7 @@ public class BaseNodeGraphData : BaseNodeData
 		inputPin_localStartPosition.x = -pinSize.x + 3f;
 		inputPin_localStartPosition.y = 5;
 
-		outputPin_localStartPosition.x =  nodeSize.x - pinSize.x;
+		outputPin_localStartPosition.x = -pinSize.x + nodeSize.x - pinSize.x;
 		outputPin_localStartPosition.y = 5;
 
 	}
@@ -385,7 +389,7 @@ public class NodePin_Output : NodePin_Input
 
 			if ( connMoved || connection.PinMoved( connectedNode.GetPinPosition( 0, BaseNodeGraphData.PinMode.Input ), true ) )
 			{
-				GenerateBezierCurve( ownerNode.GetPinPosition( id, BaseNodeGraphData.PinMode.Output ), 
+				GenerateBezierCurve( ownerNode.GetPinPosition( id, BaseNodeGraphData.PinMode.Output ) + new Vector2( ownerNode.pinSize.x, ownerNode.pinSize.y / 2f ), 
 									 connectedNode.GetPinPosition( connection.connectedSlotId, BaseNodeGraphData.PinMode.Input ), 
 									 ref connection.connectionCurve );	//NOTE: Make sure this remembers the curve :/
 			}
