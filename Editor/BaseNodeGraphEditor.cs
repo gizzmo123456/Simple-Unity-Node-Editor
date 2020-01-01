@@ -6,6 +6,8 @@ using UnityEditor;
 public class BaseNodeGraphEditor : BaseNodeEditor<BaseNodeGraphData>
 {
 
+	bool repaint = false;
+
 	int connectingFromNode = -1;    // < 0 is none 
 	int connectingFromSlot = -1;
 	int connectingToNode = -1;
@@ -24,8 +26,14 @@ public class BaseNodeGraphEditor : BaseNodeEditor<BaseNodeGraphData>
 		base.Draw( window );
 
 		DrawNodeConnections();
-		ConnectNodes(window);
+		ConnectNodes();
 
+		if ( repaint )
+		{
+			window.Repaint();
+			repaint = false;
+			Debug.Log( "Repainting" );
+		}
 	}
 
 	protected override Vector2 NodeSize ()
@@ -88,6 +96,13 @@ public class BaseNodeGraphEditor : BaseNodeEditor<BaseNodeGraphData>
 
 		int node_id = windowId - uniqueID;
 
+		// keep repainting if the cursor is hovering over a node
+		// should the pins are boxed are updated 
+		if ( Event.current != null && Event.current.type != EventType.Repaint && Event.current.type != EventType.Layout )
+		{	// BUG: this is not working correctly :(
+			repaint = true;
+		}
+
 		DrawNodePins( node_id );
 
 	}
@@ -113,7 +128,7 @@ public class BaseNodeGraphEditor : BaseNodeEditor<BaseNodeGraphData>
 				lable = nodeInputPins[ i ].connectionLable;
 				pinRect = nodes[ node_id ].GetPinRect( i, BaseNodeGraphData.PinMode.Input );
 
-				GUI.Box( pinRect, "" );
+				GUI.Box( pinRect, "" , guiSkin.GetStyle( "nodePin_box" ) );
 
 				GUI.Label( pinRect, "#" );
 				pinRect.x += 12;
@@ -124,8 +139,8 @@ public class BaseNodeGraphEditor : BaseNodeEditor<BaseNodeGraphData>
 			{
 				lable = nodeOutputPins[ i ].connectionLable;
 				pinRect = nodes[ node_id ].GetPinRect( i, BaseNodeGraphData.PinMode.Output );
-				
-				GUI.Box( pinRect, "" );
+
+				GUI.Box( pinRect, "", guiSkin.GetStyle( "nodePin_box" ) );
 
 				// add the width no the node pin (hash)  is on the right side of pinRect
 				pinRect.x -= 3;
@@ -161,7 +176,7 @@ public class BaseNodeGraphEditor : BaseNodeEditor<BaseNodeGraphData>
 
 	}
 
-	protected virtual void ConnectNodes(EditorWindow window)
+	protected virtual void ConnectNodes()
 	{
 
 		if ( connectingToNode != -1 )
@@ -200,8 +215,8 @@ public class BaseNodeGraphEditor : BaseNodeEditor<BaseNodeGraphData>
 			curve.GenerateBezierCurve( startPos, endPos, ref connectionPointsToMouse );
 			curve.DrawConnectionLines( connectionPointsToMouse, PositionIsVisable );
 
-			window.Repaint();
-
+			repaint = true;
+			
 		}
 
 	}
