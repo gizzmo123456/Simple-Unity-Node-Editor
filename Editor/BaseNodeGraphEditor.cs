@@ -77,17 +77,7 @@ public class BaseNodeGraphEditor : BaseNodeEditor<BaseNodeGraphData>
 
 	}
 
-	public override BaseNodeGraphData AddNode ( BaseNodeGraphData data )	// TODO: move into baseNodeEditor.
-	{
-		data.SetNodePosition( NodeStartPosition() );
-		data.SetNodeSize( NodeSize() );
-
-		nodes.Add( data );
-
-		return data;
-	}
-
-	protected override Rect ClampNodePosition ( Rect nodeRect, int winId = 0 )	// TODO: should be default?
+	protected override Rect ClampNodePosition ( Rect nodeRect, int winId = 0 )
 	{
 
 		if ( nodeRect.x < panelRect.x - panelScrollPosition.x ) nodeRect.x = panelRect.x - panelScrollPosition.x;

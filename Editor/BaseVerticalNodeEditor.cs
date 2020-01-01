@@ -50,17 +50,6 @@ public abstract class BaseVerticalEditor<T> : BaseNodeEditor<T> where T : BaseVe
         return new Vector2( panelRect.x, panelRect.y + nodes.Count  * nodeHeight );
     }
 
-    public override T AddNode ( T data )
-    {
-        data.SetNodePosition( NodeStartPosition() );
-        data.SetNodeSize( NodeSize() );
-
-        nodes.Add( data );
-
-        return data;
-
-    }
-
     protected override Rect ClampNodePosition(Rect rect, int nodeId)
     {
 

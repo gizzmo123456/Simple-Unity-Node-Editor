@@ -174,7 +174,15 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
     /// </summary>
     public abstract T AddNode ( string title, bool isDragable );
 
-    public abstract T AddNode ( T data );
+    public virtual T AddNode ( T data )
+    {
+        data.SetNodePosition( NodeStartPosition() );
+        data.SetNodeSize( NodeSize() );
+
+        nodes.Add( data );
+
+        return data;
+    }
 
     /// <summary>
     /// removes nodes of nodeData
