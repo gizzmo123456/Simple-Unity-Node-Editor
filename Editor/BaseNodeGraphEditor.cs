@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
-public class BaseNodeGraphEditor : BaseNodeEditor<BaseNodeGraphData>
+public abstract class BaseNodeGraphEditor<T> : BaseNodeEditor<T> where T : BaseNodeGraphData
 {
 
 	public delegate void nodeConnection (bool connected, int fromNodeId, int fromSlotId, int toNodeId, int toSlotId);
@@ -65,16 +65,9 @@ public class BaseNodeGraphEditor : BaseNodeEditor<BaseNodeGraphData>
 
 	}
 
-	public override BaseNodeGraphData AddNode ( string title, bool isDragable )
+	public override T AddNode ( T data )
 	{
-		BaseNodeGraphData data = new BaseNodeGraphData()
-		{
-			dragable = isDragable,
-			title = title
-		};
-
-		return AddNode( data );
-
+		return base.AddNode( data );
 	}
 
 	protected override Rect ClampNodePosition ( Rect nodeRect, int winId = 0 )
@@ -235,12 +228,19 @@ public class BaseNodeGraphEditor : BaseNodeEditor<BaseNodeGraphData>
 	/// <summary>
 	/// Adds a new pin to node, resizeing the node if necessary
 	/// </summary>
-	/// <param name="nodeId"></param>
-	/// <param name="connectionLable"></param>
-	/// <param name="pinMode"></param>
 	public virtual void AddPin_toNode(int nodeId, string connectionLable, BaseNodeGraphData.PinMode pinMode)
 	{
 		nodes[ nodeId ].AddPin( connectionLable, pinMode );
+		nodes[ nodeId ].SetNodeSize( NodeSize( nodeId ) );
+		nodes[ nodeId ].GeneratePinSizeAndPosition( nodes[ nodeId ].NodeRect.size );
+	}
+
+	/// <summary>
+	/// Adds a new output pin to node, resizeing the node if necessary
+	/// </summary>
+	public virtual void AddOutputPin_toNode ( int nodeId, string connectionLable, Color pinColor )
+	{
+		nodes[ nodeId ].AddOutputPin( connectionLable, pinColor );
 		nodes[ nodeId ].SetNodeSize( NodeSize( nodeId ) );
 		nodes[ nodeId ].GeneratePinSizeAndPosition( nodes[ nodeId ].NodeRect.size );
 	}
@@ -298,6 +298,7 @@ public class BaseNodeGraphEditor : BaseNodeEditor<BaseNodeGraphData>
 
 public class BaseNodeGraphData : BaseNodeData
 {
+
 	public enum PinMode { Input, Output }
 	List<NodePin_Input> nodeConnections_input = new List<NodePin_Input>();
 	List<NodePin_Output> nodeConnections_output = new List<NodePin_Output>();
@@ -307,6 +308,18 @@ public class BaseNodeGraphData : BaseNodeData
 	public Vector2 inputPin_localStartPosition = new Vector2( 0, 15f );
 	public Vector2 outputPin_localStartPosition = new Vector2( 20, 15f );
 	public Vector2 pinSize = new Vector2( 20, 18 );
+
+	public BaseNodeGraphData ( string _title, bool _dragable ) : base(_title, _dragable) {}
+
+	/// <param name="_inputStartPosition"> Local start position of input pins </param>
+	/// <param name="_outputStartPosition"> Local start position of output pind </param>
+	/// <param name="pinSize">size of pin</param>
+	public BaseNodeGraphData ( string _title, bool _dragable, Vector2 _inputStartPosition, Vector2 _outputStartPosition, Vector2 _pinSize ) : base(_title, _dragable) 
+	{
+		inputPin_localStartPosition = _inputStartPosition;
+		outputPin_localStartPosition = _outputStartPosition;
+		pinSize = _pinSize;
+	}
 
 	public void GeneratePinSizeAndPosition( Vector2 nodeSize )
 	{
@@ -328,6 +341,18 @@ public class BaseNodeGraphData : BaseNodeData
 		else
 			nodeConnections_output.Add( new NodePin_Output( nodeConnections_output.Count, this, connectionLable ) );
 
+	}
+
+	public void AddOutputPin ( string connectionLable, Color pinColor )
+	{
+
+		nodeConnections_output.Add( new NodePin_Output( nodeConnections_output.Count, this, connectionLable, pinColor ) );
+
+	}
+
+	public void SetOutputPinColor( int pinId, Color color)
+	{
+		nodeConnections_output[pinId].pinColor = color;
 	}
 
 	public void RemovePin<T> (T node) where T : NodePin_Input 
@@ -453,9 +478,13 @@ public class NodePin_Output : NodePin_Input
 	Vector2 connectionStartPosition = Vector2.zero;
 
 	const int curvePoints = 20;
-	public Color curveColor = Color.black;
+	public Color pinColor = Color.black;
 
 	public NodePin_Output ( int _id, BaseNodeGraphData _ownerNode, string connLable ) : base( _id, _ownerNode, connLable ) { }
+	public NodePin_Output ( int _id, BaseNodeGraphData _ownerNode, string connLable, Color _pinColor ) : base( _id, _ownerNode, connLable ) 
+	{
+		pinColor = _pinColor;
+	}
 
 	public void AddConnection(int nodeId, int slotId)
 	{
@@ -499,7 +528,7 @@ public class NodePin_Output : NodePin_Input
 			connMoved = true;
 		}
 
-		Handles.color = curveColor;
+		Handles.color = pinColor;
 		
 		for (int i = 0; i < connections.Count; i++)
 		{

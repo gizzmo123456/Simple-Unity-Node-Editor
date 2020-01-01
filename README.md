@@ -4,8 +4,8 @@ Simple Node window class for unity!
 # TODO:
 [C] Fix issue in BaseNodeEditor.NodeWindow  
 [C] Add node graph editor
-[ ] Make BaseVerticalNodeEditor Abstract
-[ ] Make BaseNodeGraphEditor Abstract
+[C] Make BaseVerticalNodeEditor Abstract
+[C] Make BaseNodeGraphEditor Abstract
 
 [C] Apple window position to node position 
 [C] Add Scrol bar to node window
@@ -25,6 +25,9 @@ Simple Node window class for unity!
 [C] Add NodeConnection changed callback to graph editor 
 
 [ ] Add Save
+[ ] Add limits to node connections
+	[ ] Types
+	[ ] Count
 
 # BUGS:
 [C] Can only have one Node Editor instance active at a time

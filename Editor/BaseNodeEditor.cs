@@ -169,10 +169,6 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
         if ( id < 0 || id >= nodes.Count ) return null;
         return nodes[ id ];
     }
-    /// <summary>
-    /// Adds a new node
-    /// </summary>
-    public abstract T AddNode ( string title, bool isDragable );
 
     public virtual T AddNode ( T data )
     {
@@ -247,7 +243,7 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
 
     protected abstract Rect GetNodeContentsPosition ( int nodeId );
 
-    public abstract void DrawNodeUI ( int nodeId );
+    protected abstract void DrawNodeUI ( int nodeId );
 
     protected virtual Rect GetNodeDragableArea(int nodeId)
     {
@@ -256,7 +252,7 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
 
 }
 
-public class BaseNodeData
+public abstract class BaseNodeData
 {
 
     protected Rect rect = Rect.zero;
@@ -266,6 +262,12 @@ public class BaseNodeData
     public Vector2 pressedPosition = Vector2.zero;
     public string title = "title";
     public bool dragable = true;
+
+    public BaseNodeData(string _title, bool _dragable)
+    {
+        title = _title;
+        dragable = _dragable;
+    }
 
     public void SetNodePosition(Vector2 position)
     {
