@@ -174,7 +174,7 @@ public class BaseNodeGraphEditor : BaseNodeEditor<BaseNodeGraphData>
 			}
 			else // Create a new connection.
 			{
-				nodes[ connectingFromNode ].AddConnection( connectingFromSlot, connectingToNode, connectingFromSlot );
+				nodes[ connectingFromNode ].AddConnection( connectingFromSlot, connectingToNode, connectingToSlot );
 			}
 
 			Debug.LogWarning( string.Format( "Connecting from node {0}:{1} to node {2}:{3}", connectingFromNode, connectingFromSlot, connectingToNode, connectingToSlot ) );
@@ -287,7 +287,7 @@ public class BaseNodeGraphData : BaseNodeData
 
 		pinSize.x = nodeSize.x / 4f;
 
-		inputPin_localStartPosition.x = -pinSize.x + 3f;
+		inputPin_localStartPosition.x = -pinSize.x;
 		inputPin_localStartPosition.y = 5;
 
 		outputPin_localStartPosition.x = -pinSize.x + nodeSize.x - pinSize.x;
@@ -488,7 +488,7 @@ public class NodePin_Output : NodePin_Input
 			if ( connMoved || connection.PinMoved( connectedNode.GetPinPosition( 0, BaseNodeGraphData.PinMode.Input ), true ) )
 			{
 				GenerateBezierCurve( ownerNode.GetPinPosition( id, BaseNodeGraphData.PinMode.Output ) + new Vector2( ownerNode.pinSize.x, ownerNode.pinSize.y / 2f ), 
-									 connectedNode.GetPinPosition( connection.connectedSlotId, BaseNodeGraphData.PinMode.Input ), 
+									 connectedNode.GetPinPosition( connection.connectedSlotId, BaseNodeGraphData.PinMode.Input ) + new Vector2( 0, ownerNode.pinSize.y / 2f ), 
 									 ref connection.connectionCurve );	//NOTE: Make sure this remembers the curve :/
 			}
 
