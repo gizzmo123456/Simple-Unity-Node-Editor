@@ -103,6 +103,20 @@ public class BaseNodeGraphEditor : BaseNodeEditor<BaseNodeGraphData>
 
 	}
 
+	protected override Rect GetNodeContentsPosition ( int nodeId )
+	{
+		Vector2 nodeSize = nodes[ nodeId ].NodeRect.size;
+
+		return new Rect()
+		{
+			x = nodeSize.x / 4f,
+			y = 18,
+			width = nodeSize.x / 2f,
+			height = nodeSize.y - 36
+		};
+
+	}
+
 	protected virtual void DrawNodePins(int node_id)
 	{
 
