@@ -223,15 +223,23 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
             pressedNode = -1;
             Debug.Log( nodeId + " Released " + Event.current.mousePosition );
         }
-        
 
+        GUI.BeginGroup( GetNodeContentsPosition(nodeId) );
+        DrawNodeUI( nodeId );
+        GUI.EndGroup();
 
         if ( nodes[nodeId].dragable )
         {
             GUI.DragWindow(GetNodeDragableArea(nodeId));
         }
 
+
+        
     }
+
+    protected abstract Rect GetNodeContentsPosition ( int nodeId );
+
+    public abstract void DrawNodeUI ( int nodeId );
 
     protected virtual Rect GetNodeDragableArea(int nodeId)
     {

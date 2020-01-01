@@ -12,13 +12,13 @@ public class NodeWindow : EditorWindow
 		GetWindow( typeof( NodeWindow ) );
 	}
 
-	BaseVerticalEditor nodeWindow;
+	ExampleVerticalEditor nodeWindow;
 	BaseNodeGraphEditor nodeGraphEditor;
 
 	private void Awake ()
 	{
 
-		nodeWindow = new BaseVerticalEditor(0, new Rect(100, 100, 500, 200));
+		nodeWindow = new ExampleVerticalEditor(0, new Rect(100, 100, 500, 200));
 		nodeWindow.AddNode("Win 1", true);
 		nodeWindow.AddNode("Win 2", true);
 		nodeWindow.AddNode("Win 3", true);

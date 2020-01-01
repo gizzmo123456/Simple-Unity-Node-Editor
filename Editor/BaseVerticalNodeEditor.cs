@@ -31,6 +31,7 @@ public abstract class BaseVerticalEditor<T> : BaseNodeEditor<T> where T : BaseVe
         lableRect.x -= 20;
         lableRect.width = 20;
         GUI.Label( lableRect, nodes[ nodeId ].yId.ToString() );
+
     }
 
     protected override Rect GetPannelViewRect ()
@@ -49,20 +50,7 @@ public abstract class BaseVerticalEditor<T> : BaseNodeEditor<T> where T : BaseVe
         return new Vector2( panelRect.x, panelRect.y + nodes.Count  * nodeHeight );
     }
 
-    public override BaseVerticalNodeData AddNode ( string title, bool isDragable )
-    {
-        BaseVerticalNodeData data = new BaseVerticalNodeData()
-        {
-            dragable = isDragable,
-            title = title,
-            yId = nodes.Count
-        };
-
-        return AddNode( data );
-
-    }
-
-    public override BaseVerticalNodeData AddNode ( BaseVerticalNodeData data )
+    public override T AddNode ( T data )
     {
         data.SetNodePosition( NodeStartPosition() );
         data.SetNodeSize( NodeSize() );
@@ -143,10 +131,10 @@ public abstract class BaseVerticalEditor<T> : BaseNodeEditor<T> where T : BaseVe
 
     }
 
-    protected override void NodeWindow ( int windowId )
+    protected override Rect GetNodeContentsPosition ( int nodeId )
     {
-        
-        base.NodeWindow( windowId );
+        float uiWidth = nodes[ nodeId ].NodeRect.size.x - 60;
+        return new Rect( 40, 12, uiWidth, NodeSize( nodeId ).y - 12 );
     }
 
     protected override Rect GetNodeDragableArea ( int nodeId )
