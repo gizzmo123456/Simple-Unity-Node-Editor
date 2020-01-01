@@ -9,6 +9,8 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
     public event nodeSelected nodePressed;
     public event nodeSelected nodeReleased;
 
+    protected GUISkin guiSkin;
+
     protected int uniqueID;
 
     public Rect panelRect { get; set; }
@@ -27,6 +29,8 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
     {
         uniqueID = uid * 1000;
         nodes = new List<T>();
+        guiSkin = Resources.Load<GUISkin>( "NodeEditor" );
+
     }
 
     public BaseNodeEditor (int uid, Rect holdRect) : this (uid)

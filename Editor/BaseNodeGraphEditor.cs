@@ -113,6 +113,8 @@ public class BaseNodeGraphEditor : BaseNodeEditor<BaseNodeGraphData>
 				lable = nodeInputPins[ i ].connectionLable;
 				pinRect = nodes[ node_id ].GetPinRect( i, BaseNodeGraphData.PinMode.Input );
 
+				GUI.Box( pinRect, "" );
+
 				GUI.Label( pinRect, "#" );
 				pinRect.x += 12;
 				GUI.Label( pinRect, lable );
@@ -122,14 +124,20 @@ public class BaseNodeGraphEditor : BaseNodeEditor<BaseNodeGraphData>
 			{
 				lable = nodeOutputPins[ i ].connectionLable;
 				pinRect = nodes[ node_id ].GetPinRect( i, BaseNodeGraphData.PinMode.Output );
+				
+				GUI.Box( pinRect, "" );
 
-				pinRect.x += pinRect.width - 15;
-				GUI.Label( pinRect, "#" );
-				pinRect.x -= pinRect.width + 5;
-				GUI.Label( pinRect, lable );
+				// add the width no the node pin (hash)  is on the right side of pinRect
+				pinRect.x -= 3;
+				GUI.Label( pinRect, "#", guiSkin.GetStyle( "nodeOutPin_text" ) );
+
+				pinRect.x -= 12;
+				GUI.Label( pinRect, lable, guiSkin.GetStyle( "nodeOutPin_text" ) );
 			}
 
 		}
+
+		
 
 	}
 
@@ -168,6 +176,9 @@ public class BaseNodeGraphEditor : BaseNodeEditor<BaseNodeGraphData>
 			{
 				nodes[ connectingFromNode ].AddConnection( connectingFromSlot, connectingToNode, connectingFromSlot );
 			}
+
+			Debug.LogWarning( string.Format( "Connecting from node {0}:{1} to node {2}:{3}", connectingFromNode, connectingFromSlot, connectingToNode, connectingToSlot ) );
+
 			// reset connecting :)
 			connectingFromNode = -1;   
 			connectingFromSlot = -1;
