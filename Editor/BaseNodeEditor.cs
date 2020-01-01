@@ -10,6 +10,7 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
     public event nodeSelected nodeReleased;
 
     protected GUISkin guiSkin;
+    protected abstract string NodeStyleName { get; }
 
     protected int uniqueID;
 
@@ -102,7 +103,11 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
 
     protected virtual void DrawNode( int nodeId )
     {
-        nodes[ nodeId ].NodeRect = GUI.Window( uniqueID + nodeId, nodes[ nodeId ].NodeRect, NodeWindow, nodes[ nodeId ].title );
+        if ( NodeStyleName != "" )
+            nodes[ nodeId ].NodeRect = GUI.Window( uniqueID + nodeId, nodes[ nodeId ].NodeRect, NodeWindow, nodes[ nodeId ].title, guiSkin.GetStyle(NodeStyleName) );
+        else
+            nodes[ nodeId ].NodeRect = GUI.Window( uniqueID + nodeId, nodes[ nodeId ].NodeRect, NodeWindow, nodes[ nodeId ].title);
+
         nodes[ nodeId ].NodeRect = ClampNodePosition( nodes[ nodeId ].NodeRect, nodeId );
     }
 

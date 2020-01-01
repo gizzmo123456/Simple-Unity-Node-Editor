@@ -38,6 +38,8 @@ public class NodeWindow : EditorWindow
 		nodeGraphEditor.AddPin_toNode( 0, "OUT 1", BaseNodeGraphData.PinMode.Output );
 		nodeGraphEditor.AddPin_toNode( 0, "OUT 2", BaseNodeGraphData.PinMode.Output );
 		nodeGraphEditor.AddPin_toNode( 0, "OUT 3", BaseNodeGraphData.PinMode.Output );
+		nodeGraphEditor.AddPin_toNode( 0, "OUT 4", BaseNodeGraphData.PinMode.Output );
+		nodeGraphEditor.AddPin_toNode( 0, "OUT 5", BaseNodeGraphData.PinMode.Output );
 		nodeGraphEditor.AddPin_toNode( 0, "IN 1", BaseNodeGraphData.PinMode.Input );
 
 		nodeGraphEditor.AddPin_toNode( 1, "OUT 1", BaseNodeGraphData.PinMode.Output );

@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BaseVerticalEditor : BaseNodeEditor<BaseVerticalNodeData>
+public abstract class BaseVerticalEditor<T> : BaseNodeEditor<T> where T : BaseVerticalNodeData
 {
 
     public delegate void nodeMoved ( int fromId, int toId );
     public event nodeMoved NodeMoved;
+
+    protected override string NodeStyleName => "vert_node";
 
     public virtual float nodeHeight { get => 40; }
     public override Vector2 topLeftpadding { get => new Vector2( 25, 18 ); }
@@ -23,6 +25,8 @@ public class BaseVerticalEditor : BaseNodeEditor<BaseVerticalNodeData>
     protected override void DrawNode ( int nodeId )
     {
         base.DrawNode( nodeId );
+
+        // Add Id to the left of the node
         Rect lableRect = nodes[ nodeId ].NodeRect;
         lableRect.x -= 20;
         lableRect.width = 20;
@@ -31,6 +35,7 @@ public class BaseVerticalEditor : BaseNodeEditor<BaseVerticalNodeData>
 
     protected override Rect GetPannelViewRect ()
     {
+        // make the inner pannel of the pannel view the same height as the amount of nodes
         return new Rect( Vector2.zero, new Vector2(panelRect.width, nodes.Count * nodeHeight) );
     }
 
@@ -95,8 +100,6 @@ public class BaseVerticalEditor : BaseNodeEditor<BaseVerticalNodeData>
         int newId = Mathf.FloorToInt( winPos.y / nodeHeight );
 
         winPos.y = newId * nodeHeight;
-        if (lastId == 0)
-            Debug.Log( ":::::::::::" + lastId + " :: " + newId );
 
         if ( lastId != newId )
         {

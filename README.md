@@ -24,6 +24,8 @@ Simple Node window class for unity!
 [C] Add order changed callback to Vertical Editor
 [C] Add NodeConnection changed callback to graph editor 
 
+[ ] Add Save
+
 # BUGS:
 [C] Can only have one Node Editor instance active at a time
 	Since all need to be draw in 1 set of StartWindow and EndWindows

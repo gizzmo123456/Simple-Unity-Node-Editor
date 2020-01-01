@@ -9,6 +9,9 @@ public class BaseNodeGraphEditor : BaseNodeEditor<BaseNodeGraphData>
 	public delegate void nodeConnection (bool connected, int fromNodeId, int fromSlotId, int toNodeId, int toSlotId);
 	public event nodeConnection NodeConnection;
 
+	protected override string NodeStyleName => "";
+
+
 	bool repaint = false;
 
 	int connectingFromNode = -1;    // < 0 is none 
@@ -48,7 +51,7 @@ public class BaseNodeGraphEditor : BaseNodeEditor<BaseNodeGraphData>
 	{
 
 		Vector2 maxSize = new Vector2(400, 800);
-		Vector2 nodeSize = new Vector2( 300, 20 );
+		Vector2 nodeSize = new Vector2( 300, 30 );
 
 		// get the node size by the amount of connections is has.
 		float maxPinPos = Mathf.Max( nodes[ nodeId ].GetPinLocalPosition( nodes[ nodeId ].GetConnectionCount( BaseNodeGraphData.PinMode.Input  ) - 1, BaseNodeGraphData.PinMode.Input  ).y,
