@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class BaseVerticalEditor : BaseNodeEditor<BaseVerticalNodeData>
 {
+
+    public delegate void nodeMoved ( int fromId, int toId );
+    public event nodeMoved NodeMoved;
+
     public virtual float nodeHeight { get => 40; }
     public override Vector2 topLeftpadding { get => new Vector2( 25, 18 ); }
 
@@ -126,6 +130,9 @@ public class BaseVerticalEditor : BaseNodeEditor<BaseVerticalNodeData>
                 }
                     
             }
+
+            NodeMoved?.Invoke(lastId, newId);
+
         }
 
         nodes[ nodeId ].SetNodePosition( winPos + panelRect.position - panelScrollPosition );

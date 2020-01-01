@@ -10,10 +10,10 @@ Simple Node window class for unity!
 [C] Apple window position to node position 
 [C] Add Scrol bar to node window
 
-[ ] Add some basic UI bits
+[C] Add some basic UI bits
 	[C] Pannel Frame
-	[ ] Text types, ie. normal, bold ect...
-	[ ] Node Frame
+	[R] Text types, ie. normal, bold ect...
+	[R] Node Frame
 [C] Add handle position to nodes
 
 [C] Add Connections to BaseNodeGraphEditor and its base data nodes
@@ -21,8 +21,8 @@ Simple Node window class for unity!
 
 [C] Draw Node Pins
 
-[ ] Add order changed callback to Vertical Editor
-[ ] Add NodeConnection changed callback to graph editor 
+[C] Add order changed callback to Vertical Editor
+[C] Add NodeConnection changed callback to graph editor 
 
 # BUGS:
 [C] Can only have one Node Editor instance active at a time

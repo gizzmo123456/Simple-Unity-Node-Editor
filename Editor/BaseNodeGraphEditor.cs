@@ -6,6 +6,9 @@ using UnityEditor;
 public class BaseNodeGraphEditor : BaseNodeEditor<BaseNodeGraphData>
 {
 
+	public delegate void nodeConnection (bool connected, int fromNodeId, int fromSlotId, int toNodeId, int toSlotId);
+	public event nodeConnection NodeConnection;
+
 	bool repaint = false;
 
 	int connectingFromNode = -1;    // < 0 is none 
@@ -185,11 +188,12 @@ public class BaseNodeGraphEditor : BaseNodeEditor<BaseNodeGraphData>
 			if ( nodes[ connectingFromNode ].HasConnection( connectingFromSlot, connectingToNode, connectingToSlot ) )
 			{
 				nodes[ connectingFromNode ].RemoveConnection( connectingFromSlot, connectingToNode, connectingToSlot );
-				Debug.LogWarning( "I Have :)" );
+				NodeConnection?.Invoke( false, connectingFromNode, connectingFromSlot, connectingToNode, connectingToSlot );
 			}
 			else // Create a new connection.
 			{
 				nodes[ connectingFromNode ].AddConnection( connectingFromSlot, connectingToNode, connectingToSlot );
+				NodeConnection?.Invoke( true, connectingFromNode, connectingFromSlot, connectingToNode, connectingToSlot );
 			}
 
 			Debug.LogWarning( string.Format( "Connecting from node {0}:{1} to node {2}:{3}", connectingFromNode, connectingFromSlot, connectingToNode, connectingToSlot ) );
