@@ -12,7 +12,7 @@
 [C] Add Scrol bar to node window  
 
 [C] Add some basic UI bits  
-    [C] Pannel Frame  
+&#32;    [C] Pannel Frame  
     [R] Text types, ie. normal, bold ect...  
     [R] Node Frame  
 [C] Add handle position to nodes  
