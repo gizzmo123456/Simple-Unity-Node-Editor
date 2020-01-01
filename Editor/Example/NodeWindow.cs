@@ -32,7 +32,7 @@ public class NodeWindow : EditorWindow
 		nodeWindow.AddNode( new ExampleVerticalNodeData(true, "Win 11") );
 		nodeWindow.AddNode( new ExampleVerticalNodeData(true, "Win 12") );
 
-
+		nodeWindow.NodeMoved += VertNodeMoved;	// Get notifed when the order changes
 
 		nodeGraphEditor = new ExampleGraphEditor( 1, new Rect(50, 400, 900, 500));
 		nodeGraphEditor.AddNode( new ExampleNodeGraphData("Node 0", true, "Helloo World\n000") );	// Node 0
@@ -67,7 +67,9 @@ public class NodeWindow : EditorWindow
 		nodeGraphEditor.GetNode( 0 ).AddConnection( 0, 2, 0 );      // connect (output) node 0, pin 0 to (input) node 2, pin 0
 		nodeGraphEditor.GetNode( 0 ).AddConnection( 0, 2, 0 );      // connect (output) node 0, pin 0 to (input) node 2, pin 0
 		nodeGraphEditor.GetNode( 0 ).AddConnection( 0, 2, 0 );      // connect (output) node 0, pin 0 to (input) node 2, pin 0
-		//nodeGraphEditor.GetNode( 1 ).AddConnection( 0, 2, 0 ); 	// connect (output) node 1, pin 0 to (input) node 2, pin 0
+																	//nodeGraphEditor.GetNode( 1 ).AddConnection( 0, 2, 0 ); 	// connect (output) node 1, pin 0 to (input) node 2, pin 0
+
+		nodeGraphEditor.NodeConnection += NodeConnected; // Get noifed when a node is connected.
 
 	}
 
@@ -82,6 +84,15 @@ public class NodeWindow : EditorWindow
 
 	}
 
+	void VertNodeMoved ( int fromId, int toId)
+	{
+		Debug.Log( string.Format( "Node moved from {0}, to {1} ", fromId, toId) );
 
+	}
+
+	void NodeConnected( bool connected, int fromNodeId, int fromSlotId, int toNodeId, int toSlotId )
+	{
+		Debug.Log( string.Format( "Node {0} Slot {1} has been {4} node {2} slot {3}", fromNodeId, fromSlotId, toNodeId, toSlotId, ( connected ? "connected to" : "disconnected from" ) ) );
+	}
 
 }

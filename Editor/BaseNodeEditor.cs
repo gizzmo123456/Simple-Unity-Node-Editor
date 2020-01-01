@@ -219,13 +219,11 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
             nodePressed?.Invoke( nodeId, Event.current.mousePosition );
             pressedNode = nodeId;
             nodes[ nodeId ].pressedPosition = nodes[ nodeId ].GetNodePosition();
-            Debug.Log( nodeId + " Pressed " + Event.current.mousePosition );
         }
         else if ( Event.current.type == EventType.MouseUp)
         {
             nodeReleased?.Invoke( nodeId, Event.current.mousePosition );
             pressedNode = -1;
-            Debug.Log( nodeId + " Released " + Event.current.mousePosition );
         }
 
         GUI.BeginGroup( GetNodeContentsPosition(nodeId) );

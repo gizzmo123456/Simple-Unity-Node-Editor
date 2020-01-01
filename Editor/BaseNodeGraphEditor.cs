@@ -38,7 +38,7 @@ public abstract class BaseNodeGraphEditor<T> : BaseNodeEditor<T> where T : BaseN
 		{
 			window.Repaint();
 			repaint = false;
-			Debug.Log( "Repainting" );
+
 		}
 	}
 
