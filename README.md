@@ -36,4 +36,4 @@ Simple Node window class for unity!
 	[C] Give all windows a unique ID
 	[C] Apply position offset to all node positions ect...
 [F] Fixed input positions in node graph
-[ ] Fixed NodeConnectionData inputPin_startPosition not updateing
+[F] Fixed NodeConnectionData inputPin_startPosition not updateing

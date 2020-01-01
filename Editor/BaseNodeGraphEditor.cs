@@ -540,11 +540,18 @@ public class NodePin_Output : NodePin_Input
 			if ( !isVisable( ownerNode.NodeRect.position ) && !isVisable( connectedNode.NodeRect.position ) )
 				continue;
 
-			if ( connMoved || connection.PinMoved( connectedNode.GetPinPosition( 0, BaseNodeGraphData.PinMode.Input ), true ) )
+			bool inConnMoved = connection.PinMoved( connectedNode.NodeRect.position );
+
+			if ( connMoved || inConnMoved )
 			{
+
 				GenerateBezierCurve( ownerNode.GetPinPosition( id, BaseNodeGraphData.PinMode.Output ) + new Vector2( ownerNode.pinSize.x, ownerNode.pinSize.y / 2f ), 
 									 connectedNode.GetPinPosition( connection.connectedSlotId, BaseNodeGraphData.PinMode.Input ) + new Vector2( 0, ownerNode.pinSize.y / 2f ), 
-									 ref connection.connectionCurve );	//NOTE: Make sure this remembers the curve :/
+									 ref connection.connectionCurve );  //NOTE: Make sure this remembers the curve :/
+
+				connection.SetStartPosition( connectedNode.NodeRect.position );  // Update start position.
+				connections[ i ] = connection;
+
 			}
 
 			DrawConnectionLines(connections[i].connectionCurve, isVisable);
@@ -609,14 +616,19 @@ struct NodeConnectionData
 		connectedSlotId = connSlotId;
 		connectionCurve = new Vector2[ curvePoints + 1 ];
 		inputPin_startPosition = Vector2.zero;
+		Debug.LogWarning( "???" );
+
 	}
 
-	public bool PinMoved(Vector2 position, bool updatePosition = false)
+	public void SetStartPosition( Vector2 position )
+	{
+		inputPin_startPosition = position;
+	}
+
+	public bool PinMoved(Vector2 position)
 	{
 		bool moved = position != inputPin_startPosition;
 
-		if ( moved && updatePosition )
-			inputPin_startPosition = position;
 
 		return moved;
 	}

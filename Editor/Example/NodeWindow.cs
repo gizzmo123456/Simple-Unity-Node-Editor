@@ -67,7 +67,7 @@ public class NodeWindow : EditorWindow
 		nodeGraphEditor.GetNode( 0 ).AddConnection( 0, 2, 0 );      // connect (output) node 0, pin 0 to (input) node 2, pin 0
 		nodeGraphEditor.GetNode( 0 ).AddConnection( 0, 2, 0 );      // connect (output) node 0, pin 0 to (input) node 2, pin 0
 		nodeGraphEditor.GetNode( 0 ).AddConnection( 0, 2, 0 );      // connect (output) node 0, pin 0 to (input) node 2, pin 0
-		//nodeGraphEditor.GetNode( 1 ).AddConnection( 0, 2, 0 ); 	// connect (output) node 0, pin 0 to (input) node 2, pin 0
+		//nodeGraphEditor.GetNode( 1 ).AddConnection( 0, 2, 0 ); 	// connect (output) node 1, pin 0 to (input) node 2, pin 0
 
 	}
 
