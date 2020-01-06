@@ -480,8 +480,8 @@ public class NodePin_Output : NodePin_Input
 	const int curvePoints = 20;
 	public Color pinColor = Color.black;
 
-	public NodePin_Output ( int _id, BaseNodeGraphData _ownerNode, string connLable ) : base( _id, _ownerNode, connLable ) { }
-	public NodePin_Output ( int _id, BaseNodeGraphData _ownerNode, string connLable, Color _pinColor ) : base( _id, _ownerNode, connLable ) 
+	public NodePin_Output ( int _id, BaseNodeGraphData _ownerNode, string _connLable ) : base( _id, _ownerNode, _connLable ) { }
+	public NodePin_Output ( int _id, BaseNodeGraphData _ownerNode, string _connLable, Color _pinColor ) : base( _id, _ownerNode, _connLable ) 
 	{
 		pinColor = _pinColor;
 	}
