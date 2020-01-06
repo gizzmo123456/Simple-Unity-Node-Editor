@@ -53,9 +53,9 @@ public abstract class BaseNodeGraphEditor<T> : BaseNodeEditor<T> where T : BaseN
 		Vector2 maxSize = new Vector2(400, 800);
 		Vector2 nodeSize = new Vector2( 300, 30 );
 
-		// get the node size by the amount of connections is has.
-		float maxPinPos = Mathf.Max( nodes[ nodeId ].GetPinLocalPosition( nodes[ nodeId ].GetConnectionCount( BaseNodeGraphData.PinMode.Input  ) - 1, BaseNodeGraphData.PinMode.Input  ).y,
-									 nodes[ nodeId ].GetPinLocalPosition( nodes[ nodeId ].GetConnectionCount( BaseNodeGraphData.PinMode.Output ) - 1, BaseNodeGraphData.PinMode.Output ).y );
+		// get the node size by the amount of pins it has.
+		float maxPinPos = Mathf.Max( nodes[ nodeId ].GetPinLocalPosition( nodes[ nodeId ].GetPinCount( BaseNodeGraphData.PinMode.Input  ) - 1, BaseNodeGraphData.PinMode.Input  ).y,
+									 nodes[ nodeId ].GetPinLocalPosition( nodes[ nodeId ].GetPinCount( BaseNodeGraphData.PinMode.Output ) - 1, BaseNodeGraphData.PinMode.Output ).y );
 
 
 
@@ -443,9 +443,14 @@ public class BaseNodeGraphData : BaseNodeData
 		nodeConnections_output[ pinId ].RemoveConnection( toNodeId, toNodeSlot );
 	}
 
-	public int GetConnectionCount( PinMode pinMode )
+	public int GetConnectionCount( PinMode pinMode, int slot )
 	{
-		return pinMode == PinMode.Input ? nodeConnections_input.Count : nodeConnections_output.Count;
+		return 0;
+	}
+
+	public bool CanConnect()
+	{
+		return false;
 	}
 
 }
