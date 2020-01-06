@@ -593,7 +593,9 @@ public class NodePin_Output : NodePin_Input
 			return;
 		}
 
-		Handles.color = pinColor;
+		Color lineColour = pinColor;
+		lineColour.a = 0.25f;
+		Handles.color = pinColor ;
 		
 
 		for ( int i = 1; i < connectionPoints.Length; i++ )
@@ -601,7 +603,23 @@ public class NodePin_Output : NodePin_Input
 			Vector2 lineCenter = connectionPoints[ i - 1 ] + ( ( connectionPoints[ i ] - connectionPoints[ i - 1 ] ) / 2f );
 
 			if ( isVisable( lineCenter ) )
-				Handles.DrawLine( connectionPoints[ i - 1 ], connectionPoints[ i ] );
+			{
+				// TODO: improve line width
+				Vector3 startPoint = connectionPoints[ i - 1 ];
+				Vector3 endPoint = connectionPoints[ i ];
+				startPoint.z = curveWidth;
+				endPoint.z = curveWidth;
+				startPoint.Normalize();
+				endPoint.Normalize();
+				startPoint = new Vector3(connectionPoints[ i - 1 ].x, connectionPoints[ i - 1 ].y, 0) + (Vector3.Cross( connectionPoints[ i - 1 ], startPoint ));
+				endPoint = new Vector3(connectionPoints[ i ].x, connectionPoints[ i ].y, 0) + Vector3.Cross( connectionPoints[ i ], endPoint );
+				startPoint.z = 0;
+				endPoint.z = 0;
+				//Handles.DrawLine( connectionPoints[ i - 1 ], connectionPoints[ i ] );
+
+				Vector3[] verts = { connectionPoints[ i - 1 ], connectionPoints[ i ], endPoint, startPoint };
+				Handles.DrawSolidRectangleWithOutline( verts, lineColour, lineColour );
+			}
 		}
 
 	}
