@@ -444,7 +444,7 @@ public class BaseNodeGraphData : BaseNodeData
 		nodeConnections_output[ pinId ].RemoveConnection( toNodeId, toNodeSlot );
 	}
 
-	public int GetConnectionCount( PinMode pinMode, int slot )
+	public int GetConnectionCount( PinMode pinMode, int slotId )
 	{
 		return 0;
 	}
