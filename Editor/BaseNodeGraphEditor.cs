@@ -209,8 +209,8 @@ public abstract class BaseNodeGraphEditor<T> : BaseNodeEditor<T> where T : BaseN
 		{
 			// Draw curve to mouse.
 			// Fake the output to mouse when connecting nodes.
-			NodePin_Output curve = new NodePin_Output(0, null, "");	
-			Vector2 startPos = nodes[ connectingFromNode ].GetPinPosition( connectingFromSlot, BaseNodeGraphData.PinMode.Output ) + new Vector2( nodes[ connectingFromNode ].pinSize.x, 0 );
+			NodePin_Output curve = new NodePin_Output(0, null, "");
+			Vector2 startPos = nodes[ connectingFromNode ].GetPinPosition( connectingFromSlot, BaseNodeGraphData.PinMode.Output ) + new Vector2( nodes[ connectingFromNode ].pinSize.x, nodes[ connectingFromNode ].pinSize.y / 2f );
 			Vector2 endPos = startPos;
 
 			if ( Event.current != null )
