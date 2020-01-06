@@ -208,8 +208,10 @@ public abstract class BaseNodeGraphEditor<T> : BaseNodeEditor<T> where T : BaseN
 		else if ( connectingFromNode != -1 )
 		{
 			// Draw curve to mouse.
+			Color curveColour = nodes[ connectingFromNode ].NodeConnections_output[ connectingFromSlot ].pinColor;
 			// Fake the output to mouse when connecting nodes.
-			NodePin_Output curve = new NodePin_Output(0, null, "");
+			NodePin_Output curve = new NodePin_Output(0, null, "", curveColour);
+
 			Vector2 startPos = nodes[ connectingFromNode ].GetPinPosition( connectingFromSlot, BaseNodeGraphData.PinMode.Output ) + new Vector2( nodes[ connectingFromNode ].pinSize.x, nodes[ connectingFromNode ].pinSize.y / 2f );
 			Vector2 endPos = startPos;
 
@@ -428,7 +430,6 @@ public class BaseNodeGraphData : BaseNodeData
 	public void AddConnection (int from_pinId, int toNodeId, int toSlotId)
 	{
 		nodeConnections_output[ from_pinId ].AddConnection( toNodeId, toSlotId );
-
 	}
 
 	public bool HasConnection( int from_pinId, int toNodeId, int toSlotId )
@@ -532,8 +533,6 @@ public class NodePin_Output : NodePin_Input
 			connectionStartPosition = ownerNode.GetPinPosition( 0, BaseNodeGraphData.PinMode.Output );
 			connMoved = true;
 		}
-
-		Handles.color = pinColor;
 		
 		for (int i = 0; i < connections.Count; i++)
 		{
@@ -593,6 +592,9 @@ public class NodePin_Output : NodePin_Input
 			Debug.LogError("Error: Unable to draw conections with less than 2 point");
 			return;
 		}
+
+		Handles.color = pinColor;
+		
 
 		for ( int i = 1; i < connectionPoints.Length; i++ )
 		{
