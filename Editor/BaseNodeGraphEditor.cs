@@ -484,6 +484,7 @@ public class NodePin_Output : NodePin_Input
 	Vector2 connectionStartPosition = Vector2.zero;
 
 	const int curvePoints = 20;
+	const float curveWidth = 5;
 	public Color pinColor = Color.black;
 
 	public NodePin_Output ( int _id, BaseNodeGraphData _ownerNode, string _connLable ) : base( _id, _ownerNode, _connLable ) { }
