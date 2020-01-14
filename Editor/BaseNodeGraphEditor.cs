@@ -386,7 +386,7 @@ public class BaseNodeGraphData : BaseNodeData
 			return 0;
 	}
 
-	public virtual Vector2 GetPinOffset( int pinId, PinMode pinMode )
+	protected virtual Vector2 GetPinOffset( int pinId, PinMode pinMode )
 	{
 		Vector2 pinOffset = pinSize;
 		pinOffset.y += pinOffset.y * pinId;
