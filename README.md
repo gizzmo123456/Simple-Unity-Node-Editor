@@ -38,3 +38,5 @@
 &nbsp;    [C] Apply position offset to all node positions ect...  
 [F] Fixed input positions in node graph  
 [F] Fixed NodeConnectionData inputPin_startPosition not updateing  
+
+[ ] Fix node outputs using itself for pin size it should use the node that it is connecting to.
