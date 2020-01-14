@@ -390,6 +390,9 @@ public class BaseNodeGraphData : BaseNodeData
 	{
 		Vector2 pinOffset = pinSize;
 		pinOffset.y += pinOffset.y * pinId;
+		
+		return pinOffset;
+		
 	}
 	
 	public Vector2 GetPinLocalPosition ( int pinId, PinMode pinMode )
