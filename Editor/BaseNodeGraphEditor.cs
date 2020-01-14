@@ -210,7 +210,7 @@ public abstract class BaseNodeGraphEditor<T> : BaseNodeEditor<T> where T : BaseN
 			// Draw curve to mouse.
 			Color curveColour = nodes[ connectingFromNode ].NodeConnections_output[ connectingFromSlot ].pinColor;
 			// Fake the output to mouse when connecting nodes.
-			NodePin_Output curve = new NodePin_Output(0, null, "", NodePin_Output.BezierControlePointOffset.Horizontal, curveColour );
+			NodePin_Output curve = new NodePin_Output(0, null, "", nodes[ connectingFromNode ].BezierControlePointOffset, curveColour );
 
 			Vector2 startPos = nodes[ connectingFromNode ].GetPinPosition( connectingFromSlot, BaseNodeGraphData.PinMode.Output ) + new Vector2( nodes[ connectingFromNode ].pinSize.x, nodes[ connectingFromNode ].pinSize.y / 2f );
 			Vector2 endPos = startPos;
@@ -311,6 +311,8 @@ public class BaseNodeGraphData : BaseNodeData
 	public Vector2 outputPin_localStartPosition = new Vector2( 20, 15f );
 	public Vector2 pinSize = new Vector2( 20, 18 );
 
+	public virtual NodePin_Output.BezierControlePointOffset BezierControlePointOffset { get => NodePin_Output.BezierControlePointOffset.Horizontal; }
+
 	public BaseNodeGraphData ( string _title, bool _dragable ) : base(_title, _dragable) {}
 
 	/// <param name="_inputStartPosition"> Local start position of input pins </param>
@@ -341,14 +343,14 @@ public class BaseNodeGraphData : BaseNodeData
 		if ( pinMode == PinMode.Input )
 			nodeConnections_input.Add( new NodePin_Input( nodeConnections_input.Count, this, connectionLable ) );
 		else
-			nodeConnections_output.Add( new NodePin_Output( nodeConnections_output.Count, this, connectionLable, NodePin_Output.BezierControlePointOffset.Horizontal ) );
+			nodeConnections_output.Add( new NodePin_Output( nodeConnections_output.Count, this, connectionLable, BezierControlePointOffset ) );
 
 	}
 
 	public void AddOutputPin ( string connectionLable, Color pinColor )
 	{
 
-		nodeConnections_output.Add( new NodePin_Output( nodeConnections_output.Count, this, connectionLable, NodePin_Output.BezierControlePointOffset.Horizontal, pinColor ) );
+		nodeConnections_output.Add( new NodePin_Output( nodeConnections_output.Count, this, connectionLable, BezierControlePointOffset, pinColor ) );
 
 	}
 
