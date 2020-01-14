@@ -323,9 +323,9 @@ public class BaseNodeGraphData : BaseNodeData
 		pinSize = _pinSize;
 	}
 
-	public void GeneratePinSizeAndPosition( Vector2 nodeSize )
+	public override void GeneratePinSizeAndPosition( Vector2 nodeSize )
 	{
-
+		
 		pinSize.x = nodeSize.x / 4f;
 
 		inputPin_localStartPosition.x = -pinSize.x;
