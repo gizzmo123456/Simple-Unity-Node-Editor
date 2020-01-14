@@ -210,7 +210,7 @@ public abstract class BaseNodeGraphEditor<T> : BaseNodeEditor<T> where T : BaseN
 			// Draw curve to mouse.
 			Color curveColour = nodes[ connectingFromNode ].NodeConnections_output[ connectingFromSlot ].pinColor;
 			// Fake the output to mouse when connecting nodes.
-			NodePin_Output curve = new NodePin_Output(0, null, "", curveColour);
+			NodePin_Output curve = new NodePin_Output(0, null, "", NodePin_Output.BezierControlePointOffset.Horizontal, curveColour );
 
 			Vector2 startPos = nodes[ connectingFromNode ].GetPinPosition( connectingFromSlot, BaseNodeGraphData.PinMode.Output ) + new Vector2( nodes[ connectingFromNode ].pinSize.x, nodes[ connectingFromNode ].pinSize.y / 2f );
 			Vector2 endPos = startPos;
@@ -341,14 +341,14 @@ public class BaseNodeGraphData : BaseNodeData
 		if ( pinMode == PinMode.Input )
 			nodeConnections_input.Add( new NodePin_Input( nodeConnections_input.Count, this, connectionLable ) );
 		else
-			nodeConnections_output.Add( new NodePin_Output( nodeConnections_output.Count, this, connectionLable ) );
+			nodeConnections_output.Add( new NodePin_Output( nodeConnections_output.Count, this, connectionLable, NodePin_Output.BezierControlePointOffset.Horizontal ) );
 
 	}
 
 	public void AddOutputPin ( string connectionLable, Color pinColor )
 	{
 
-		nodeConnections_output.Add( new NodePin_Output( nodeConnections_output.Count, this, connectionLable, pinColor ) );
+		nodeConnections_output.Add( new NodePin_Output( nodeConnections_output.Count, this, connectionLable, NodePin_Output.BezierControlePointOffset.Horizontal, pinColor ) );
 
 	}
 
@@ -483,6 +483,8 @@ public class NodePin_Output : NodePin_Input
 	public delegate bool isVisableFunct ( Vector2 position );
 	public delegate BaseNodeGraphData getNodeFunct ( int nodeId );
 
+	public enum BezierControlePointOffset { Horizontal, Vertical }	//TODO: Bezier curve should have there own class :)
+
 	List<NodeConnectionData> connections = new List<NodeConnectionData>();
 
 	public bool alwaysForwardControlPoints = true;
@@ -492,12 +494,23 @@ public class NodePin_Output : NodePin_Input
 
 	const int curvePoints = 20;
 	const float curveWidth = 5;
+	public BezierControlePointOffset bezierControleOffset = BezierControlePointOffset.Horizontal;
 	public Color pinColor = Color.black;
 
-	public NodePin_Output ( int _id, BaseNodeGraphData _ownerNode, string _connLable ) : base( _id, _ownerNode, _connLable ) { }
-	public NodePin_Output ( int _id, BaseNodeGraphData _ownerNode, string _connLable, Color _pinColor ) : base( _id, _ownerNode, _connLable ) 
+	public NodePin_Output ( int _id, BaseNodeGraphData _ownerNode, string _connLable, BezierControlePointOffset _bezierControlePointOffset ) : base( _id, _ownerNode, _connLable ) 
+	{ 
+		bezierControleOffset = _bezierControlePointOffset;
+	}
+
+	public NodePin_Output ( int _id, BaseNodeGraphData _ownerNode, string _connLable, BezierControlePointOffset _bezierControlePointOffset, Color _pinColor ) : base( _id, _ownerNode, _connLable ) 
 	{
 		pinColor = _pinColor;
+		bezierControleOffset = _bezierControlePointOffset;
+	}
+
+	public void SetBezierControlePoint( BezierControlePointOffset controlePointOffset )
+	{
+
 	}
 
 	public void AddConnection(int nodeId, int slotId)
@@ -574,13 +587,18 @@ public class NodePin_Output : NodePin_Input
 
 	public void GenerateBezierCurve(Vector2 from, Vector2 to, ref Vector2[] connectionCurve)
 	{
-		float xOffset = ( to.x - from.x ) * (0.75f + (0.1f * (Mathf.Abs( to.y - from.y ) / 150f) )) ;
+		Vector2 offset = Vector2.zero;
+		
+		if (bezierControleOffset == BezierControlePointOffset.Horizontal)
+			offset.x = ( to.x - from.x ) * (0.75f + (0.1f * (Mathf.Abs( to.y - from.y ) / 150f) ));
+		else
+			offset.y = ( to.y - from.y ) * ( 0.75f + ( 0.1f * ( Mathf.Abs( to.x - from.x ) / 150f ) ) );
 
 		if ( alwaysForwardControlPoints )
-			xOffset = Mathf.Abs( xOffset );
+			offset = offset.Abs();
 
-		Vector2 fromControlPoint = from + new Vector2( xOffset, 0 );
-		Vector2 toControlPoint = to + new Vector2( -xOffset, 0 );
+		Vector2 fromControlPoint = from + offset;
+		Vector2 toControlPoint = to - offset;
 
 		for ( int i = 0; i < curvePoints + 1; i++ ) 
 		{
