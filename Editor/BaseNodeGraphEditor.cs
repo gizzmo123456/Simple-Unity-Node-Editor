@@ -417,7 +417,7 @@ public class BaseNodeGraphData : BaseNodeData
 	/// <returns></returns>
 	public Vector2 GetPinPosition(int pinId, PinMode pinMode)
 	{
-		Vector2 pinOffset = GetPinOffset( pinId, pinMode )
+		Vector2 pinOffset = GetPinOffset( pinId, pinMode );
 
 		if ( pinMode == PinMode.Input )
 			return rect.position + inputPin_localStartPosition + pinOffset;
