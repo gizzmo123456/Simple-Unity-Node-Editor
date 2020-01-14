@@ -386,10 +386,15 @@ public class BaseNodeGraphData : BaseNodeData
 			return 0;
 	}
 
-	public Vector2 GetPinLocalPosition ( int pinId, PinMode pinMode )
+	public virtual Vector2 GetPinOffset( int pinId, PinMode pinMode )
 	{
 		Vector2 pinOffset = pinSize;
 		pinOffset.y += pinOffset.y * pinId;
+	}
+	
+	public Vector2 GetPinLocalPosition ( int pinId, PinMode pinMode )
+	{
+		Vector2 pinOffset = GetPinOffset(pinId, pinMode);
 
 		if ( pinMode == PinMode.Input )
 			return inputPin_localStartPosition + pinOffset;
@@ -409,8 +414,7 @@ public class BaseNodeGraphData : BaseNodeData
 	/// <returns></returns>
 	public Vector2 GetPinPosition(int pinId, PinMode pinMode)
 	{
-		Vector2 pinOffset = pinSize;
-		pinOffset.y += pinOffset.y * pinId;
+		Vector2 pinOffset = GetPinOffset( pinId, pinMode )
 
 		if ( pinMode == PinMode.Input )
 			return rect.position + inputPin_localStartPosition + pinOffset;
