@@ -458,6 +458,25 @@ public class BaseNodeGraphData : BaseNodeData
 		return 0;
 	}
 
+	/// <summary>
+	/// The offset position from the pin that the connection should be drawn
+	/// </summary>
+	/// <returns></returns>
+	public virtual Vector2 GetConnectionOffset(PinMode pinMode)
+	{
+
+		switch( pinMode )
+		{
+			case PinMode.Input:
+				return new Vector2( 0, pinSize.y / 2f );
+			case PinMode.Output:
+				return new Vector2( pinSize.x, pinSize.y / 2f );
+		}
+
+		return Vector2.zero;
+
+	}
+
 	public bool CanConnect()
 	{
 		return false;
@@ -572,9 +591,9 @@ public class NodePin_Output : NodePin_Input
 			if ( connMoved || inConnMoved )
 			{
 
-				GenerateBezierCurve( ownerNode.GetPinPosition( id, BaseNodeGraphData.PinMode.Output ) + new Vector2( ownerNode.pinSize.x, ownerNode.pinSize.y / 2f ), 
-									 connectedNode.GetPinPosition( connection.connectedSlotId, BaseNodeGraphData.PinMode.Input ) + new Vector2( 0, ownerNode.pinSize.y / 2f ), 
-									 ref connection.connectionCurve );  //NOTE: Make sure this remembers the curve :/
+				GenerateBezierCurve( ownerNode.GetPinPosition( id, BaseNodeGraphData.PinMode.Output ) + ownerNode.GetConnectionOffset(BaseNodeGraphData.PinMode.Output),
+									 connectedNode.GetPinPosition( connection.connectedSlotId, BaseNodeGraphData.PinMode.Input ) + ownerNode.GetConnectionOffset( BaseNodeGraphData.PinMode.Input ), 
+									 ref connection.connectionCurve );
 
 				connection.SetStartPosition( connectedNode.NodeRect.position );  // Update start position.
 				connections[ i ] = connection;
