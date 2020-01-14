@@ -323,7 +323,7 @@ public class BaseNodeGraphData : BaseNodeData
 		pinSize = _pinSize;
 	}
 
-	public override void GeneratePinSizeAndPosition( Vector2 nodeSize )
+	public virtual void GeneratePinSizeAndPosition( Vector2 nodeSize ) // TODO: remove the param nodeSize, and use function GetNodeSize (from base class :/)
 	{
 		
 		pinSize.x = nodeSize.x / 4f;
