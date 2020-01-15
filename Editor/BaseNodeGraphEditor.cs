@@ -658,7 +658,7 @@ public class NodePin_Output : NodePin_Input
 				endPoint.z = curveWidth;
 				startPoint.Normalize();
 				endPoint.Normalize();
-				startPoint = new Vector3(connectionPoints[ i - 1 ].x, connectionPoints[ i - 1 ].y, 0) + (Vector3.Cross( connectionPoints[ i - 1 ], startPoint ));
+				startPoint = new Vector3(connectionPoints[ i - 1 ].x, connectionPoints[ i - 1 ].y, 0) + Vector3.Cross( connectionPoints[ i - 1 ], startPoint );
 				endPoint = new Vector3(connectionPoints[ i ].x, connectionPoints[ i ].y, 0) + Vector3.Cross( connectionPoints[ i ], endPoint );
 				startPoint.z = 0;
 				endPoint.z = 0;
