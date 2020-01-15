@@ -28,9 +28,9 @@ public abstract class BaseNodeGraphVertPinsEditor<T> : BaseNodeGraphEditor<T> wh
 		return new Rect()
 		{
 			y = 0,
-			x = 5,
+			x = 22,
 			width = nodeSize.x - 10,
-			height = nodeSize.y
+			height = nodeSize.y - 44
 		};
 	}
 
