@@ -14,11 +14,12 @@ public class NodeWindow : EditorWindow
 
 	ExampleVerticalEditor nodeWindow;
 	ExampleGraphEditor nodeGraphEditor;
+	ExampleGraphVertPinEditor nodeGrapthVertEditor;
 
 	private void Awake ()
 	{
 		
-		nodeWindow = new ExampleVerticalEditor(0, new Rect(100, 100, 500, 200));
+		nodeWindow = new ExampleVerticalEditor(0, new Rect(100, 0, 500, 150));
 		nodeWindow.AddNode( new ExampleVerticalNodeData(true, "Win 1") );
 		nodeWindow.AddNode( new ExampleVerticalNodeData(true, "Win 2") );
 		nodeWindow.AddNode( new ExampleVerticalNodeData(true, "Win 3") );
@@ -34,7 +35,7 @@ public class NodeWindow : EditorWindow
 
 		nodeWindow.NodeMoved += VertNodeMoved;	// Get notifed when the order changes
 
-		nodeGraphEditor = new ExampleGraphEditor( 1, new Rect(50, 400, 900, 500));
+		nodeGraphEditor = new ExampleGraphEditor( 1, new Rect(50, 175, 900, 350));
 		nodeGraphEditor.AddNode( new ExampleNodeGraphData("Node 0", true, "Helloo World\n000") );	// Node 0
 		nodeGraphEditor.AddNode( new ExampleNodeGraphData("Node 1", true, "Helloo World\n001") );	// Node 1
 		nodeGraphEditor.AddNode( new ExampleNodeGraphData("Node 2", true, "Helloo World\n002") );	// Node 2
@@ -71,6 +72,20 @@ public class NodeWindow : EditorWindow
 
 		nodeGraphEditor.NodeConnection += NodeConnected; // Get noifed when a node is connected.
 
+		nodeGrapthVertEditor = new ExampleGraphVertPinEditor( 2, new Rect( 50, 575, 900, 350 ) );
+		nodeGrapthVertEditor.AddNode( new ExampleGraphVertPinData( "Node 0", true, "Helloo World\n000" ) ); // Node 0
+		nodeGrapthVertEditor.AddNode( new ExampleGraphVertPinData( "Node 1", true, "Helloo World\n001" ) ); // Node 1
+		nodeGrapthVertEditor.AddNode( new ExampleGraphVertPinData( "Node 2", true, "Helloo World\n001" ) ); // Node 1
+
+		nodeGrapthVertEditor.AddPin_toNode( 0, "OUT 1", BaseNodeGraphData.PinMode.Output );  // Node 0, pin 0, output
+		nodeGrapthVertEditor.AddPin_toNode( 0, "OUT 1", BaseNodeGraphData.PinMode.Output );  // Node 0, pin 1, output
+
+		nodeGrapthVertEditor.AddPin_toNode( 1, "In 1", BaseNodeGraphData.PinMode.Input );  // Node 0, pin 0, output
+		nodeGrapthVertEditor.AddPin_toNode( 2, "In 1", BaseNodeGraphData.PinMode.Input );  // Node 0, pin 0, output
+
+		nodeGrapthVertEditor.GetNode( 0 ).AddConnection( 0, 1, 0 );      // connect (output) node 0, pin 0 to (input) node 1, pin 0
+		nodeGrapthVertEditor.GetNode( 0 ).AddConnection( 1, 2, 0 );      // connect (output) node 0, pin 0 to (input) node 1, pin 0
+
 	}
 
 	private void OnGUI ()
@@ -79,7 +94,7 @@ public class NodeWindow : EditorWindow
 
 		nodeWindow.Draw(this);
 		nodeGraphEditor.Draw(this);
-		
+		nodeGrapthVertEditor.Draw( this );
 		EndWindows();
 
 	}
