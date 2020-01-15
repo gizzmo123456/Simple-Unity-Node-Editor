@@ -640,9 +640,10 @@ public class NodePin_Output : NodePin_Input
 			return;
 		}
 
+		Color lastHandleColor = Handles.color;
 		Color lineColour = pinColor;
 		lineColour.a = 0.25f;
-		Handles.color = pinColor ;
+		Handles.color = pinColor;
 		
 
 		for ( int i = 1; i < connectionPoints.Length; i++ )
@@ -662,12 +663,13 @@ public class NodePin_Output : NodePin_Input
 				endPoint = new Vector3(connectionPoints[ i ].x, connectionPoints[ i ].y, 0) + Vector3.Cross( connectionPoints[ i ], endPoint );
 				startPoint.z = 0;
 				endPoint.z = 0;
-				//Handles.DrawLine( connectionPoints[ i - 1 ], connectionPoints[ i ] );
 
 				Vector3[] verts = { connectionPoints[ i - 1 ], connectionPoints[ i ], endPoint, startPoint };
 				Handles.DrawSolidRectangleWithOutline( verts, lineColour, lineColour );
 			}
 		}
+
+		Handles.color = lastHandleColor;	// put the color back
 
 	}
 
