@@ -188,6 +188,11 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
         nodes.Remove( nodeData );
     }
 
+    public virtual void RemoveAllNodes()
+    {
+        nodes.Clear();
+    }
+
     /// <summary>
     /// removes node at id
     /// </summary>
