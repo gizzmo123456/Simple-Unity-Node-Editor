@@ -27,6 +27,8 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
 
     Vector2 lastScrolBarPosition = Vector2.zero;
 
+    public bool repaint = false;
+
     public BaseNodeEditor (int uid)
     {
         uniqueID = uid * 1000;
@@ -92,13 +94,16 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
             DrawNode( i );
             
         }
-        
 
         lastScrolBarPosition = panelScrollPosition;
 
         // trigger repaint if node has been released.
-        if ( releasedNode > -1 )
+        if ( releasedNode > -1 || repaint )
+        {
             window.Repaint();
+            repaint = false;
+            Debug.Log( "Repainting" );
+        }
 
     }
 

@@ -11,9 +11,6 @@ public abstract class BaseNodeGraphEditor<T> : BaseNodeEditor<T> where T : BaseN
 
 	protected override string NodeStyleName => "";
 
-
-	bool repaint = false;
-
 	int connectingFromNode = -1;    // < 0 is none 
 	int connectingFromSlot = -1;
 	int connectingToNode = -1;
@@ -34,12 +31,6 @@ public abstract class BaseNodeGraphEditor<T> : BaseNodeEditor<T> where T : BaseN
 		DrawNodeConnections();
 		ConnectNodes();
 
-		if ( repaint )
-		{
-			window.Repaint();
-			repaint = false;
-
-		}
 	}
 
 	protected override Vector2 NodeSize ()
