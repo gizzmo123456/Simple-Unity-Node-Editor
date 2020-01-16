@@ -170,6 +170,11 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
         return nodes[ id ];
     }
 
+    public T GetLastNode()
+    {
+        return nodes[ nodes.Count - 1 ];
+    }
+
     public virtual T AddNode ( T data )
     {
         data.SetNodePosition( NodeStartPosition() );
