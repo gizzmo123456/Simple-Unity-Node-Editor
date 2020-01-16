@@ -42,6 +42,8 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
         panelRect = holdRect;
     }
 
+    public virtual void Awake ( EditorWindow window ) { }
+
     public virtual void Update ( EditorWindow window ) { }
 
     /// <summary>
