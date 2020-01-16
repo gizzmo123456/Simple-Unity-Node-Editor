@@ -21,6 +21,7 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
     protected Vector2 panelScrollPosition;
 
     protected List<T> nodes;
+    public int NodeCount => nodes.Count;
     protected int pressedNode = -1; // < 0 == none
     protected int releasedNode = -1; // < 0 == none
 
