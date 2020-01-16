@@ -102,7 +102,6 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
         {
             window.Repaint();
             repaint = false;
-            Debug.Log( "Repainting" );
         }
 
     }
