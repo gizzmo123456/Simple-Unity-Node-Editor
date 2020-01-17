@@ -688,7 +688,6 @@ struct NodeConnectionData
 		connectedSlotId = connSlotId;
 		connectionCurve = new Vector2[ curvePoints + 1 ];
 		inputPin_startPosition = Vector2.zero;
-		Debug.LogWarning( "???" );
 
 	}
 
