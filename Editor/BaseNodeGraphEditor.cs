@@ -9,6 +9,8 @@ public abstract class BaseNodeGraphEditor<T> : BaseNodeEditor<T> where T : BaseN
 	public delegate void nodeConnection (bool connected, int fromNodeId, int fromSlotId, int toNodeId, int toSlotId);
 	public event nodeConnection NodeConnection;
 
+	public enum ConnectNodesType { To, From, Cancel }
+
 	protected override string NodeStyleName => "";
 
 	int connectingFromNode = -1;    // < 0 is none 
@@ -215,6 +217,24 @@ public abstract class BaseNodeGraphEditor<T> : BaseNodeEditor<T> where T : BaseN
 
 	}
 
+	public void SetConnectNodes(ConnectNodesType connectType, int nodeId, int slotId)
+	{
+		switch( connectType )
+		{
+			case ConnectNodesType.Cancel:
+				ClearConnectNodes();
+			break;
+			case ConnectNodesType.From:
+				connectingFromNode = nodeId;
+				connectingFromSlot = slotId;
+			break;
+			case ConnectNodesType.To:
+				connectingToNode = nodeId;
+				connectingToSlot = slotId;
+			break;
+		}
+	}
+
 	public void ClearConnectNodes()
 	{
 		connectingFromNode = connectingFromSlot = -1;
@@ -267,15 +287,14 @@ public abstract class BaseNodeGraphEditor<T> : BaseNodeEditor<T> where T : BaseN
 			{
 				if ( connectingFromNode < 0 )
 				{
-					connectingFromNode = nodeId;
-					connectingFromSlot = i;
-					Debug.LogWarning( "yes" );
+					SetConnectNodes( ConnectNodesType.From, nodeId, i );
+					Debug.LogWarning( "Start Node Connection" );
 
 				}
 				else if ( connectingFromNode == nodeId && i == connectingFromSlot)
 				{
 					ClearConnectNodes();
-					Debug.LogWarning( "No" );
+					Debug.LogWarning( "Connection Canceled" );
 
 				}
 
@@ -284,8 +303,8 @@ public abstract class BaseNodeGraphEditor<T> : BaseNodeEditor<T> where T : BaseN
 			}
 			else if (i < inputPinCount && connectingFromNode > -1 && connectingFromNode != nodeId && nodes[ nodeId ].GetPinRect( i, BaseNodeGraphData.PinMode.Input ).Contains( mousePosition ) )
 			{
-				connectingToNode = nodeId;
-				connectingToSlot = i;
+				SetConnectNodes( ConnectNodesType.To, nodeId, i );
+				Debug.LogWarning( "Nodes Connected" );
 			}
 	}
 
