@@ -24,11 +24,6 @@ public abstract class BaseNodeGraphEditor<T> : BaseNodeEditor<T> where T : BaseN
 		nodeReleased += NodeReleased;	
 	}
 
-	~BaseNodeGraphEditor ()
-	{
-		nodeReleased -= NodeReleased;
-	}
-
 	public override void Draw ( EditorWindow window )
 	{
 		base.Draw( window );
