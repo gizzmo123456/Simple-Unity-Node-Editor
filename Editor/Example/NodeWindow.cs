@@ -105,9 +105,9 @@ public class NodeWindow : EditorWindow
 
 	}
 
-	void NodeConnected( ExampleGraphEditor.ConnectNodesType connectionType, int fromNodeId, int fromSlotId, int toNodeId, int toSlotId )
+	void NodeConnected( ExampleGraphEditor.ConnectNodesStatus connectionType, int fromNodeId, int fromSlotId, int toNodeId, int toSlotId )
 	{
-		Debug.Log( string.Format( "Connection Type: {0}, From node: {1} slot {2}, To node {3} slot {4}", connectionType, fromNodeId, fromSlotId, toNodeId, toSlotId ) );
+		Debug.Log( string.Format( "Connection status: {0}, From node: {1} slot {2}, To node {3} slot {4}", connectionType, fromNodeId, fromSlotId, toNodeId, toSlotId ) );
 	}
 
 }

@@ -6,14 +6,16 @@ using UnityEditor;
 public abstract class BaseNodeGraphEditor<T> : BaseNodeEditor<T> where T : BaseNodeGraphData
 {
 
-	public delegate void nodeConnection ( ConnectNodesType connectedType, int fromNodeId, int fromSlotId, int toNodeId, int toSlotId);
+	public delegate void nodeConnection ( ConnectNodesStatus connectedStatus, int fromNodeId, int fromSlotId, int toNodeId, int toSlotId);
 	public event nodeConnection NodeConnection;
 
 	public enum ConnectNodesType { To, From, Cancel }
+	public enum ConnectNodesStatus { Started, Canceled, Connected, Disconnected }
 
 	protected override string NodeStyleName => "";
 
 	bool invokedConnectingFromCallback = false;
+	bool cancelConnection = false;
 	int connectingFromNode = -1;    // < 0 is none 
 	int connectingFromSlot = -1;
 	int connectingToNode = -1;
@@ -179,15 +181,15 @@ public abstract class BaseNodeGraphEditor<T> : BaseNodeEditor<T> where T : BaseN
 		if ( connectingToNode != -1 )
 		{
 
-			if ( nodes[ connectingFromNode ].HasConnection( connectingFromSlot, connectingToNode, connectingToSlot ) )	// cancel connection
+			if ( nodes[ connectingFromNode ].HasConnection( connectingFromSlot, connectingToNode, connectingToSlot ) )	// Disconnect connection
 			{
 				nodes[ connectingFromNode ].RemoveConnection( connectingFromSlot, connectingToNode, connectingToSlot );
-				NodeConnection?.Invoke( ConnectNodesType.Cancel, connectingFromNode, connectingFromSlot, -1, -1 );
+				NodeConnection?.Invoke( ConnectNodesStatus.Disconnected, connectingFromNode, connectingFromSlot, -1, -1 );
 			}
 			else // Compleat Connection.
 			{
 				nodes[ connectingFromNode ].AddConnection( connectingFromSlot, connectingToNode, connectingToSlot );
-				NodeConnection?.Invoke( ConnectNodesType.To, connectingFromNode, connectingFromSlot, connectingToNode, connectingToSlot );
+				NodeConnection?.Invoke( ConnectNodesStatus.Connected, connectingFromNode, connectingFromSlot, connectingToNode, connectingToSlot );
 			}
 
 			// reset connecting :)
@@ -211,10 +213,21 @@ public abstract class BaseNodeGraphEditor<T> : BaseNodeEditor<T> where T : BaseN
 			curve.DrawConnectionLines( connectionPointsToMouse, PositionIsVisable );
 
 			// Signal that we have started a new connection.
-			NodeConnection?.Invoke(ConnectNodesType.From, connectingFromNode, connectingFromSlot, -1, -1);
+			if ( !invokedConnectingFromCallback )
+			{
+				NodeConnection?.Invoke( ConnectNodesStatus.Started, connectingFromNode, connectingFromSlot, -1, -1 );
+				invokedConnectingFromCallback = true;
+			}
 
 			repaint = true;
 			
+		}
+		else if ( cancelConnection )
+		{
+
+			NodeConnection?.Invoke( ConnectNodesStatus.Canceled, connectingFromNode, connectingFromSlot, connectingToNode, connectingToSlot );
+			ClearConnectNodes();
+
 		}
 
 	}
@@ -224,7 +237,7 @@ public abstract class BaseNodeGraphEditor<T> : BaseNodeEditor<T> where T : BaseN
 		switch( connectType )
 		{
 			case ConnectNodesType.Cancel:
-				ClearConnectNodes();
+				cancelConnection = true;
 			break;
 			case ConnectNodesType.From:
 				connectingFromNode = nodeId;
@@ -237,11 +250,12 @@ public abstract class BaseNodeGraphEditor<T> : BaseNodeEditor<T> where T : BaseN
 		}
 	}
 
-	public void ClearConnectNodes()
+	protected void ClearConnectNodes()
 	{
 		connectingFromNode = connectingFromSlot = -1;
 		connectingToNode = connectingToSlot = -1;
 		invokedConnectingFromCallback = false;
+		cancelConnection = false;
 	}
 
 	/// <summary>
