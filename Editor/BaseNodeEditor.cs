@@ -132,6 +132,13 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
         return panelRect.position + panelScrollPosition;
     }
 
+    public virtual void ScrolePanel( Vector2 scrollDelta )
+    {
+
+        panelScrollPosition += scrollDelta;
+
+    }
+
     /// <summary>
     /// default node size
     /// </summary>
