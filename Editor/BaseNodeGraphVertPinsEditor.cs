@@ -40,6 +40,9 @@ public class BaseDialogueGraphVertPinData : BaseNodeGraphData
 {
 
 	public BaseDialogueGraphVertPinData ( string _title, bool _dragable ) : base( "", _dragable ) { }
+	public BaseDialogueGraphVertPinData ( string _title, bool _dragable, int _max_inputPins, int _max_outputPins ) : 
+		base( "", _dragable, _max_inputPins, _max_outputPins ) { }
+
 	public BaseDialogueGraphVertPinData ( string _title, bool _dragable, Vector2 _inputStartPosition, Vector2 _outputStartPosition, Vector2 _pinSize ) :
 		base( "", _dragable, _inputStartPosition, _outputStartPosition, _pinSize )
 	{ }
