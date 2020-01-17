@@ -374,8 +374,31 @@ public class BaseNodeGraphData : BaseNodeData
 
 	}
 
+	/// <summary>
+	/// Sets the max amount of inputs/outputs (pinMode) alowed ( <0 is unlimited)
+	/// </summary>
+	public void SetMaxPinCount ( PinMode pinMode, int maxPins )
+	{
+		switch (pinMode)
+		{
+			case PinMode.Input: 
+				max_inputPins = maxPins;
+			break;
+			case PinMode.Output:
+				max_outputPins = maxPins;
+			break;
+		}
 
+	}
 
+	/// <summary>
+	/// Sets the max amount of inputs/outputs (pinMode) alowed ( <0 is unlimited)
+	/// </summary>
+	public void SetMaxPinCount( int maxInputs, int maxOutputs )
+	{
+		max_inputPins = maxInputs;
+		max_outputPins = maxOutputs;
+	}
 
 	/// <summary>
 	/// Are we able to add a pin or have we reached the pin limits
