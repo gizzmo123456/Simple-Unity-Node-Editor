@@ -334,6 +334,9 @@ public class BaseNodeGraphData : BaseNodeData
 	public List<NodePin_Input> NodeConnections_input { get => nodeConnections_input; }
 	public List<NodePin_Output> NodeConnections_output { get => nodeConnections_output; }
 
+	public int max_inputPins = -1;		// less than 0 == unlimited
+	public int max_outputPins = -1;     // less than 0 == unlimited
+
 	public Vector2 inputPin_localStartPosition = new Vector2( 0, 15f );
 	public Vector2 outputPin_localStartPosition = new Vector2( 20, 15f );
 	public Vector2 pinSize = new Vector2( 20, 18 );
@@ -365,8 +368,34 @@ public class BaseNodeGraphData : BaseNodeData
 
 	}
 
+	/// <summary>
+	/// Are we able to add a pin or have we reached the pin limits
+	/// </summary>
+	/// <param name="pinMode"> pinMode to add to </param>
+	/// <param name="displayMessage"> Should a error message be printed to console? </param>
+	/// <returns> True if we can add a pin to pinMode else False</returns>
+	public bool CanAddPin(PinMode pinMode, bool displayMessage = true)
+	{
+		int max_pins = pinMode == PinMode.Input ? max_inputPins : max_outputPins;
+
+		if ( max_pins < 0 ) return true;    // less than 0 pins is unlimited pins
+
+		int connections = pinMode == PinMode.Input ? nodeConnections_input.Count : nodeConnections_output.Count;
+
+		if ( connections < max_pins ) return true;  // Less than limit
+
+		if ( displayMessage )
+			Debug.LogWarning("Unable to add pin, Pin limit reached for " + pinMode );
+
+		return false;
+
+	}
+
 	public void AddPin (string connectionLable, PinMode pinMode) 
 	{
+
+		if ( !CanAddPin( pinMode ) ) return; 
+
 		if ( pinMode == PinMode.Input )
 			nodeConnections_input.Add( new NodePin_Input( nodeConnections_input.Count, this, connectionLable ) );
 		else
@@ -377,7 +406,8 @@ public class BaseNodeGraphData : BaseNodeData
 	public void AddOutputPin ( string connectionLable, Color pinColor )
 	{
 
-		nodeConnections_output.Add( new NodePin_Output( nodeConnections_output.Count, this, connectionLable, BezierControlePointOffset, pinColor ) );
+		if ( CanAddPin( PinMode.Output ) )
+			nodeConnections_output.Add( new NodePin_Output( nodeConnections_output.Count, this, connectionLable, BezierControlePointOffset, pinColor ) );
 
 	}
 
