@@ -344,6 +344,12 @@ public class BaseNodeGraphData : BaseNodeData
 	public virtual NodePin_Output.BezierControlePointOffset BezierControlePointOffset { get => NodePin_Output.BezierControlePointOffset.Horizontal; }
 
 	public BaseNodeGraphData ( string _title, bool _dragable ) : base(_title, _dragable) {}
+	public BaseNodeGraphData ( string _title, bool _dragable, int _max_inputPins, int _max_outputPins) : this( _title, _dragable )
+	{
+		max_inputPins = _max_inputPins;
+		max_outputPins = _max_outputPins;
+
+	}
 
 	/// <param name="_inputStartPosition"> Local start position of input pins </param>
 	/// <param name="_outputStartPosition"> Local start position of output pind </param>
@@ -367,6 +373,9 @@ public class BaseNodeGraphData : BaseNodeData
 		outputPin_localStartPosition.y = 5;
 
 	}
+
+
+
 
 	/// <summary>
 	/// Are we able to add a pin or have we reached the pin limits
