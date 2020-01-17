@@ -190,10 +190,7 @@ public abstract class BaseNodeGraphEditor<T> : BaseNodeEditor<T> where T : BaseN
 			Debug.LogWarning( string.Format( "Connecting from node {0}:{1} to node {2}:{3}", connectingFromNode, connectingFromSlot, connectingToNode, connectingToSlot ) );
 
 			// reset connecting :)
-			connectingFromNode = -1;   
-			connectingFromSlot = -1;
-			connectingToNode = -1;
-			connectingToSlot = -1;
+			ClearConnectNodes();
 
 		}
 		else if ( connectingFromNode != -1 )
@@ -216,6 +213,12 @@ public abstract class BaseNodeGraphEditor<T> : BaseNodeEditor<T> where T : BaseN
 			
 		}
 
+	}
+
+	public void ClearConnectNodes()
+	{
+		connectingFromNode = connectingFromSlot = -1;
+		connectingToNode = connectingToSlot = -1;
 	}
 
 	/// <summary>
@@ -271,8 +274,7 @@ public abstract class BaseNodeGraphEditor<T> : BaseNodeEditor<T> where T : BaseN
 				}
 				else if ( connectingFromNode == nodeId && i == connectingFromSlot)
 				{
-					connectingFromNode = -1;
-					connectingFromSlot = -1;
+					ClearConnectNodes();
 					Debug.LogWarning( "No" );
 
 				}
