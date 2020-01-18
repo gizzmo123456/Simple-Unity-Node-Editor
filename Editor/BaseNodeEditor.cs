@@ -248,7 +248,7 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
     public int AnyNodeContains ( Vector2 position )
     {
         for ( int i = 0; i < nodes.Count; i++ )
-            if ( NodeContatins( i, position ) )
+            if ( NodeContains( i, position ) )
                 return i;
 
         return -1;
