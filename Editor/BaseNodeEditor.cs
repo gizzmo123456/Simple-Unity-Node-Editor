@@ -230,6 +230,31 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
     }
 
     /// <summary>
+    /// does node rect contain position
+    /// </summary>
+    /// <param name="nodeId"> id of node</param>
+    /// <param name="position"> postion</param>
+    /// <returns>true if node contains position</returns>
+    public bool NodeContains ( int nodeId, Vector2 position )
+    {
+        return nodes[ nodeId ].NodeRect.Contains(position);
+    }
+
+    /// <summary>
+    /// is position within any node
+    /// </summary>
+    /// <param name="position"></param>
+    /// <returns> -1 if no node contatins position else node id </returns>
+    public int AnyNodeContains ( Vector2 position )
+    {
+        for ( int i = 0; i < nodes.Count; i++ )
+            if ( NodeContatins( i, position ) )
+                return i;
+
+        return -1;
+    }
+
+    /// <summary>
     /// Clamps node rect to postion
     /// </summary>
     /// <param name="nodeRect"></param>
