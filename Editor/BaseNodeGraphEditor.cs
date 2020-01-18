@@ -256,6 +256,11 @@ public abstract class BaseNodeGraphEditor<T> : BaseNodeEditor<T> where T : BaseN
 		return true;
 	}
 
+	public void CancelNodeConnection()
+	{
+		cancelConnection = true;
+	}
+
 	private void SetConnectNodes(ConnectNodesType connectType, int nodeId, int slotId)
 	{
 		switch( connectType )
@@ -277,7 +282,7 @@ public abstract class BaseNodeGraphEditor<T> : BaseNodeEditor<T> where T : BaseN
 	/// <summary>
 	/// Clears the nodes being connecting. 
 	/// DO NOT CALL to cancel the connection, since this will avoid triggering the callback.
-	/// set 'cancelConnection = true' to cancel the current connection.
+	/// set 'CancelNodeConnection()' to cancel the current connection.
 	/// </summary>
 	protected void ClearConnectNodes()
 	{
