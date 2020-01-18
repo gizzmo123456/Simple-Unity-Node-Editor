@@ -178,7 +178,14 @@ public abstract class BaseNodeGraphEditor<T> : BaseNodeEditor<T> where T : BaseN
 	protected virtual void ConnectNodes()
 	{
 
-		if ( connectingToNode != -1 )
+		if ( cancelConnection )
+		{
+
+			NodeConnection?.Invoke( ConnectNodesStatus.Canceled, connectingFromNode, connectingFromSlot, connectingToNode, connectingToSlot );
+			ClearConnectNodes();
+
+		}
+		else if ( connectingToNode != -1 )
 		{
 
 			if ( nodes[ connectingFromNode ].HasConnection( connectingFromSlot, connectingToNode, connectingToSlot ) )	// Disconnect connection
@@ -222,13 +229,6 @@ public abstract class BaseNodeGraphEditor<T> : BaseNodeEditor<T> where T : BaseN
 			repaint = true;
 			
 		}
-		else if ( cancelConnection )
-		{
-
-			NodeConnection?.Invoke( ConnectNodesStatus.Canceled, connectingFromNode, connectingFromSlot, connectingToNode, connectingToSlot );
-			ClearConnectNodes();
-
-		}
 
 	}
 
@@ -250,6 +250,11 @@ public abstract class BaseNodeGraphEditor<T> : BaseNodeEditor<T> where T : BaseN
 		}
 	}
 
+	/// <summary>
+	/// Clears the nodes being connecting. 
+	/// DO NOT CALL to cancel the connection, since this will avoid triggering the callback.
+	/// set 'cancelConnection = true' to cancel the current connection.
+	/// </summary>
 	protected void ClearConnectNodes()
 	{
 		connectingFromNode = connectingFromSlot = -1;
@@ -310,7 +315,7 @@ public abstract class BaseNodeGraphEditor<T> : BaseNodeEditor<T> where T : BaseN
 				}
 				else if ( connectingFromNode == nodeId && i == connectingFromSlot)
 				{
-					ClearConnectNodes();
+					cancelConnection = true;
 					Debug.LogWarning( "Connection Canceled" );
 
 				}
