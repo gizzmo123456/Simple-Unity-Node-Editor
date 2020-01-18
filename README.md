@@ -29,6 +29,7 @@
 [ ] Add limits to node connections  
 &nbsp;    [ ] Types  
 &nbsp;    [ ] Count  
+&nbsp;    [C] input/output pin count  
 
 # BUGS:  
 [C] Can only have one Node Editor instance active at a time  
@@ -40,3 +41,8 @@
 [F] Fixed NodeConnectionData inputPin_startPosition not updateing  
 
 [ ] Fix node outputs using itself for pin size it should use the node that it is connecting to.
+
+# ##
+[ ] move node size functions into nodeData
+[ ] move the node window into nodeData
+this will alow different nodes data to to exist in the same graph and each one will be its own node type.
