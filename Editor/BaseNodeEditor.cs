@@ -162,6 +162,14 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
     }
 
     /// <summary>
+    /// Set the position of the node
+    /// </summary>
+    public virtual void SetNodePosition(int nodeId, Vector2 position)
+    {
+        nodes[ nodeId ].SetNodePosition(position);
+    }
+
+    /// <summary>
     /// Check if position is visable within the scroll view
     /// </summary>
     /// <param name="position">position in Editor Window</param>
