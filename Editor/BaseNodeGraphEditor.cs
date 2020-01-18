@@ -240,8 +240,16 @@ public abstract class BaseNodeGraphEditor<T> : BaseNodeEditor<T> where T : BaseN
 	/// <returns> False if not connecting from a node or node is out of range</returns>
 	public bool CompleatNodeConnection( int connToNodeId, int connToSlotId )
 	{
-		if ( connectingFromNode < 0 ) return false;
-		if ( connectingToNode < 0 || connectingToNode >= nodes.Count ) return false;
+		if ( connectingFromNode < 0 )
+		{
+			Debug.LogError("Can not compleat connection, not connecting from a node.");
+			return false;
+		}
+		if ( connToNodeId < 0 || connToNodeId >= nodes.Count )
+		{
+			Debug.LogErrorFormat("Can not compleat connection, 'to' node does not exist (MAX: {0} Current: {1})", ( nodes.Count - 1 ), connToNodeId );
+			return false;
+		}
 
 		SetConnectNodes( ConnectNodesType.To, connToNodeId, connToSlotId );
 
