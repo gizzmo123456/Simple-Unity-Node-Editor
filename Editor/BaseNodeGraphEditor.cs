@@ -232,7 +232,23 @@ public abstract class BaseNodeGraphEditor<T> : BaseNodeEditor<T> where T : BaseN
 
 	}
 
-	public void SetConnectNodes(ConnectNodesType connectType, int nodeId, int slotId)
+	/// <summary>
+	/// Compleats the connection between connectingFromNode id
+	/// </summary>
+	/// <param name="connToNodeId"></param>
+	/// <param name="connToSoltId"></param>
+	/// <returns> False if not connecting from a node or node is out of range</returns>
+	public bool CompleatNodeConnection( int connToNodeId, int connToSlotId )
+	{
+		if ( connectingFromNode < 0 ) return false;
+		if ( connectingToNode < 0 || connectingToNode >= nodes.Count ) return false;
+
+		SetConnectNodes( ConnectNodesType.To, connToNodeId, connToSlotId );
+
+		return true;
+	}
+
+	private void SetConnectNodes(ConnectNodesType connectType, int nodeId, int slotId)
 	{
 		switch( connectType )
 		{
