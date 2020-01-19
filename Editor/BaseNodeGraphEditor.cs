@@ -494,11 +494,18 @@ public class BaseNodeGraphData : BaseNodeData
 
 	public void RemovePin ( int id, PinMode pinMode )
 	{
-		if ( pinMode == PinMode.Input )
-			nodeConnections_input.RemoveAt(id);
-		else
-			nodeConnections_output.RemoveAt(id);
 
+		int pinCount = pinMode == PinMode.Input ? nodeConnections_input.Count : nodeConnections_output.Count;
+
+		for ( int i = pinCount-1; i > id; i--)
+			(pinMode == PinMode.Input ? nodeConnections_input[ i ] : nodeConnections_output[ i ]).id--;
+
+		if ( pinMode == PinMode.Input )
+			nodeConnections_input.RemoveAt( id );
+		else
+			nodeConnections_output.RemoveAt( id );
+
+		
 	}
 
 	public int GetPinCount( PinMode pinMode )
