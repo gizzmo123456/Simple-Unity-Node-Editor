@@ -258,6 +258,8 @@ public abstract class BaseNodeGraphEditor<T> : BaseNodeEditor<T> where T : BaseN
 
 	public void CancelNodeConnection()
 	{
+		if ( connectingFromNode < 0 && connectingToNode < 0 ) return; 
+
 		cancelConnection = true;
 	}
 
