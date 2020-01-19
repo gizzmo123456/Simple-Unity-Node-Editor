@@ -690,9 +690,11 @@ public class NodePin_Output : NodePin_Input
 
 		bool connMoved = false;
 
-		if ( ownerNode.GetPinPosition(0, BaseNodeGraphData.PinMode.Output) != connectionStartPosition )
+		Vector2 curveStartPosition = ownerNode.GetPinPosition( id, BaseNodeGraphData.PinMode.Output ) + ownerNode.GetConnectionOffset( BaseNodeGraphData.PinMode.Output );
+
+		if ( curveStartPosition != connectionStartPosition )
 		{
-			connectionStartPosition = ownerNode.GetPinPosition( 0, BaseNodeGraphData.PinMode.Output );
+			connectionStartPosition = curveStartPosition;
 			connMoved = true;
 		}
 		
@@ -711,7 +713,7 @@ public class NodePin_Output : NodePin_Input
 			if ( connMoved || inConnMoved )
 			{
 
-				GenerateBezierCurve( ownerNode.GetPinPosition( id, BaseNodeGraphData.PinMode.Output ) + ownerNode.GetConnectionOffset(BaseNodeGraphData.PinMode.Output),
+				GenerateBezierCurve( curveStartPosition,
 									 connectedNode.GetPinPosition( connection.connectedSlotId, BaseNodeGraphData.PinMode.Input ) + ownerNode.GetConnectionOffset( BaseNodeGraphData.PinMode.Input ), 
 									 ref connection.connectionCurve );
 
