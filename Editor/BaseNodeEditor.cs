@@ -224,13 +224,12 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
     /// removes node at id
     /// </summary>
     /// <returns>true if node was removed </returns>
-    public virtual bool RemoveNode (int id)
+    public virtual void RemoveNode (int id)
     {
-        if ( id < 0 || id >= nodes.Count ) return false;
+        if ( id < 0 || id >= nodes.Count ) return;
     
         nodes.RemoveAt( id );
 
-        return true;
     }
 
 
