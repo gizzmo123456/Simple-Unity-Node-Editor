@@ -46,3 +46,4 @@
 [ ] move node size functions into nodeData
 [ ] move the node window into nodeData
 this will alow different nodes data to to exist in the same graph and each one will be its own node type.
+[ ] futher move add a base class for all the serialized data and functions :)
