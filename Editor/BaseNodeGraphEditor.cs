@@ -66,6 +66,20 @@ public abstract class BaseNodeGraphEditor<T> : BaseNodeEditor<T> where T : BaseN
 		return base.AddNode( data );
 	}
 
+	public override void RemoveNode ( int id )
+	{
+		Debug.Log( "b4 Node Count: " + nodes.Count );
+		base.RemoveNode( id ); 
+		Debug.Log( "af Node Count: " + nodes.Count );
+
+		// update all connection id
+		for ( int i = 0; i < nodes.Count; i++ )
+		{
+			nodes[ i ].UpdateConnectingNodeIds( id );
+		}
+		
+	}
+
 	protected override Rect ClampNodePosition ( Rect nodeRect, int winId = 0 )
 	{
 
@@ -581,6 +595,18 @@ public class BaseNodeGraphData : BaseNodeData
 	}
 
 	/// <summary>
+	/// Updated the output connection id, removing the affter id (intended for remove node)
+	/// </summary>
+	/// <param name="affterNodeId"> all nodes id's after this id will be updated </param>
+	/// <param name="updateAmount"> the amount to update the node id by </param>
+	public void UpdateConnectingNodeIds( int affterNodeId, int updateAmount = -1)	// would if be wort doing it in a range....
+	{
+		for (int outId = 0; outId < nodeConnections_output.Count; ++outId )
+			nodeConnections_output[ outId ].UpdateConnectedNodeIds( affterNodeId, updateAmount, true );
+
+	}
+
+	/// <summary>
 	/// The offset position from the pin that the connection should be drawn
 	/// </summary>
 	/// <returns></returns>
@@ -661,6 +687,28 @@ public class NodePin_Output : NodePin_Input
 		connections.Add( new NodeConnectionData( nodeId, slotId, curvePoints ) );
 	}
 
+	/// <summary>
+	/// Updated the output connection id (intended for remove node)
+	/// </summary>
+	/// <param name="affterNodeId"> all nodes id's after this id will be updated </param>
+	/// <param name="updateAmount"> the amount to update the node id by </param>
+	/// <param name="removeAffterNodeId">Should the node at 'afterNodeId' be removed?</param>
+	public void UpdateConnectedNodeIds( int affterNodeId, int updateAmount, bool removeAffterNodeId )
+	{
+		for ( int conId = connections.Count - 1; conId >= 0; --conId )
+		{
+			if ( removeAffterNodeId && affterNodeId == connections[conId].connectedNodeId)
+			{
+				connections.RemoveAt( conId );
+			}
+			else if ( connections[conId].connectedNodeId > affterNodeId )
+			{
+				connections[ conId ].UpdateNodeId( updateAmount );
+			}
+		}
+
+	}
+
 	public bool HasConnection(int nodeId, int slotId)
 	{
 		foreach ( NodeConnectionData conn in connections )
@@ -705,6 +753,12 @@ public class NodePin_Output : NodePin_Input
 			NodeConnectionData connection = connections[ i ];
 			// GenerateCurve if a node has moved.
 			BaseNodeGraphData connectedNode = getNode( connection.connectedNodeId );
+
+			if (connectedNode == null)
+			{
+				Debug.LogErrorFormat( "Unable to draw connection from node {0} to node {1}. Node {1} does not exist", id, connection.connectedNodeId );
+				continue;
+			}
 
 			// skip if both nodes are not visable
 			if ( !isVisable( ownerNode.NodeRect.position ) && !isVisable( connectedNode.NodeRect.position ) )
@@ -815,6 +869,16 @@ struct NodeConnectionData
 		connectionCurve = new Vector2[ curvePoints + 1 ];
 		inputPin_startPosition = Vector2.zero;
 
+	}
+
+	public void SetNodeId( int newNodeId )
+	{
+		connectedNodeId = newNodeId;
+	}
+
+	public void UpdateNodeId( int amountToUpdate )
+	{
+		connectedNodeId += amountToUpdate;
 	}
 
 	public void SetStartPosition( Vector2 position )
