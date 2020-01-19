@@ -701,10 +701,15 @@ public class NodePin_Output : NodePin_Input
 			{
 				connections.RemoveAt( conId );
 			}
-			else if ( connections[conId].connectedNodeId > affterNodeId )
+			else if ( connections[ conId ].connectedNodeId > affterNodeId )
 			{
-				connections[ conId ].UpdateNodeId( updateAmount );
+
+				NodeConnectionData conData = connections[ conId ];
+				conData.UpdateNodeId( updateAmount );
+				connections[ conId ] = conData;
+
 			}
+
 		}
 
 	}
