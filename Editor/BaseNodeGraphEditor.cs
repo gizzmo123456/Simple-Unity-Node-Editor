@@ -482,16 +482,6 @@ public class BaseNodeGraphData : BaseNodeData
 		nodeConnections_output[pinId].pinColor = color;
 	}
 
-	public void RemovePin<T> (T node) where T : NodePin_Input 
-	{
-		if ( node is NodePin_Input )
-			nodeConnections_input.Remove( node );
-		else if ( node is NodePin_Output )
-			nodeConnections_output.Remove( node as NodePin_Output );
-		else
-			Debug.LogError( "Error, can not remove pin NodeConnection type not found!" );
-	}
-
 	public void RemovePin ( int id, PinMode pinMode )
 	{
 
