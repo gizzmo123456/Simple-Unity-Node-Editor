@@ -11,6 +11,11 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
 
     protected GUISkin guiSkin;
     protected abstract string NodeStyleName { get; }
+    public virtual string SavePath { get => "/NodeGraphSaveData"; }
+    public virtual string SaveFileName { get => "NodeGraphData.asset"; }
+    public virtual string SaveDataName { get; set; }
+    NodeGraphSaveData savedData;
+
 
     protected int uniqueID;
 
@@ -309,6 +314,31 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
         return new Rect(Vector2.zero, nodes[ nodeId ].NodeRect.size);
     }
 
+    public virtual void SaveNodeGraph()
+    {
+        if (string.IsNullOrWhiteSpace(SaveDataName))
+        {
+            Debug.LogError( "NodeGraph: unable to save data, no name provided" );
+            return;
+        }
+
+        if ( savedData == null)
+            savedData = new NodeGraphSaveData();
+
+        for ( int i = 0; i < nodes.Count; i++ )
+            savedData.UpdateData( "TEST", new NodeGraphSaveData.SaveData.Graph( nodes[ i ].GetNodePosition() ), i );
+
+        string dataString = JsonUtility.ToJson( savedData );
+
+        Debug.Log("Saved?!" + dataString);
+
+    }
+
+    public virtual void LoadNodeGraph()
+    {
+
+    }
+
 }
 
 public abstract class BaseNodeData
@@ -361,83 +391,52 @@ public abstract class BaseNodeData
 
 }
 
-public class NodeGraphSaveData : Object
+[System.Serializable]
+public class NodeGraphSaveData : ScriptableObject
 {
-    protected Dictionary<string, List<NodeGraphSaveData.SaveData>> data = new Dictionary<string, List<SaveData>>();
 
-    /// <summary>
-    /// Adds or Updates saved data
-    /// </summary>
-    /// <param name="saveDataName"> name of data group to save to</param>
-    /// <param name="data"> the data to save</param>
-    /// <param name="id">the id of the data, <0 will amend to end. >data.count will add default saves datas upto ID</param>
-    public void UpdateData( string saveDataName, NodeGraphSaveData.SaveData dataToSave, int id )
+    public List<NodeGraphSaveData.SaveData> data = new List<SaveData>();
+    
+    public void UpdateData(string saveDataName, SaveData.Graph graphData, int id)
     {
-        if ( !data.ContainsKey( saveDataName ) )
-            data.Add( saveDataName, new List<NodeGraphSaveData.SaveData>() );
 
-        if ( id < 0 || id == data[ saveDataName ].Count )
-        {   // amend
-            data[ saveDataName ].Add( dataToSave );
-        }
-        else if ( id < data[saveDataName].Count)
-        {   // update
-            data[ saveDataName ][ id ] = dataToSave;
-        }
-        else if ( id > data[ saveDataName ].Count )
+        for (int i = 0; i < data.Count; i++ )
         {
-            // add default elements between data array end and id
-            int defaultElements = data[ saveDataName ].Count - id;
-            data[ saveDataName ].AddRange( new NodeGraphSaveData.SaveData[ defaultElements ] );
-            // add id
-            data[ saveDataName ].Add( dataToSave );
-        }
-    }
-
-    public void RemoveData( string saveDataName )
-    {
-        if ( !data.ContainsKey( saveDataName ) )
-        {
-            Debug.LogErrorFormat( "NodeGraph SaveData: No data save for {0}", saveDataName );
-            return;
+            if (data[i].graphName == saveDataName )
+            {
+                data[ i ].graph.Add( graphData );
+                return;
+            }
         }
 
-        data.Remove( saveDataName );
-    }
-
-    public NodeGraphSaveData.SaveData GetSaveData( string saveDataName, int id )
-    {
-        if ( !data.ContainsKey(saveDataName) )
-        {
-            Debug.LogErrorFormat( "NodeGraph SaveData: No data save for {0}", saveDataName );
-            return null;
-        }
-
-        if ( id < 0 || id >= data[saveDataName].Count)
-        {
-            Debug.LogWarningFormat( "NodeGraph SaveData: No data save for {0} ID: {1}", saveDataName, id );
-            return null;
-        }
-
-        return data[ saveDataName ][ id ];
+        data.Add( new SaveData( saveDataName ) );
+        data[ data.Count - 1 ].graph.Add( graphData );
 
     }
 
-    public List<NodeGraphSaveData.SaveData> GetAllSavedData ( string saveDataName )
-    {
-        if ( !data.ContainsKey( saveDataName ) )
-        {
-            Debug.LogErrorFormat( "NodeGraph SaveData: No data save for {0}", saveDataName );
-            return null;
-        }
-
-        return data[ saveDataName ];
-
-    }
-
+    [System.Serializable]
     public class SaveData
     {
-        Vector2 nodePosition = Vector2.zero;
+        public string graphName;
+        public List<Graph> graph;
+
+        public SaveData(string name)
+        {
+            graphName = name;
+            graph = new List<Graph>();
+        }
+
+        [System.Serializable]
+        public class Graph
+        {
+            public Vector2 nodePosition = Vector2.zero;
+
+            public Graph ( Vector2 pos )
+            {
+                nodePosition = pos;
+            }
+        }
+
     }
 
 }
