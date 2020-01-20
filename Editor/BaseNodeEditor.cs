@@ -360,3 +360,84 @@ public abstract class BaseNodeData
 
 
 }
+
+public class NodeGraphSaveData : Object
+{
+    protected Dictionary<string, List<NodeGraphSaveData.SaveData>> data = new Dictionary<string, List<SaveData>>();
+
+    /// <summary>
+    /// Adds or Updates saved data
+    /// </summary>
+    /// <param name="saveDataName"> name of data group to save to</param>
+    /// <param name="data"> the data to save</param>
+    /// <param name="id">the id of the data, <0 will amend to end. >data.count will add default saves datas upto ID</param>
+    public void UpdateData( string saveDataName, NodeGraphSaveData.SaveData dataToSave, int id )
+    {
+        if ( !data.ContainsKey( saveDataName ) )
+            data.Add( saveDataName, new List<NodeGraphSaveData.SaveData>() );
+
+        if ( id < 0 || id == data[ saveDataName ].Count )
+        {   // amend
+            data[ saveDataName ].Add( dataToSave );
+        }
+        else if ( id < data[saveDataName].Count)
+        {   // update
+            data[ saveDataName ][ id ] = dataToSave;
+        }
+        else if ( id > data[ saveDataName ].Count )
+        {
+            // add default elements between data array end and id
+            int defaultElements = data[ saveDataName ].Count - id;
+            data[ saveDataName ].AddRange( new NodeGraphSaveData.SaveData[ defaultElements ] );
+            // add id
+            data[ saveDataName ].Add( dataToSave );
+        }
+    }
+
+    public void RemoveData( string saveDataName )
+    {
+        if ( !data.ContainsKey( saveDataName ) )
+        {
+            Debug.LogErrorFormat( "NodeGraph SaveData: No data save for {0}", saveDataName );
+            return;
+        }
+
+        data.Remove( saveDataName );
+    }
+
+    public NodeGraphSaveData.SaveData GetSaveData( string saveDataName, int id )
+    {
+        if ( !data.ContainsKey(saveDataName) )
+        {
+            Debug.LogErrorFormat( "NodeGraph SaveData: No data save for {0}", saveDataName );
+            return null;
+        }
+
+        if ( id < 0 || id >= data[saveDataName].Count)
+        {
+            Debug.LogWarningFormat( "NodeGraph SaveData: No data save for {0} ID: {1}", saveDataName, id );
+            return null;
+        }
+
+        return data[ saveDataName ][ id ];
+
+    }
+
+    public List<NodeGraphSaveData.SaveData> GetAllSavedData ( string saveDataName )
+    {
+        if ( !data.ContainsKey( saveDataName ) )
+        {
+            Debug.LogErrorFormat( "NodeGraph SaveData: No data save for {0}", saveDataName );
+            return null;
+        }
+
+        return data[ saveDataName ];
+
+    }
+
+    public class SaveData
+    {
+        Vector2 nodePosition = Vector2.zero;
+    }
+
+}
