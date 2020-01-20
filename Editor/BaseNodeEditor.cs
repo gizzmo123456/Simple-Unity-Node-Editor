@@ -315,7 +315,7 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
 		return new Rect(Vector2.zero, nodes[ nodeId ].NodeRect.size);
 	}
 
-	protected virtual string GetGraphSaveNameFromGameObject( GameObject go )
+	public virtual string GetGraphSaveNameFromGameObject( GameObject go )
 	{
 		if ( go == null ) return "";
 
