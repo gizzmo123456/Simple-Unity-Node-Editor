@@ -315,6 +315,12 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
 		return new Rect(Vector2.zero, nodes[ nodeId ].NodeRect.size);
 	}
 
+	protected virtual string GetGraphSaveNameFromGameObject( GameObject go )
+	{
+		if ( go == null ) return "";
+
+		return go.scene + "::" + go.name;
+	}
 	/// <summary>
 	/// Saves the current graph to 'graph name'
 	/// this will overwrite any pre existing data for 'graph name'
