@@ -19,3 +19,41 @@ MonoBehaviour:
     - nodePosition: {x: 943, y: 392}
     - nodePosition: {x: 179, y: 337}
     - nodePosition: {x: 567, y: 633}
+  - graphName: hgfdhf
+    graph:
+    - nodePosition: {x: 467, y: 38}
+    - nodePosition: {x: 752, y: 374}
+    - nodePosition: {x: 193, y: 361}
+    - nodePosition: {x: 5, y: 5}
+  - graphName: 
+    graph:
+    - nodePosition: {x: 467, y: 38}
+    - nodePosition: {x: 752, y: 374}
+    - nodePosition: {x: 193, y: 361}
+    - nodePosition: {x: 5, y: 5}
+  - graphName: 'UnityEngine.SceneManagement.Scene::Dialogue_main::__DIALOGUE__ '
+    graph:
+    - nodePosition: {x: 417, y: 133}
+    - nodePosition: {x: 5, y: 5}
+    - nodePosition: {x: 5, y: 5}
+    - nodePosition: {x: 5, y: 5}
+  - graphName: UnityEngine.SceneManagement.Scene::Dialogue (Test)::Dialogue_main
+    graph:
+    - nodePosition: {x: 448, y: 74}
+    - nodePosition: {x: 761, y: 320}
+    - nodePosition: {x: 265, y: 418}
+    - nodePosition: {x: 5, y: 5}
+  - graphName: UnityEngine.SceneManagement.Scene::Dialogue (Main Stroy) [0]::Dialogue_main
+    graph:
+    - nodePosition: {x: 5, y: 5}
+    - nodePosition: {x: 5, y: 5}
+    - nodePosition: {x: 5, y: 5}
+    - nodePosition: {x: 5, y: 5}
+    - nodePosition: {x: 5, y: 5}
+    - nodePosition: {x: 5, y: 5}
+    - nodePosition: {x: 5, y: 5}
+    - nodePosition: {x: 5, y: 5}
+    - nodePosition: {x: 5, y: 5}
+    - nodePosition: {x: 5, y: 5}
+    - nodePosition: {x: 5, y: 5}
+    - nodePosition: {x: 5, y: 5}

@@ -319,7 +319,7 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
 	{
 		if ( go == null ) return "";
 
-		string name = go.scene + "::" + go.name;
+		string name = go.scene.name + "::" + go.name;
 
 		if (go.transform.parent != null)
 		{
