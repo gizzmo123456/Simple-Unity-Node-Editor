@@ -319,7 +319,14 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
 	{
 		if ( go == null ) return "";
 
-		return go.scene + "::" + go.name;
+		string name = go.scene + "::" + go.name;
+
+		if (go.transform.parent != null)
+		{
+			name += "::" + go.transform.parent.name;
+		}
+
+		return name;
 	}
 	/// <summary>
 	/// Saves the current graph to 'graph name'
