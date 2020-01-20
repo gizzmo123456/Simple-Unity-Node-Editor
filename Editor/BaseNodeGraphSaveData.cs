@@ -7,7 +7,7 @@ public class NodeGraphSaveData : ScriptableObject
 
     public List<NodeGraphSaveData.GraphSaveGroup> data = new List<NodeGraphSaveData.GraphSaveGroup>();
 
-    // Cache the last data loaded or saved, to prevent so mean lookup :)
+    // Cache the last data loaded or saved, to prevent so many lookups :)
     int cachedDataIndex = -1; 
 
     /// <summary>
