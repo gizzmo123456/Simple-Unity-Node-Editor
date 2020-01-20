@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: NodeGraphData
+  m_EditorClassIdentifier: Assembly-CSharp-Editor::NodeGraphSaveData
+  data:
+  - graphName: TEST
+    graph:
+    - nodePosition: {x: 613, y: 107}
+    - nodePosition: {x: 943, y: 392}
+    - nodePosition: {x: 179, y: 337}
+    - nodePosition: {x: 567, y: 633}
