@@ -25,7 +25,7 @@
 [C] Add order changed callback to Vertical Editor  
 [C] Add NodeConnection changed callback to graph editor   
 
-[ ] Add Save/Load  
+[C] Add Save/Load  
 [ ] Add limits to node connections  
 &nbsp;    [ ] Types  
 &nbsp;    [ ] Count  
@@ -41,6 +41,7 @@
 [F] Fixed NodeConnectionData inputPin_startPosition not updateing  
 
 [ ] Fix node outputs using itself for pin size it should use the node that it is connecting to.
+[ ] Finish applying LockNodesInPlaymode. It might be worth moving this in to the node data.
 
 # ##
 [ ] move node size functions into nodeData
