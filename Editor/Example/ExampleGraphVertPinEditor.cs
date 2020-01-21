@@ -2,15 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Obsolete]
 public class ExampleGraphVertPinEditor : BaseNodeGraphVertPinsEditor<ExampleGraphVertPinData>
 {
 	public ExampleGraphVertPinEditor ( int uid ) : base( uid ) { }
 	public ExampleGraphVertPinEditor ( int uid, Rect pannelRect ) : base( uid, pannelRect ) { }
 
-	protected override void DrawNodeUI ( int nodeId )
-	{
-		GUI.Label( new Rect( 25, 50, 300, 300 ), nodes[ nodeId ].exampleText );
-	}
 }
 
 public class ExampleGraphVertPinData : BaseDialogueGraphVertPinData
@@ -29,5 +26,10 @@ public class ExampleGraphVertPinData : BaseDialogueGraphVertPinData
 		: base( _title, _dragable, _inputStartPosition, _outputStartPosition, _pinSize )
 	{
 		exampleText = text;
+	}
+
+	protected override void NodeUi ()
+	{
+		GUI.Label( new Rect( 0, 0, 300, 300 ), exampleText );
 	}
 }

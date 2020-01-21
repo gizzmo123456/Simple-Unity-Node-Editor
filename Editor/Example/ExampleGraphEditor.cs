@@ -3,16 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
+[System.Obsolete]
 public class ExampleGraphEditor : BaseNodeGraphEditor<ExampleNodeGraphData>
 {
 
 	public ExampleGraphEditor ( int uid ) : base( uid ) { }
 	public ExampleGraphEditor ( int uid, Rect pannelRect ) : base( uid, pannelRect ){}
-
-	protected override void DrawNodeUI ( int nodeId )
-	{
-		GUI.Label( new Rect( 0, 0, 300, 300 ), nodes[ nodeId ].exampleText );
-	}
 
 }
 
@@ -34,4 +30,8 @@ public class ExampleNodeGraphData : BaseNodeGraphData
 		exampleText = text; 
 	}
 
+	protected override void NodeUi ()
+	{
+		GUI.Label( new Rect( 0, 0, 300, 300 ), exampleText );
+	}
 }
