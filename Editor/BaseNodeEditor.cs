@@ -157,21 +157,6 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
 	}
 
 	/// <summary>
-	/// default node size
-	/// </summary>
-	/// <returns></returns>
-	[System.Obsolete("Being Removed")]
-	protected abstract Vector2 NodeSize ();
-
-	/// <summary>
-	/// Gets node size for given node id.
-	/// </summary>
-	/// <param name="nodeId"></param>
-	/// <returns></returns>
-	[System.Obsolete( "Being Removed" )]
-	protected virtual Vector2 NodeSize ( int nodeId ) { return NodeSize(); }
-
-	/// <summary>
 	/// Defines where a node should be spawned
 	/// </summary>
 	/// <returns></returns>

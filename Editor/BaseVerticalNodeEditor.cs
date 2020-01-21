@@ -128,7 +128,7 @@ public abstract class BaseVerticalEditor<T> : BaseNodeEditor<T> where T : BaseVe
     protected override Rect GetNodeContentsPosition ( int nodeId )
     {
         float uiWidth = nodes[ nodeId ].NodeRect.size.x - 60;
-        return new Rect( 40, 12, uiWidth, NodeSize( nodeId ).y - 12 );
+        return new Rect( 40, 12, uiWidth, nodes[nodeId].GetNodeSize().y - 12 );
     }
 
     protected override Rect GetNodeDragableArea ( int nodeId )
