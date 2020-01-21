@@ -146,6 +146,17 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
 	}
 
 	/// <summary>
+	/// Get the position relevent to the inner viewport. ie taking scrol bar into acount (use node.GetNodePosition for position to editor window)
+	/// </summary>
+	/// <param name="nodeId"></param>
+	/// <returns></returns>
+	protected Vector2 GetNodePositionReleventToViewPort ( int nodeId )
+	{
+		// Get node position gets the position to the editor window
+		return nodes[ nodeId ].GetNodePosition() + panelScrollPosition - panelRect.position;
+	}
+
+	/// <summary>
 	/// default node size
 	/// </summary>
 	/// <returns></returns>

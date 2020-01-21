@@ -13,6 +13,10 @@ public abstract class BaseNodeGraphEditor<T> : BaseNodeEditor<T> where T : BaseN
 	public enum ConnectNodesStatus { Started, Canceled, Connected, Disconnected }
 
 	protected Rect scrolViewInnerRect = Rect.zero;
+	protected virtual int EdgeExtendMargin { get => 25; }
+	protected virtual float EdgeExtendSpeed { get => 0.333f; }
+	protected virtual float EdgeScrolSpeed { get => 2.5f; }
+	protected int selectedNodeId = -1;
 
 	protected override string NodeStyleName => "";
 
@@ -45,7 +49,8 @@ public abstract class BaseNodeGraphEditor<T> : BaseNodeEditor<T> where T : BaseN
 		
 		base.DrawNode( nodeId );
 
-		
+		if ( selectedNodeId == nodeId )
+			ExtendScrolView( nodeId );
 
 	}
 
@@ -53,12 +58,67 @@ public abstract class BaseNodeGraphEditor<T> : BaseNodeEditor<T> where T : BaseN
 	{
 
 		if ( scrolViewInnerRect == Rect.zero )
-			scrolViewInnerRect = new Rect( Vector2.zero, panelRect.size * 2 );
+			scrolViewInnerRect = new Rect( Vector2.zero, panelRect.size - new Vector2(20, 20));
 
 		return scrolViewInnerRect;
 	}
 
+	/// <summary>
+	/// check if any node should extend the scrol view
+	/// </summary>
+	/// <param name="nodeId"></param>
+	protected virtual void ExtendScrolView ( int nodeId )
+	{
 
+		Vector2 extendAmount = Vector2.zero;
+		Vector2 nodePosition = GetNodePositionReleventToViewPort(nodeId);
+		Vector2 nodeSize = nodes[ nodeId ].GetNodeSize();
+		Vector2 moveNodeAmount = Vector2.zero;
+		Vector2 scrolAmount = Vector2.zero;
+
+		// extend the scrole view
+		if ( nodePosition.x + nodeSize.x > scrolViewInnerRect.width - EdgeExtendMargin )
+		{
+			extendAmount.x = nodePosition.x + nodeSize.x - (scrolViewInnerRect.width - EdgeExtendMargin);
+
+			moveNodeAmount.x -= extendAmount.x * EdgeExtendSpeed * Time.deltaTime;
+			scrolAmount.x += extendAmount.x * EdgeScrolSpeed * Time.deltaTime;
+		}
+		else if( nodePosition.x < EdgeExtendMargin )
+		{
+			extendAmount.x = EdgeExtendMargin - nodePosition.x;
+
+			moveNodeAmount.x += extendAmount.x * EdgeExtendSpeed * Time.deltaTime;
+			moveNodeAmount.x += extendAmount.x * EdgeExtendSpeed;
+
+			scrolAmount.x += extendAmount.x * EdgeScrolSpeed * Time.deltaTime;
+		}
+
+		if ( nodePosition.y + nodeSize.y > scrolViewInnerRect.height - EdgeExtendMargin )
+		{
+			extendAmount.y = nodePosition.y + nodeSize.y - ( scrolViewInnerRect.height - EdgeExtendMargin );
+
+			moveNodeAmount.y += extendAmount.y * EdgeExtendSpeed * Time.deltaTime;
+			scrolAmount.y += extendAmount.y * EdgeScrolSpeed * Time.deltaTime;
+		}
+		else if ( nodePosition.y < EdgeExtendMargin )
+		{
+			extendAmount.y = EdgeExtendMargin - extendAmount.y;
+
+			moveNodeAmount.y += extendAmount.y * EdgeExtendSpeed * Time.deltaTime;
+			moveNodeAmount.y += extendAmount.y * EdgeExtendSpeed;
+
+			scrolAmount.y += extendAmount.y * EdgeScrolSpeed * Time.deltaTime;
+		}
+
+		extendAmount.x = Mathf.Max( 0, extendAmount.x );
+		extendAmount.y = Mathf.Max( 0, extendAmount.y );
+
+		scrolViewInnerRect.size += extendAmount * EdgeExtendSpeed;
+		panelScrollPosition += scrolAmount;
+		MoveAllNodes( moveNodeAmount - scrolAmount, nodeId );
+
+	}
 
 	protected override Vector2 NodeSize ()
 	{
@@ -109,6 +169,17 @@ public abstract class BaseNodeGraphEditor<T> : BaseNodeEditor<T> where T : BaseN
 		if ( nodeRect.y < panelRect.y - panelScrollPosition.y ) nodeRect.y = panelRect.y - panelScrollPosition.y;
 
 		return nodeRect;
+	}
+
+	protected virtual void MoveAllNodes(Vector2 moveDelta, int except = -1 )
+	{
+		for ( int i = 0; i < nodes.Count; i++ )
+		{
+			if ( i == except ) continue;
+
+			nodes[ i ].MoveNode(moveDelta);
+
+		}
 	}
 
 	protected override void NodeWindow ( int windowId )
@@ -367,7 +438,15 @@ public abstract class BaseNodeGraphEditor<T> : BaseNodeEditor<T> where T : BaseN
 	protected virtual void NodePressed( int nodeId, Vector2 mousePosition, bool pressed )
 	{
 
-		if ( pressed ) return;
+		if ( pressed )
+		{
+			selectedNodeId = nodeId;
+			return;
+		}
+		else
+		{
+			selectedNodeId = -1;
+		}
 
 		int inputPinCount = nodes[ nodeId ].GetPinCount( BaseNodeGraphData.PinMode.Input );
 		int outputPinCount = nodes[ nodeId ].GetPinCount( BaseNodeGraphData.PinMode.Output );
