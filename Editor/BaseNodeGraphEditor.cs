@@ -12,6 +12,8 @@ public abstract class BaseNodeGraphEditor<T> : BaseNodeEditor<T> where T : BaseN
 	public enum ConnectNodesType { To, From, Cancel }
 	public enum ConnectNodesStatus { Started, Canceled, Connected, Disconnected }
 
+	protected Rect scrolViewInnerRect = Rect.zero;
+
 	protected override string NodeStyleName => "";
 
 	bool invokedConnectingFromCallback = false;
@@ -26,7 +28,7 @@ public abstract class BaseNodeGraphEditor<T> : BaseNodeEditor<T> where T : BaseN
 	public BaseNodeGraphEditor (int uid) : base(uid) { }
 	public BaseNodeGraphEditor (int uid, Rect pannelRect) : base(uid, pannelRect) 
 	{
-		nodeReleased += NodeReleased;	
+		nodePressed += NodePressed;	
 	}
 
 	public override void Draw ( EditorWindow window )
@@ -37,6 +39,26 @@ public abstract class BaseNodeGraphEditor<T> : BaseNodeEditor<T> where T : BaseN
 		ConnectNodes();
 
 	}
+
+	protected override void DrawNode ( int nodeId )
+	{
+		
+		base.DrawNode( nodeId );
+
+		
+
+	}
+
+	protected override Rect GetPannelViewRect ()
+	{
+
+		if ( scrolViewInnerRect == Rect.zero )
+			scrolViewInnerRect = new Rect( Vector2.zero, panelRect.size * 2 );
+
+		return scrolViewInnerRect;
+	}
+
+
 
 	protected override Vector2 NodeSize ()
 	{
@@ -342,8 +364,10 @@ public abstract class BaseNodeGraphEditor<T> : BaseNodeEditor<T> where T : BaseN
 
 	}
 
-	protected virtual void NodeReleased( int nodeId, Vector2 mousePosition )
+	protected virtual void NodePressed( int nodeId, Vector2 mousePosition, bool pressed )
 	{
+
+		if ( pressed ) return;
 
 		int inputPinCount = nodes[ nodeId ].GetPinCount( BaseNodeGraphData.PinMode.Input );
 		int outputPinCount = nodes[ nodeId ].GetPinCount( BaseNodeGraphData.PinMode.Output );

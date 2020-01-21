@@ -15,11 +15,11 @@ public abstract class BaseVerticalEditor<T> : BaseNodeEditor<T> where T : BaseVe
 
     public BaseVerticalEditor (int uid) : base(uid) {
         
-        nodeReleased += NodeReleased;
+        nodePressed += NodeReleased;
     }
     public BaseVerticalEditor(int uid, Rect pannelRect) : base(uid, pannelRect) {
         
-        nodeReleased += NodeReleased;
+        nodePressed += NodeReleased;
     }
 
     protected override void DrawNode ( int nodeId )
@@ -76,8 +76,10 @@ public abstract class BaseVerticalEditor<T> : BaseNodeEditor<T> where T : BaseVe
         return rect;
     }
 
-    protected virtual void NodeReleased( int nodeId, Vector2 mousePosition ) 
+    protected virtual void NodeReleased( int nodeId, Vector2 mousePosition, bool pressed ) 
     {
+
+        if ( pressed ) return;
 
         Vector2 winPos = ( nodes[ nodeId ].GetNodePosition() - panelRect.position + panelScrollPosition );
 
