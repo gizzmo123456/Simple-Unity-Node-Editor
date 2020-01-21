@@ -426,7 +426,7 @@ public abstract class BaseNodeData
 {
 
 	protected Rect rect = Rect.zero;
-	public Rect NodeRect { get => rect; set => rect = value; }
+	public Rect NodeRect { get => rect; set => rect = value; }	// Set needs removing.
 
 
 	public Vector2 pressedPosition = Vector2.zero;
@@ -437,33 +437,60 @@ public abstract class BaseNodeData
 	{
 		title = _title;
 		dragable = _dragable;
+		Init();
 	}
 
+	/// <summary>
+	/// Initalizes the node.
+	/// </summary>
+	protected virtual void Init()
+	{
+
+	}
+
+	/// <summary>
+	/// Set the node position relevent to the editor window
+	/// </summary>
+	/// <param name="position"> new position </param>
 	public void SetNodePosition(Vector2 position)
 	{
 		rect.position = position;
 	}
 
-	public void MoveNode(Vector2 amountToMove)
+	/// <summary>
+	/// Move the node by delta amount
+	/// </summary>
+	/// <param name="moveDelta"> amount to move node </param>
+	public void MoveNode(Vector2 moveDelta)
 	{
-		rect.position += amountToMove;
+		rect.position += moveDelta;
 	}
 
+	/// <summary>
+	/// Gets the position of node relevent to the editor window
+	/// </summary>
 	public Vector2 GetNodePosition()
 	{
 		return rect.position;
 	}
 
+	/// <summary>
+	/// Gets the center point of the node relevent to the node window
+	/// </summary>
 	public Vector2 GetNodeCenter()
 	{
 		return rect.center;
 	}
 
+	[System.Obsolete("Function will be removed and the node size will be set internaly")]
 	public void SetNodeSize(Vector2 size)
 	{
 		rect.size = size;
 	}
 
+	/// <summary>
+	/// Gets the size of the node.
+	/// </summary>
 	public Vector2 GetNodeSize()
 	{
 		return rect.size;
