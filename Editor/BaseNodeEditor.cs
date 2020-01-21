@@ -160,6 +160,7 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
 	/// default node size
 	/// </summary>
 	/// <returns></returns>
+	[System.Obsolete("Being Removed")]
 	protected abstract Vector2 NodeSize ();
 
 	/// <summary>
@@ -167,6 +168,7 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
 	/// </summary>
 	/// <param name="nodeId"></param>
 	/// <returns></returns>
+	[System.Obsolete( "Being Removed" )]
 	protected virtual Vector2 NodeSize ( int nodeId ) { return NodeSize(); }
 
 	/// <summary>
@@ -487,6 +489,11 @@ public abstract class BaseNodeData
 	{
 		rect.size = size;
 	}
+
+	/// <summary>
+	/// Generates the size the node for its current state.
+	/// </summary>
+	protected abstract void GenerateNodeSize ();
 
 	/// <summary>
 	/// Gets the size of the node.

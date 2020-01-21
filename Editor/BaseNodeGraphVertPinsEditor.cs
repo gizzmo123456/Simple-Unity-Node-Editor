@@ -36,7 +36,7 @@ public abstract class BaseNodeGraphVertPinsEditor<T> : BaseNodeGraphEditor<T> wh
 
 }
 
-public class BaseDialogueGraphVertPinData : BaseNodeGraphData
+public abstract class BaseDialogueGraphVertPinData : BaseNodeGraphData
 {
 
 	public BaseDialogueGraphVertPinData ( string _title, bool _dragable ) : base( "", _dragable ) { }
