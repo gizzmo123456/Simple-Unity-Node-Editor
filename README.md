@@ -48,3 +48,41 @@
 [ ] move the node window into nodeData
 this will alow different nodes data to to exist in the same graph and each one will be its own node type.
 [ ] futher move add a base class for all the serialized data and functions :)
+
+## Refacter
+Any functions that are specific to nodes need to be moved into the node data class
+This way it will be much easyer to define different nodes in the same graph.
+
+^^ this will also fix the function duplercation and confusion on what function to use!
+
+Also a serialized data class needs to be added to help keep the serialized data 
+orginized and serparate from the graph and editor window but designed to be used as a common asset :D.
+
+=========== BASE NODE EDITOR
+[ ] NodeSize
+[ ] Node window
+[ ] GetNodeContentsPosition
+[ ] DrawNodeUI
+[ ] GetNodeDragableArea
+[ ] NodeLocked (and finish imperlermenting)
+
+=========== BASE NODE GRAPH EDITOR
+[ ] DrawNodePins
+[ ] AddPin_toNode 			(replace or remove)
+[ ] AddOutputPin_toNode		(replace or remove)
+[ ] RemovePin_fromNode		(replace or remove)
+
+=========== MAYBE MAKE THE EMPTY BASE CLASS AND ADD A NEW CLASS FOR HOZ PINS
+
+=========== BASE NODE GRAPH VERT PINS
+
+[ ]
+
+
+
+
+
+
+
+
+
