@@ -9,18 +9,6 @@ public abstract class BaseNodeGraphVertPinsEditor<T> : BaseNodeGraphEditor<T> wh
 	public BaseNodeGraphVertPinsEditor ( int uid ) : base( uid ) { }
 	public BaseNodeGraphVertPinsEditor ( int uid, Rect pannelRect ) : base( uid, pannelRect ) { }
 
-	protected override Vector2 NodeSize ()
-	{
-		return new Vector2( 300, 150 );
-	}
-
-	protected override Vector2 NodeSize ( int nodeId )
-	{
-		Vector2 nodeSize = NodeSize();
-
-		return nodeSize;
-	}
-
 	protected override Rect GetNodeContentsPosition ( int nodeId )
 	{
 		Vector2 nodeSize = nodes[ nodeId ].NodeRect.size;
@@ -49,6 +37,11 @@ public abstract class BaseDialogueGraphVertPinData : BaseNodeGraphData
 
 
 	public override NodePin_Output.BezierControlePointOffset BezierControlePointOffset { get => NodePin_Output.BezierControlePointOffset.Vertical; }
+
+	protected override void GenerateNodeSize ()
+	{
+		rect.size = new Vector2( 300, 150 );
+	}
 
 	public override void GeneratePinSizeAndPosition ( Vector2 nodeSize )
 	{
