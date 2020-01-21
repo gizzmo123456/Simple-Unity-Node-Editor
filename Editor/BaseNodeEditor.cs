@@ -5,8 +5,15 @@ using UnityEditor;
 
 public abstract class BaseNodeEditor<T> where T : BaseNodeData
 {
+
 	public delegate void nodeSelected ( int nodeId, Vector2 mousePosition, bool pressed );
 	public event nodeSelected nodePressed;
+
+	/// <param name="nodeId">The node id that has been added or removed</param>
+	/// <param name="added">has the id been added or removed?</param>
+	public delegate void nodeListChanged (int nodeId, bool added);
+	public event nodeListChanged NodeListChanged;
+
 
 	protected GUISkin guiSkin;
 	protected abstract string NodeStyleName { get; }
@@ -201,9 +208,17 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
 
 	public virtual T AddNode ( T data )
 	{
+
+		int newNodeId = nodes.Count;
+
+		data.Init( newNodeId, RemoveNode, GetNode );
+		NodeListChanged += data.NodeListChanged;			// Give the node Add and Remove notifications
+
 		data.SetNodePosition( NodeStartPosition() );
 
 		nodes.Add( data );
+
+		NodeListChanged?.Invoke( newNodeId, true );
 
 		return data;
 	}
@@ -212,11 +227,15 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
 	/// removes node at id
 	/// </summary>
 	/// <returns>true if node was removed </returns>
-	public virtual void RemoveNode ( int id )
+	public virtual void RemoveNode ( int nodeId )
 	{
-		if ( id < 0 || id >= nodes.Count ) return;
+		if ( nodeId < 0 || nodeId >= nodes.Count ) return;
 
-		nodes.RemoveAt( id );
+		NodeListChanged -= nodes[ nodeId ].NodeListChanged;     // Revoke the nodes privileges
+
+		nodes.RemoveAt( nodeId );                               // And destroy him (or what ever the hell a node is) once and for all.
+
+		NodeListChanged?.Invoke( nodeId, false );
 
 	}
 
@@ -393,13 +412,21 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
 public abstract class BaseNodeData
 {
 
+	public delegate void NodeAction ( int nodeId );
+	public delegate BaseNodeData GetNodeAction( int nodeId );
+
+	protected NodeAction RemoveNodeFromGraph;
+	protected GetNodeAction GetOtherNodeFromGrph;
+
+	public int Id { get; set; }
+
+	// Node position
 	protected Rect rect = Rect.zero;
-	public Rect NodeRect { get => rect; set => rect = value; }	// Set needs removing.
+	public Rect NodeRect { get => rect; set => rect = value; }  // Set needs removing.
 
-
-	public Vector2 pressedPosition = Vector2.zero;
 	public string title = "title";
-
+	public Vector2 pressedPosition = Vector2.zero;
+	
 	public bool dragable = true;
 
 	public bool LockNodeInPlayMode => true;
@@ -409,14 +436,33 @@ public abstract class BaseNodeData
 	{
 		title = _title;
 		dragable = _dragable;
-		Init();
 	}
 
 	/// <summary>
-	/// Initalizes the node.
+	/// Initalizes the node, should be called directly affter adding the node!
 	/// </summary>
-	protected virtual void Init()
+	public virtual void Init( int nodeId, NodeAction removeNodeFunt, GetNodeAction getOtherNodeFunt)
 	{
+
+		Id = nodeId;
+
+		RemoveNodeFromGraph = removeNodeFunt;
+		GetOtherNodeFromGrph = getOtherNodeFunt;
+
+	}
+
+	/// <summary>
+	/// Method called by the graph when a node is added or removed
+	/// </summary>
+	/// <param name="nodeId"> the node that was added or removed </param>
+	/// <param name="added"> was the noded added? </param>
+	public void NodeListChanged( int nodeId, bool added )
+	{
+
+		if ( added && nodeId <= Id )
+			Id++;
+		else if ( !added && nodeId < Id )
+			Id--;
 
 	}
 
