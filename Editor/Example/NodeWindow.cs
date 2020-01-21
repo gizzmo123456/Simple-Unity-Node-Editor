@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
-
+/*
 public class NodeWindow : EditorWindow
 {
 
@@ -111,3 +111,4 @@ public class NodeWindow : EditorWindow
 	}
 
 }
+*/

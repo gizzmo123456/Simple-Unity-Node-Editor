@@ -18,7 +18,7 @@ public class ExampleVerticalEditor : BaseVerticalEditor<ExampleVerticalNodeData>
 public class ExampleVerticalNodeData : BaseVerticalNodeData
 {
 
-    public ExampleVerticalNodeData ( bool _dragable, string text ) : base( _dragable ) { exampleString = text; }
+    public ExampleVerticalNodeData ( bool _dragable, string text, Vector2 _nodeSize ) : base( _dragable, _nodeSize ) { exampleString = text; }
 
     public string exampleString = "Helloo World";
 }
