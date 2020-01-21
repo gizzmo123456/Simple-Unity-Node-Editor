@@ -211,30 +211,21 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
 	}
 
 	/// <summary>
-	/// removes nodes of nodeData
+	/// removes node at id
 	/// </summary>
-	public virtual void RemoveNode ( T nodeData )
+	/// <returns>true if node was removed </returns>
+	public virtual void RemoveNode ( int id )
 	{
-		nodes.Remove( nodeData );
+		if ( id < 0 || id >= nodes.Count ) return;
+
+		nodes.RemoveAt( id );
+
 	}
 
 	public virtual void RemoveAllNodes()
 	{
 		nodes.Clear();
 	}
-
-	/// <summary>
-	/// removes node at id
-	/// </summary>
-	/// <returns>true if node was removed </returns>
-	public virtual void RemoveNode (int id)
-	{
-		if ( id < 0 || id >= nodes.Count ) return;
-	
-		nodes.RemoveAt( id );
-
-	}
-
 
 	/// <summary>
 	/// does node rect contain position

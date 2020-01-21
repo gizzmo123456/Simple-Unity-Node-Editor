@@ -59,7 +59,7 @@ Also a serialized data class needs to be added to help keep the serialized data
 orginized and serparate from the graph and editor window but designed to be used as a common asset :D.
 
 =========== BASE NODE EDITOR
-[ ] NodeSize
+[C] NodeSize
 [ ] Node window
 [ ] GetNodeContentsPosition
 [ ] DrawNodeUI
