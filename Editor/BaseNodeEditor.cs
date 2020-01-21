@@ -288,12 +288,12 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
 			GUI.DragWindow(GetNodeDragableArea(nodeId));
 		}
 
-
-		
 	}
 
+	[System.Obsolete( "Being moved!" )]
 	protected abstract Rect GetNodeContentsPosition ( int nodeId );
 
+	[System.Obsolete("Being moved!")]
 	protected abstract void DrawNodeUI ( int nodeId );
 
 	protected virtual Rect GetNodeDragableArea(int nodeId)
@@ -475,5 +475,26 @@ public abstract class BaseNodeData
 		return rect.size;
 	}
 
+	/// <summary>
+	/// Gets the main contents area of the node; 
+	/// Useful to restrict areas of the node for other things ie. pins :)
+	/// </summary>
+	protected virtual Rect GetNodeContentsPosition ()
+	{
+		return Rect.zero;
+	}
+
+	/// <summary>
+	/// Main Node UI
+	/// </summary>
+	protected abstract void NodeUi ();
+
+	/// <summary>
+	/// Draws the nodes contents to the window.
+	/// </summary>
+	public virtual void DrawNode ()
+	{
+
+	}
 
 }
