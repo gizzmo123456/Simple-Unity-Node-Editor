@@ -283,7 +283,7 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
 		DrawNodeUI( nodeId );
 		GUI.EndGroup();
 
-		if ( nodes[ nodeId ].NodeLocked && nodes[nodeId].dragable )
+		if ( !nodes[ nodeId ].NodeLocked && nodes[nodeId].dragable )
 		{
 			GUI.DragWindow(GetNodeDragableArea(nodeId));
 		}

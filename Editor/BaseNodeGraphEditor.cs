@@ -148,7 +148,7 @@ public abstract class BaseNodeGraphEditor<T> : BaseNodeEditor<T> where T : BaseN
 		return nodeRect;
 	}
 
-	protected virtual void MoveAllNodes(Vector2 moveDelta, int except = -1 )
+	protected virtual void MoveAllNodes(Vector2 moveDelta, int except = -1 )	// TODO: Move to base?
 	{
 		for ( int i = 0; i < nodes.Count; i++ )
 		{
@@ -234,8 +234,6 @@ public abstract class BaseNodeGraphEditor<T> : BaseNodeEditor<T> where T : BaseN
 			}
 
 		}
-
-		
 
 	}
 
