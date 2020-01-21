@@ -96,7 +96,7 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
 			nodes[ i ].MoveNode(scrolDelta);
 
 			// hide node if not viable of if the node has been releassed due to the mouse leaveing the node area.
-			if ( (!PositionIsVisable( nodes[ i ].GetCenter() ) && pressedNode != i ) || (pressedNode < 0 && releasedNode > -1) )
+			if ( (!PositionIsVisable( nodes[ i ].GetNodeCenter() ) && pressedNode != i ) || (pressedNode < 0 && releasedNode > -1) )
 				continue; 
 
 			DrawNode( i );
@@ -454,7 +454,7 @@ public abstract class BaseNodeData
 		return rect.position;
 	}
 
-	public Vector2 GetCenter()
+	public Vector2 GetNodeCenter()
 	{
 		return rect.center;
 	}
