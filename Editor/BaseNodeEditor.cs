@@ -358,7 +358,7 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
 		}
 
 		NodeGraphSaveData graphSavedData = GetNodeGraphSaveData();
-
+		
 		if ( graphSavedData == null ) return;
 
 		// Add/Update the current node graph
