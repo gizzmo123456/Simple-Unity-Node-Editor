@@ -3,24 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
+[System.Obsolete( "It has no functions any more! Use BaseNodeGraphEditor and use 'BaseDialogueGraphVertPinData' as it minimal T type" )]
 public abstract class BaseNodeGraphVertPinsEditor<T> : BaseNodeGraphEditor<T> where T : BaseDialogueGraphVertPinData
 {
 
 	public BaseNodeGraphVertPinsEditor ( int uid ) : base( uid ) { }
 	public BaseNodeGraphVertPinsEditor ( int uid, Rect pannelRect ) : base( uid, pannelRect ) { }
-
-	protected override Rect GetNodeContentsPosition ( int nodeId )
-	{
-		Vector2 nodeSize = nodes[ nodeId ].NodeRect.size;
-
-		return new Rect()
-		{
-			y = 0,
-			x = 22,
-			width = nodeSize.x - 10,
-			height = nodeSize.y - 44
-		};
-	}
 
 }
 
@@ -55,6 +43,20 @@ public abstract class BaseDialogueGraphVertPinData : BaseNodeGraphData
 
 		outputPin_localStartPosition.x = -pinSize.x + 25;
 		outputPin_localStartPosition.y = rect.height - ( pinSize.y * 2f );
+
+	}
+
+	protected override Rect GetNodeContentsPosition ()
+	{
+		Vector2 nodeSize = rect.size;
+
+		return new Rect()
+		{
+			y = 0,
+			x = 22,
+			width = nodeSize.x - 10,
+			height = nodeSize.y - 44
+		};
 
 	}
 

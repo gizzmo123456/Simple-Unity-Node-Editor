@@ -176,20 +176,6 @@ public abstract class BaseNodeGraphEditor<T> : BaseNodeEditor<T> where T : BaseN
 
 	}
 
-	protected override Rect GetNodeContentsPosition ( int nodeId )
-	{
-		Vector2 nodeSize = nodes[ nodeId ].NodeRect.size;
-
-		return new Rect()
-		{
-			x = nodeSize.x / 4f,
-			y = 18,
-			width = nodeSize.x / 2f,
-			height = nodeSize.y - 36
-		};
-
-	}
-
 	protected virtual void DrawNodePins(int node_id)
 	{
 
@@ -515,6 +501,19 @@ public abstract class BaseNodeGraphData : BaseNodeData
 		outputPin_localStartPosition.x = -pinSize.x + rect.width - pinSize.x;
 		outputPin_localStartPosition.y = 5;
 
+	}
+
+	protected override Rect GetNodeContentsPosition ()
+	{
+		Vector2 nodeSize = rect.size;
+
+		return new Rect()
+		{
+			x = nodeSize.x / 4f,
+			y = 18,
+			width = nodeSize.x / 2f,
+			height = nodeSize.y - 36
+		};
 	}
 
 	/// <summary>

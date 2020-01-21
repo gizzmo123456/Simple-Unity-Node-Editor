@@ -279,9 +279,7 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
 			pressedNode = -1;
 		}
 
-		GUI.BeginGroup( GetNodeContentsPosition(nodeId) );
-		DrawNodeUI( nodeId );
-		GUI.EndGroup();
+		nodes[ nodeId ].DrawNode();
 
 		if ( !nodes[ nodeId ].NodeLocked && nodes[nodeId].dragable )
 		{
@@ -479,10 +477,7 @@ public abstract class BaseNodeData
 	/// Gets the main contents area of the node; 
 	/// Useful to restrict areas of the node for other things ie. pins :)
 	/// </summary>
-	protected virtual Rect GetNodeContentsPosition ()
-	{
-		return Rect.zero;
-	}
+	protected abstract Rect GetNodeContentsPosition ();
 
 	/// <summary>
 	/// Main Node UI
@@ -494,6 +489,12 @@ public abstract class BaseNodeData
 	/// </summary>
 	public virtual void DrawNode ()
 	{
+
+		GUI.BeginGroup( GetNodeContentsPosition() );
+
+		NodeUi();
+
+		GUI.EndGroup();
 
 	}
 

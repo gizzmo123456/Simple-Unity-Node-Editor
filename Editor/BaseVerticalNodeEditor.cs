@@ -125,12 +125,6 @@ public abstract class BaseVerticalEditor<T> : BaseNodeEditor<T> where T : BaseVe
 
     }
 
-    protected override Rect GetNodeContentsPosition ( int nodeId )
-    {
-        float uiWidth = nodes[ nodeId ].NodeRect.size.x - 60;
-        return new Rect( 40, 12, uiWidth, nodes[nodeId].GetNodeSize().y - 12 );
-    }
-
     protected override Rect GetNodeDragableArea ( int nodeId )
     {
         return new Rect( Vector2.zero, new Vector2( 50, nodeHeight ) );
@@ -154,6 +148,12 @@ public abstract class BaseVerticalNodeData : BaseNodeData
     protected override void GenerateNodeSize ()
     {
         rect.size = nodeSize;
+    }
+
+    protected override Rect GetNodeContentsPosition ()
+    {
+        float uiWidth = rect.size.x - 60;
+        return new Rect( 40, 12, rect.width, rect.height - 12 );
     }
 
 }

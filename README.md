@@ -64,7 +64,7 @@ orginized and serparate from the graph and editor window but designed to be used
 [ ] GetNodeContentsPosition
 [ ] DrawNodeUI
 [ ] GetNodeDragableArea
-[ ] NodeLocked (and finish imperlermenting)
+[C] NodeLocked (and finish imperlermenting)
 
 =========== BASE NODE GRAPH EDITOR
 [ ] DrawNodePins
