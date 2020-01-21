@@ -40,11 +40,6 @@ public abstract class BaseVerticalEditor<T> : BaseNodeEditor<T> where T : BaseVe
         return new Rect( Vector2.zero, new Vector2(panelRect.width, nodes.Count * nodeHeight) );
     }
 
-    protected override Vector2 NodeSize ()
-    {
-        return new Vector2( panelRect.width, nodeHeight );
-    }
-
     protected override Vector2 NodeStartPosition ()
     {
         return new Vector2( panelRect.x, panelRect.y + nodes.Count  * nodeHeight );
@@ -148,6 +143,17 @@ public abstract class BaseVerticalNodeData : BaseNodeData
 
     public int yId;
 
-    public BaseVerticalNodeData ( bool _dragable ) : base( "", _dragable) { }
+    protected Vector2 nodeSize;     // NOTE: it might be worth having a method back to BaseNodeEditor to get the Viewport info. ie position, scrol position & inner rect size.
+
+
+    public BaseVerticalNodeData ( bool _dragable, Vector2 _nodeSize ) : base( "", _dragable)
+    {
+        nodeSize = _nodeSize;
+    }
+
+    protected override void GenerateNodeSize ()
+    {
+        rect.size = nodeSize;
+    }
 
 }
