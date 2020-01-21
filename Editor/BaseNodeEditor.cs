@@ -16,8 +16,6 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
 	public virtual string SavePath { get => "Assets/Scripts/NodeGraph/Editor/SavedData/"; }
 	public virtual string AssetName { get => "NodeGraphData.asset"; }
 
-	public virtual bool LockNodesInPlayMode { get => true; }
-
 	protected int uniqueID;
 
 	public Rect panelRect { get; set; }
@@ -285,7 +283,7 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
 		DrawNodeUI( nodeId );
 		GUI.EndGroup();
 
-		if ( !NodesLocked() && nodes[nodeId].dragable )
+		if ( nodes[ nodeId ].NodeLocked && nodes[nodeId].dragable )
 		{
 			GUI.DragWindow(GetNodeDragableArea(nodeId));
 		}
@@ -301,11 +299,6 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
 	protected virtual Rect GetNodeDragableArea(int nodeId)
 	{
 		return new Rect(Vector2.zero, nodes[ nodeId ].NodeRect.size);
-	}
-
-	protected bool NodesLocked()
-	{
-		return EditorApplication.isPlaying && LockNodesInPlayMode;
 	}
 
 	public virtual string GetGraphSaveNameFromGameObject( GameObject go )
@@ -408,7 +401,11 @@ public abstract class BaseNodeData
 
 	public Vector2 pressedPosition = Vector2.zero;
 	public string title = "title";
+
 	public bool dragable = true;
+
+	public bool LockNodeInPlayMode => true;
+	public bool NodeLocked => LockNodeInPlayMode && EditorApplication.isPlaying;
 
 	public BaseNodeData(string _title, bool _dragable)
 	{
