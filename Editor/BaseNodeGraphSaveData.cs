@@ -94,7 +94,7 @@ public class NodeGraphSaveData : ScriptableObject
 
     private bool IsCached( string graphName )
     {
-        return cachedDataIndex > -1 && data[ cachedDataIndex ].graphName == graphName;
+        return cachedDataIndex > -1 && cachedDataIndex < data.Count && data[ cachedDataIndex ].graphName == graphName;
     }
 
     [ System.Serializable]
