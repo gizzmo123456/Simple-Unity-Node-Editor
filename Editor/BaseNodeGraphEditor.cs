@@ -382,7 +382,7 @@ public abstract class BaseNodeGraphEditor<T> : BaseNodeEditor<T> where T : BaseN
 	public virtual void AddPin_toNode(int nodeId, string connectionLable, BaseNodeGraphData.PinMode pinMode)
 	{
 		nodes[ nodeId ].AddPin( connectionLable, pinMode );
-		nodes[ nodeId ].GeneratePinSizeAndPosition( nodes[ nodeId ].NodeRect.size );
+		nodes[ nodeId ].GeneratePinSizeAndPosition();
 	}
 
 	/// <summary>
@@ -391,7 +391,7 @@ public abstract class BaseNodeGraphEditor<T> : BaseNodeEditor<T> where T : BaseN
 	public virtual void AddOutputPin_toNode ( int nodeId, string connectionLable, Color pinColor )
 	{
 		nodes[ nodeId ].AddOutputPin( connectionLable, pinColor );
-		nodes[ nodeId ].GeneratePinSizeAndPosition( nodes[ nodeId ].NodeRect.size );
+		nodes[ nodeId ].GeneratePinSizeAndPosition();
 	}
 
 	/// <summary>
@@ -403,7 +403,7 @@ public abstract class BaseNodeGraphEditor<T> : BaseNodeEditor<T> where T : BaseN
 	public virtual void RemovePin_fromNode(int nodeId, int pinId, BaseNodeGraphData.PinMode pinMode)
 	{
 		nodes[ nodeId ].RemovePin( pinId, pinMode );
-		nodes[ nodeId ].GeneratePinSizeAndPosition( nodes[ nodeId ].NodeRect.size );
+		nodes[ nodeId ].GeneratePinSizeAndPosition();
 
 	}
 
@@ -501,18 +501,19 @@ public abstract class BaseNodeGraphData : BaseNodeData
 
 	}
 
-	public virtual void GeneratePinSizeAndPosition( Vector2 nodeSize ) // TODO: remove the param nodeSize, and use function GetNodeSize (from base class :/)
+	public virtual void GeneratePinSizeAndPosition() // TODO: remove the param nodeSize, and use function GetNodeSize (from base class :/)
 	{
-		
-		pinSize.x = nodeSize.x / 4f;
+
+		GenerateNodeSize();
+
+
+		pinSize.x = rect.width / 4f;
 
 		inputPin_localStartPosition.x = -pinSize.x;
 		inputPin_localStartPosition.y = 5;
 
-		outputPin_localStartPosition.x = -pinSize.x + nodeSize.x - pinSize.x;
+		outputPin_localStartPosition.x = -pinSize.x + rect.width - pinSize.x;
 		outputPin_localStartPosition.y = 5;
-
-		GenerateNodeSize();	// update the node size :)
 
 	}
 

@@ -43,15 +43,18 @@ public abstract class BaseDialogueGraphVertPinData : BaseNodeGraphData
 		rect.size = new Vector2( 300, 150 );
 	}
 
-	public override void GeneratePinSizeAndPosition ( Vector2 nodeSize )
+	public override void GeneratePinSizeAndPosition ()
 	{
-		pinSize.x = ( nodeSize.x / Mathf.Clamp( NodeConnections_output.Count, 1, 4 ) ) - ( 50 / Mathf.Clamp( NodeConnections_output.Count, 1, 4 ) ) - 12f;
+
+		GenerateNodeSize();
+
+		pinSize.x = ( rect.width / Mathf.Clamp( NodeConnections_output.Count, 1, 4 ) ) - ( 50 / Mathf.Clamp( NodeConnections_output.Count, 1, 4 ) ) - 12f;
 
 		inputPin_localStartPosition.x = -pinSize.x + 25;
 		inputPin_localStartPosition.y = 0;
 
 		outputPin_localStartPosition.x = -pinSize.x + 25;
-		outputPin_localStartPosition.y = nodeSize.y - ( pinSize.y * 2f );
+		outputPin_localStartPosition.y = rect.height - ( pinSize.y * 2f );
 
 	}
 
