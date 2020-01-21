@@ -120,29 +120,6 @@ public abstract class BaseNodeGraphEditor<T> : BaseNodeEditor<T> where T : BaseN
 
 	}
 
-	protected override Vector2 NodeSize ()
-	{
-		return new Vector2( 125, 100 );
-	}
-
-	protected override Vector2 NodeSize( int nodeId )
-	{
-
-		Vector2 maxSize = new Vector2(400, 800);
-		Vector2 nodeSize = new Vector2( 300, 30 );
-
-		// get the node size by the amount of pins it has.
-		float maxPinPos = Mathf.Max( nodes[ nodeId ].GetPinLocalPosition( nodes[ nodeId ].GetPinCount( BaseNodeGraphData.PinMode.Input  ) - 1, BaseNodeGraphData.PinMode.Input  ).y,
-									 nodes[ nodeId ].GetPinLocalPosition( nodes[ nodeId ].GetPinCount( BaseNodeGraphData.PinMode.Output ) - 1, BaseNodeGraphData.PinMode.Output ).y );
-
-
-
-		nodeSize.y += maxPinPos;
-
-		return nodeSize;
-
-	}
-
 	public override T AddNode ( T data )
 	{
 		return base.AddNode( data );
@@ -478,7 +455,7 @@ public abstract class BaseNodeGraphEditor<T> : BaseNodeEditor<T> where T : BaseN
 
 }
 
-public class BaseNodeGraphData : BaseNodeData
+public abstract class BaseNodeGraphData : BaseNodeData
 {
 
 	public enum PinMode { Input, Output }
@@ -512,6 +489,21 @@ public class BaseNodeGraphData : BaseNodeData
 		inputPin_localStartPosition = _inputStartPosition;
 		outputPin_localStartPosition = _outputStartPosition;
 		pinSize = _pinSize;
+	}
+
+	protected override void GenerateNodeSize ()
+	{
+		Vector2 maxSize = new Vector2( 400, 800 );
+		Vector2 nodeSize = new Vector2( 300, 30 );
+
+		// get the node size by the amount of pins it has.
+		float maxPinPos = Mathf.Max( GetPinLocalPosition( GetPinCount( BaseNodeGraphData.PinMode.Input ) - 1, BaseNodeGraphData.PinMode.Input ).y,
+									 GetPinLocalPosition( GetPinCount( BaseNodeGraphData.PinMode.Output ) - 1, BaseNodeGraphData.PinMode.Output ).y );
+
+		nodeSize.y += maxPinPos;
+
+		rect.size = nodeSize;
+
 	}
 
 	public virtual void GeneratePinSizeAndPosition( Vector2 nodeSize ) // TODO: remove the param nodeSize, and use function GetNodeSize (from base class :/)
