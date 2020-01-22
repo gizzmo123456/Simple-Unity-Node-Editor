@@ -365,6 +365,7 @@ public abstract class BaseNodeGraphEditor<T> : BaseNodeEditor<T> where T : BaseN
 	/// <summary>
 	/// Adds a new pin to node, resizeing the node if necessary
 	/// </summary>
+	[System.Obsolete]
 	public virtual void AddPin_toNode(int nodeId, string connectionLable, BaseNodeGraphData.PinMode pinMode)
 	{
 		nodes[ nodeId ].AddPin( connectionLable, pinMode );
@@ -374,6 +375,7 @@ public abstract class BaseNodeGraphEditor<T> : BaseNodeEditor<T> where T : BaseN
 	/// <summary>
 	/// Adds a new output pin to node, resizeing the node if necessary
 	/// </summary>
+	[System.Obsolete]
 	public virtual void AddOutputPin_toNode ( int nodeId, string connectionLable, Color pinColor )
 	{
 		nodes[ nodeId ].AddOutputPin( connectionLable, pinColor );
@@ -386,6 +388,7 @@ public abstract class BaseNodeGraphEditor<T> : BaseNodeEditor<T> where T : BaseN
 	/// <param name="nodeId"></param>
 	/// <param name="connectionId"></param>
 	/// <param name="pinMode"></param>
+	[System.Obsolete]
 	public virtual void RemovePin_fromNode(int nodeId, int pinId, BaseNodeGraphData.PinMode pinMode)
 	{
 		nodes[ nodeId ].RemovePin( pinId, pinMode );
@@ -575,19 +578,25 @@ public abstract class BaseNodeGraphData : BaseNodeData
 		else
 			nodeConnections_output.Add( new NodePin_Output( nodeConnections_output.Count, this, connectionLable, BezierControlePointOffset ) );
 
+		GeneratePinSizeAndPosition();
+
 	}
 
+	[System.Obsolete]
 	public void AddOutputPin ( string connectionLable, Color pinColor )
 	{
 
 		if ( CanAddPin( PinMode.Output ) )
 			nodeConnections_output.Add( new NodePin_Output( nodeConnections_output.Count, this, connectionLable, BezierControlePointOffset, pinColor ) );
 
+		GeneratePinSizeAndPosition();
+
 	}
 
 	public void SetOutputPinColor( int pinId, Color color)
 	{
 		nodeConnections_output[pinId].pinColor = color;
+
 	}
 
 	public void RemovePin ( int id, PinMode pinMode )
@@ -603,7 +612,7 @@ public abstract class BaseNodeGraphData : BaseNodeData
 		else
 			nodeConnections_output.RemoveAt( id );
 
-		
+		GeneratePinSizeAndPosition();
 	}
 
 	public int GetPinCount( PinMode pinMode )
