@@ -307,12 +307,6 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
 
 	}
 
-	[System.Obsolete( "Being moved!" )]
-	protected abstract Rect GetNodeContentsPosition ( int nodeId );
-
-	[System.Obsolete("Being moved!")]
-	protected abstract void DrawNodeUI ( int nodeId );
-
 	protected virtual Rect GetNodeDragableArea(int nodeId)
 	{
 		return new Rect(Vector2.zero, nodes[ nodeId ].NodeRect.size);

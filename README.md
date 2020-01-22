@@ -78,6 +78,11 @@ orginized and serparate from the graph and editor window but designed to be used
 
 [ ]
 
+=================== NOTES
+- Have a look into move the serialized bits into the serilized class
+- need to find a way that we can automate updateing the serialized data array pointers :(
+-- NOTE on that, When dialogue is remove the array index fix as been diabled :(
+
 
 
 
