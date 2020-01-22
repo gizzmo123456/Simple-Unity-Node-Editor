@@ -233,7 +233,7 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
 
 		NodeListChanged -= nodes[ nodeId ].NodeListChanged;     // Revoke the nodes privileges
 
-		nodes.RemoveAt( nodeId );                               // And destroy him (or what ever the hell a node is) once and for all.
+		nodes.RemoveAt( nodeId );                               // And destroy him (or what ever the hell a node is) once and for all!! :D
 
 		NodeListChanged?.Invoke( nodeId, false );
 
