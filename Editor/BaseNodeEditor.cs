@@ -302,14 +302,9 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
 
 		if ( !nodes[ nodeId ].NodeLocked && nodes[nodeId].dragable )
 		{
-			GUI.DragWindow(GetNodeDragableArea(nodeId));
+			GUI.DragWindow(nodes[nodeId].GetNodeDragableArea());
 		}
 
-	}
-
-	protected virtual Rect GetNodeDragableArea(int nodeId)
-	{
-		return new Rect(Vector2.zero, nodes[ nodeId ].NodeRect.size);
 	}
 
 	public virtual string GetGraphSaveNameFromGameObject( GameObject go )
@@ -536,6 +531,16 @@ public abstract class BaseNodeData
 
 		GUI.EndGroup();
 
+	}
+
+	/// <summary>
+	/// The position within the node that can be used to drag the node around. <br/>
+	/// NOTE: Any position outside of the node will be ignored!
+	/// </summary>
+	/// <returns></returns>
+	public virtual Rect GetNodeDragableArea ()
+	{
+		return new Rect( Vector2.zero, NodeRect.size );
 	}
 
 }

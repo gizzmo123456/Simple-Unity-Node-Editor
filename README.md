@@ -63,7 +63,7 @@ orginized and serparate from the graph and editor window but designed to be used
 [C] Node window
 [C] GetNodeContentsPosition
 [C] DrawNodeUI
-[ ] GetNodeDragableArea
+[C] GetNodeDragableArea
 [C] NodeLocked (and finish imperlermenting)
 
 =========== BASE NODE GRAPH EDITOR

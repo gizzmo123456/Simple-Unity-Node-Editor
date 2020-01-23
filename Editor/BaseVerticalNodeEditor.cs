@@ -125,11 +125,6 @@ public abstract class BaseVerticalEditor<T> : BaseNodeEditor<T> where T : BaseVe
 
     }
 
-    protected override Rect GetNodeDragableArea ( int nodeId )
-    {
-        return new Rect( Vector2.zero, new Vector2( 50, nodeHeight ) );
-    }
-
 }
 
 public abstract class BaseVerticalNodeData : BaseNodeData
@@ -154,6 +149,11 @@ public abstract class BaseVerticalNodeData : BaseNodeData
     {
         float uiWidth = rect.size.x - 60;
         return new Rect( 40, 12, rect.width, rect.height - 12 );
+    }
+
+    public override Rect GetNodeDragableArea ( )
+    {
+        return new Rect( Vector2.zero, new Vector2( 50, nodeSize.y ) );
     }
 
 }
