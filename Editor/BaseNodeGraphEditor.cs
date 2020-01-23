@@ -120,22 +120,11 @@ public abstract class BaseNodeGraphEditor<T> : BaseNodeEditor<T> where T : BaseN
 
 	}
 
-	public override T AddNode ( T data )
-	{
-		return base.AddNode( data );
-	}
-
-	public override void RemoveNode ( int id )
+	public override void RemoveNode ( int id )	// TODO: remove!
 	{
 		Debug.Log( "b4 Node Count: " + nodes.Count );
 		base.RemoveNode( id ); 
 		Debug.Log( "af Node Count: " + nodes.Count );
-
-		// update all connection id
-		for ( int i = 0; i < nodes.Count; i++ )
-		{
-			nodes[ i ].UpdateConnectingNodeIds( id );
-		}
 		
 	}
 
@@ -376,6 +365,8 @@ public abstract class BaseNodeGraphData : BaseNodeData
 		pinSize = _pinSize;
 	}
 
+	#region BaseNodeData
+
 	protected override void GenerateNodeSize ()
 	{
 		Vector2 maxSize = new Vector2( 400, 800 );
@@ -407,6 +398,32 @@ public abstract class BaseNodeGraphData : BaseNodeData
 
 	}
 
+	protected override void NodeListChangeAction ( int fromId, int toId )
+	{
+		// update all the node connections for each output pin!
+
+		for (int oPinId = 0; oPinId < nodeConnections_output.Count; oPinId++ )
+		{
+
+			if (toId < 0)   // node removed
+			{
+				nodeConnections_output[ oPinId ].UpdateConnectedNodeIds( fromId, -1, true );	// decrese all connections from FromId, removing FromId connections
+			}
+			else if ( fromId < 0 ) // node added
+			{
+				nodeConnections_output[ oPinId ].UpdateConnectedNodeIds( toId, 1, false );		// increse all connections from toId
+			}
+			else // node moved.
+			{
+				// this could be optermized a lil better :) ie. only update the range
+				nodeConnections_output[oPinId].UpdateConnectedNodeIds( fromId, -1, false );     // decrese all connections from FromId, keeping FromId connections
+				nodeConnections_output[oPinId].UpdateConnectedNodeIds( toId, 1, false );        // increse all connections from toId
+			}
+
+		}
+		
+	}
+
 	protected override Rect GetNodeContentsPosition ()
 	{
 		Vector2 nodeSize = rect.size;
@@ -427,6 +444,8 @@ public abstract class BaseNodeGraphData : BaseNodeData
 		DrawNodePins();
 
 	}
+
+	#endregion 
 
 	protected virtual void DrawNodePins ()
 	{

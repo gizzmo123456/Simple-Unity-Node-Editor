@@ -455,10 +455,10 @@ public abstract class BaseNodeData
 	}
 
 	/// <summary>
-	/// Method called by the graph when a node graph changes
+	/// Method called by the graph when the node graph changes
 	/// </summary>
-	/// <param name="nodeId"> the position the node moved from. less than 0 is added </param>
-	/// <param name="added"> the position the node was moved to, less than 0 is removed </param>
+	/// <param name="fromId"> the position the node moved from. less than 0 is added </param>
+	/// <param name="toId"> the position the node was moved to, less than 0 is removed </param>
 	public void NodeListChanged( int fromId, int toId )
 	{
 
@@ -466,26 +466,24 @@ public abstract class BaseNodeData
 		{
 			// node has been added or moved below this index
 			++Id;
-			NodeListIncreasedBelow();
 		}
 		else if (fromId < Id && (toId < 0 || toId > Id))
 		{
 			// node has been removed from below or moved above this index 
 			--Id;
-			NodeListDecreasedBelow();
 		}
+
+		NodeListChangeAction( fromId, toId );
 
 	}
 
 	/// <summary>
-	/// The action to preform if a node is moved or added below this node
+	/// The action to be preformed when the list of nodes changes.
 	/// </summary>
-	protected abstract void NodeListIncreasedBelow ();
-
-	/// <summary>
-	/// The action to preform is a node is removed from below or moved above this node.
-	/// </summary>
-	protected abstract void NodeListDecreasedBelow ();
+	/// <param name="fromId"> the position the node moved from. less than 0 is added </param>
+	/// <param name="toId"> the position the node was moved to, less than 0 is removed </param>
+	protected abstract void NodeListChangeAction ( int fromId, int toId );	// iv chooses to add a function rather than overriding NodeListChanged
+																			// to mimimize error. Since the Id MUST be updated!
 
 	/// <summary>
 	/// Set the node position relevent to the editor window

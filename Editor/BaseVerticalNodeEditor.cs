@@ -140,10 +140,14 @@ public abstract class BaseVerticalNodeData : BaseNodeData
         nodeSize = _nodeSize;
     }
 
-    protected override void GenerateNodeSize ()
+	#region BaseNodeData
+
+	protected override void GenerateNodeSize ()
     {
         rect.size = nodeSize;
     }
+
+    // TODO: Add default action when nodes are reordered. ir override NodeListChangeAction
 
     protected override Rect GetNodeContentsPosition ()
     {
@@ -156,4 +160,5 @@ public abstract class BaseVerticalNodeData : BaseNodeData
         return new Rect( Vector2.zero, new Vector2( 50, nodeSize.y ) );
     }
 
+    #endregion;
 }
