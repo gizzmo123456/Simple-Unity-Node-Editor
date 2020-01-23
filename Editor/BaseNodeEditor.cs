@@ -11,7 +11,7 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
 
 	/// <param name="nodeId">The node id that has been added or removed</param>
 	/// <param name="added">has the id been added or removed?</param>
-	public delegate void nodeListChanged (int nodeId, bool added, bool initialized );
+	public delegate void nodeListChanged (int nodeId, bool added);
 	public event nodeListChanged NodeListChanged;
 
 	protected GUISkin guiSkin;
@@ -226,7 +226,8 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
 
 		nodes.Add( data );
 
-		NodeListChanged?.Invoke( newNodeId, true, initialized );
+		if ( initialized )
+			NodeListChanged?.Invoke( newNodeId, true );
 
 		return data;
 	}
@@ -243,7 +244,8 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
 
 		nodes.RemoveAt( nodeId );                               // And destroy him (or what ever the hell a node is) once and for all!! :D
 
-		NodeListChanged?.Invoke( nodeId, false, initialized );
+		if ( initialized )
+			NodeListChanged?.Invoke( nodeId, false );
 
 	}
 
@@ -457,10 +459,8 @@ public abstract class BaseNodeData
 	/// </summary>
 	/// <param name="nodeId"> the node that was added or removed </param>
 	/// <param name="added"> was the noded added? </param>
-	public void NodeListChanged( int nodeId, bool added, bool initalized )
+	public void NodeListChanged( int nodeId, bool added )
 	{
-
-		if ( !initalized ) return;
 
 		if ( added && nodeId <= Id )
 			Id++;
