@@ -60,9 +60,9 @@ orginized and serparate from the graph and editor window but designed to be used
 
 =========== BASE NODE EDITOR
 [C] NodeSize
-[WIP] Node window
-[WIP] GetNodeContentsPosition
-[WIP] DrawNodeUI
+[C] Node window
+[C] GetNodeContentsPosition
+[C] DrawNodeUI
 [ ] GetNodeDragableArea
 [C] NodeLocked (and finish imperlermenting)
 
