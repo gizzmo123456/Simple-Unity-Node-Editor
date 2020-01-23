@@ -362,40 +362,6 @@ public abstract class BaseNodeGraphEditor<T> : BaseNodeEditor<T> where T : BaseN
 		cancelConnection = false;
 	}
 
-	/// <summary>
-	/// Adds a new pin to node, resizeing the node if necessary
-	/// </summary>
-	[System.Obsolete]
-	public virtual void AddPin_toNode(int nodeId, string connectionLable, BaseNodeGraphData.PinMode pinMode)
-	{
-		nodes[ nodeId ].AddPin( connectionLable, pinMode );
-		nodes[ nodeId ].GeneratePinSizeAndPosition();
-	}
-
-	/// <summary>
-	/// Adds a new output pin to node, resizeing the node if necessary
-	/// </summary>
-	[System.Obsolete]
-	public virtual void AddOutputPin_toNode ( int nodeId, string connectionLable, Color pinColor )
-	{
-		nodes[ nodeId ].AddOutputPin( connectionLable, pinColor );
-		nodes[ nodeId ].GeneratePinSizeAndPosition();
-	}
-
-	/// <summary>
-	/// Removes a pin from node, resizeing the node if necessary
-	/// </summary>
-	/// <param name="nodeId"></param>
-	/// <param name="connectionId"></param>
-	/// <param name="pinMode"></param>
-	[System.Obsolete]
-	public virtual void RemovePin_fromNode(int nodeId, int pinId, BaseNodeGraphData.PinMode pinMode)
-	{
-		nodes[ nodeId ].RemovePin( pinId, pinMode );
-		nodes[ nodeId ].GeneratePinSizeAndPosition();
-
-	}
-
 	protected virtual void NodePressed( int nodeId, Vector2 mousePosition, bool pressed )
 	{
 
@@ -582,7 +548,7 @@ public abstract class BaseNodeGraphData : BaseNodeData
 
 	}
 
-	[System.Obsolete]
+	[System.Obsolete] // i think that types will make this obsolete :)
 	public void AddOutputPin ( string connectionLable, Color pinColor )
 	{
 
