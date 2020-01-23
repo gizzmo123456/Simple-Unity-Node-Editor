@@ -671,18 +671,6 @@ public abstract class BaseNodeGraphData : BaseNodeData
 	}
 
 	/// <summary>
-	/// Updated the output connection id, removing the affter id (intended for remove node)
-	/// </summary>
-	/// <param name="affterNodeId"> all nodes id's after this id will be updated </param>
-	/// <param name="updateAmount"> the amount to update the node id by </param>
-	public void UpdateConnectingNodeIds( int affterNodeId, int updateAmount = -1)	// would if be wort doing it in a range....
-	{
-		for (int outId = 0; outId < nodeConnections_output.Count; ++outId )
-			nodeConnections_output[ outId ].UpdateConnectedNodeIds( affterNodeId, updateAmount, true );
-
-	}
-
-	/// <summary>
 	/// The offset position from the pin that the connection should be drawn
 	/// </summary>
 	/// <returns></returns>
