@@ -67,25 +67,14 @@ orginized and serparate from the graph and editor window but designed to be used
 [C] NodeLocked (and finish imperlermenting)
 
 =========== BASE NODE GRAPH EDITOR
-[ ] DrawNodePins
-[ ] AddPin_toNode 			(replace or remove)
-[ ] AddOutputPin_toNode		(replace or remove)
-[ ] RemovePin_fromNode		(replace or remove)
+[C] DrawNodePins
+[C] AddPin_toNode 			(replace or remove)
+[C] AddOutputPin_toNode		(replace or remove)
+[C] RemovePin_fromNode		(replace or remove)
 
 =========== MAYBE MAKE THE EMPTY BASE CLASS AND ADD A NEW CLASS FOR HOZ PINS
 
 =========== BASE NODE GRAPH VERT PINS
-
-[ ]
-
-=================== NOTES
-- Have a look into move the serialized bits into the serilized class
-- need to find a way that we can automate updateing the serialized data array pointers :(
--- NOTE on that, When dialogue is remove the array index fix as been diabled :(
-
-
-
-
 
 
 
