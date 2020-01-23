@@ -219,15 +219,17 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
 	{
 
 		int newNodeId = nodes.Count;
-		data.Init( newNodeId, RemoveNode, GetNode, guiSkin );
-		NodeListChanged += data.NodeListChanged;			// Give the node Add and Remove notifications
 
+		data.Init( newNodeId, RemoveNode, GetNode, guiSkin );
 		data.SetNodePosition( NodeStartPosition() );
 
 		nodes.Add( data );
 
-		if ( initialized )
+		// invoke the list changed callback befor added the new node to prevent it being updated
+		if (initialized)
 			NodeListChanged?.Invoke( -1, newNodeId );
+		
+		NodeListChanged += data.NodeListChanged;            // Give the new node Add and Remove notifications
 
 		return data;
 	}
@@ -462,18 +464,22 @@ public abstract class BaseNodeData
 	public void NodeListChanged( int fromId, int toId )
 	{
 
-		if ( (fromId < 0 || fromId > Id) && toId <= Id )
+		NodeListChangeAction( fromId, toId );
+
+		Debug.LogFormat("cID {2}, From {0}, To{1}", fromId, toId, Id);
+
+		if ( (fromId < 0 || fromId > Id) && toId >= 0 && toId <= Id )
 		{
 			// node has been added or moved below this index
 			++Id;
+			Debug.Log("Incress");
 		}
-		else if (fromId < Id && (toId < 0 || toId > Id))
+		else if (fromId >= 0 && fromId < Id && (toId < 0 || toId > Id))
 		{
 			// node has been removed from below or moved above this index 
 			--Id;
+			Debug.Log( "Decress" );
 		}
-
-		NodeListChangeAction( fromId, toId );
 
 	}
 
