@@ -24,6 +24,14 @@ public class EditorWindowEvent
 	public static Vector2 MousePosition { get; private set; }
 	public static EventType Type { get; private set; }
 
+	/// <summary>
+	/// Gets the mouse position relevent to rect position.
+	/// </summary>
+	public static Vector2 MousePositionRelevent( Rect rect )
+	{
+		return MousePosition - rect.position;
+	}
+
 	public void Update()
 	{
 		HasEvent = Event.current != null;
