@@ -11,7 +11,7 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
 
 	/// <param name="nodeId">The node id that has been added or removed</param>
 	/// <param name="added">has the id been added or removed?</param>
-	public delegate void nodeListChanged (int nodeId, bool added);
+	public delegate void nodeListChanged (int fromId, int toId);
 	public event nodeListChanged NodeListChanged;
 
 	protected GUISkin guiSkin;
@@ -227,7 +227,7 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
 		nodes.Add( data );
 
 		if ( initialized )
-			NodeListChanged?.Invoke( newNodeId, true );
+			NodeListChanged?.Invoke( -1, newNodeId );
 
 		return data;
 	}
@@ -245,7 +245,7 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
 		nodes.RemoveAt( nodeId );                               // And destroy him (or what ever the hell a node is) once and for all!! :D
 
 		if ( initialized )
-			NodeListChanged?.Invoke( nodeId, false );
+			NodeListChanged?.Invoke( nodeId, -1 );
 
 	}
 
@@ -455,19 +455,37 @@ public abstract class BaseNodeData
 	}
 
 	/// <summary>
-	/// Method called by the graph when a node is added or removed
+	/// Method called by the graph when a node graph changes
 	/// </summary>
-	/// <param name="nodeId"> the node that was added or removed </param>
-	/// <param name="added"> was the noded added? </param>
-	public void NodeListChanged( int nodeId, bool added )
+	/// <param name="nodeId"> the position the node moved from. less than 0 is added </param>
+	/// <param name="added"> the position the node was moved to, less than 0 is removed </param>
+	public void NodeListChanged( int fromId, int toId )
 	{
 
-		if ( added && nodeId <= Id )
-			Id++;
-		else if ( !added && nodeId < Id )
-			Id--;
+		if ( (fromId < 0 || fromId > Id) && toId <= Id )
+		{
+			// node has been added or moved below this index
+			++Id;
+			NodeListIncreasedBelow();
+		}
+		else if (fromId < Id && (toId < 0 || toId > Id))
+		{
+			// node has been removed from below or moved above this index 
+			--Id;
+			NodeListDecreasedBelow();
+		}
 
 	}
+
+	/// <summary>
+	/// The action to preform if a node is moved or added below this node
+	/// </summary>
+	protected abstract void NodeListIncreasedBelow ();
+
+	/// <summary>
+	/// The action to preform is a node is removed from below or moved above this node.
+	/// </summary>
+	protected abstract void NodeListDecreasedBelow ();
 
 	/// <summary>
 	/// Set the node position relevent to the editor window
