@@ -159,71 +159,6 @@ public abstract class BaseNodeGraphEditor<T> : BaseNodeEditor<T> where T : BaseN
 		}
 	}
 
-	protected override void NodeWindow ( int windowId )
-	{
-		base.NodeWindow( windowId );
-
-		int node_id = windowId - uniqueID;
-
-		// keep repainting if the cursor is hovering over a node
-		// should the pins are boxed are updated 
-		if ( Event.current != null && Event.current.type != EventType.Repaint && Event.current.type != EventType.Layout )
-		{	// BUG: this is not working correctly :(
-			repaint = true;
-		}
-
-		DrawNodePins( node_id );
-
-	}
-
-	protected virtual void DrawNodePins(int node_id)
-	{
-
-		// inputs pins are drawn on the lhs of the node.
-		// output pins are drawn on the rhs of the node.
-
-		NodePin_Input[] nodeInputPins = nodes[ node_id ].NodeConnections_input.ToArray(); 
-		NodePin_Input[] nodeOutputPins = nodes[ node_id ].NodeConnections_output.ToArray(); // connections output inherit from input and we only need the data that inputs class have.
-
-		int maxPins = Mathf.Max( nodeOutputPins.Length, nodeInputPins.Length);
-
-		for (int i = 0; i < maxPins; i++ )
-		{
-			string lable = "";
-			Rect pinRect;
-
-			if ( i < nodeInputPins.Length)
-			{
-				lable = nodeInputPins[ i ].connectionLable;
-				pinRect = nodes[ node_id ].GetPinRect( i, BaseNodeGraphData.PinMode.Input );
-
-				GUI.Box( pinRect, "" , guiSkin.GetStyle( "nodePin_box" ) );
-
-				GUI.Label( pinRect, "#" );
-				pinRect.x += 12;
-				GUI.Label( pinRect, lable );
-			}
-
-			if ( i < nodeOutputPins.Length )
-			{
-				lable = nodeOutputPins[ i ].connectionLable;
-				pinRect = nodes[ node_id ].GetPinRect( i, BaseNodeGraphData.PinMode.Output );
-
-				GUI.Box( pinRect, "", guiSkin.GetStyle( "nodePin_box" ) );
-
-				// add the width no the node pin (hash)  is on the right side of pinRect
-				pinRect.x -= 3;
-				GUI.Label( pinRect, "#", guiSkin.GetStyle( "nodeOutPin_text" ) );
-
-				pinRect.x -= 12;
-				GUI.Label( pinRect, lable, guiSkin.GetStyle( "nodeOutPin_text" ) );
-			}
-
-		}
-
-	}
-
-
 	////////// Node Connections
 	/* Node outputs connect to node inputs, the connections are draw by the outputing node.
 	 * 
@@ -483,6 +418,61 @@ public abstract class BaseNodeGraphData : BaseNodeData
 			width = nodeSize.x / 2f,
 			height = nodeSize.y - 36
 		};
+	}
+
+	public override void DrawNode ()
+	{
+		base.DrawNode();
+
+		DrawNodePins();
+
+	}
+
+	protected virtual void DrawNodePins ()
+	{
+
+		// inputs pins are drawn on the lhs of the node.
+		// output pins are drawn on the rhs of the node.
+
+		NodePin_Input[] nodeInputPins = NodeConnections_input.ToArray();
+		NodePin_Input[] nodeOutputPins = NodeConnections_output.ToArray(); // connections output inherit from input and we only need the data that inputs class have.
+
+		int maxPins = Mathf.Max( nodeOutputPins.Length, nodeInputPins.Length );
+
+		for ( int i = 0; i < maxPins; i++ )
+		{
+			string lable = "";
+			Rect pinRect;
+
+			if ( i < nodeInputPins.Length )
+			{
+				lable = nodeInputPins[ i ].connectionLable;
+				pinRect = GetPinRect( i, BaseNodeGraphData.PinMode.Input );
+
+				GUI.Box( pinRect, "", guiSkin.GetStyle( "nodePin_box" ) );
+
+				GUI.Label( pinRect, "#" );
+				pinRect.x += 12;
+				GUI.Label( pinRect, lable );
+			}
+
+			if ( i < nodeOutputPins.Length )
+			{
+				lable = nodeOutputPins[ i ].connectionLable;
+				pinRect = GetPinRect( i, BaseNodeGraphData.PinMode.Output );
+
+				GUI.Box( pinRect, "", guiSkin.GetStyle( "nodePin_box" ) );
+
+				// add the width no the node pin (hash)  is on the right side of pinRect
+				pinRect.x -= 3;
+				GUI.Label( pinRect, "#", guiSkin.GetStyle( "nodeOutPin_text" ) );
+
+				pinRect.x -= 12;
+				GUI.Label( pinRect, lable, guiSkin.GetStyle( "nodeOutPin_text" ) );
+			}
+
+		}
+
 	}
 
 	/// <summary>

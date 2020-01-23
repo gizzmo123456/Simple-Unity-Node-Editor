@@ -14,8 +14,8 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
 	public delegate void nodeListChanged (int nodeId, bool added);
 	public event nodeListChanged NodeListChanged;
 
-
 	protected GUISkin guiSkin;
+
 	protected abstract string NodeStyleName { get; }
 	/// <summary>
 	/// The path to asset must exist! (the asset ie '/NodeGraphData.asset' does not need to exist)
@@ -211,7 +211,7 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
 
 		int newNodeId = nodes.Count;
 
-		data.Init( newNodeId, RemoveNode, GetNode );
+		data.Init( newNodeId, RemoveNode, GetNode, guiSkin );
 		NodeListChanged += data.NodeListChanged;			// Give the node Add and Remove notifications
 
 		data.SetNodePosition( NodeStartPosition() );
@@ -407,6 +407,8 @@ public abstract class BaseNodeData
 	protected NodeAction RemoveNodeFromGraph;
 	protected GetNodeAction GetOtherNodeFromGrph;
 
+	protected GUISkin guiSkin;
+
 	public int Id { get; set; }
 
 	// Node position
@@ -430,13 +432,14 @@ public abstract class BaseNodeData
 	/// <summary>
 	/// Initalizes the node, should be called directly affter adding the node!
 	/// </summary>
-	public virtual void Init( int nodeId, NodeAction removeNodeFunt, GetNodeAction getOtherNodeFunt)
+	public virtual void Init( int nodeId, NodeAction removeNodeFunt, GetNodeAction getOtherNodeFunt, GUISkin _guiSkin)
 	{
 
 		Id = nodeId;
 
 		RemoveNodeFromGraph = removeNodeFunt;
 		GetOtherNodeFromGrph = getOtherNodeFunt;
+		guiSkin = _guiSkin;
 
 	}
 
