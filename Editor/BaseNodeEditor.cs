@@ -11,7 +11,7 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
 
 	/// <param name="nodeId">The node id that has been added or removed</param>
 	/// <param name="added">has the id been added or removed?</param>
-	public delegate void nodeListChanged (int nodeId, bool added);
+	public delegate void nodeListChanged (int nodeId, bool added, bool initialized );
 	public event nodeListChanged NodeListChanged;
 
 	protected GUISkin guiSkin;
@@ -24,6 +24,7 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
 	public virtual string AssetName { get => "NodeGraphData.asset"; }
 
 	protected int uniqueID;
+	protected bool initialized = false;
 
 	public Rect panelRect { get; set; }
 	public virtual Vector2 topLeftpadding { get => new Vector2( 18, 18 ); }
@@ -54,6 +55,14 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
 	}
 
 	public virtual void Awake ( EditorWindow window ) { }
+
+	/// <summary>
+	/// This must be called once the inital node setup is compleat.
+	/// </summary>
+	public virtual void Initialize()
+	{
+		initialized = true;
+	}
 
 	public virtual void Update ( EditorWindow window ) { }
 
@@ -210,7 +219,6 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
 	{
 
 		int newNodeId = nodes.Count;
-
 		data.Init( newNodeId, RemoveNode, GetNode, guiSkin );
 		NodeListChanged += data.NodeListChanged;			// Give the node Add and Remove notifications
 
@@ -218,7 +226,7 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
 
 		nodes.Add( data );
 
-		NodeListChanged?.Invoke( newNodeId, true );
+		NodeListChanged?.Invoke( newNodeId, true, initialized );
 
 		return data;
 	}
@@ -235,13 +243,14 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
 
 		nodes.RemoveAt( nodeId );                               // And destroy him (or what ever the hell a node is) once and for all!! :D
 
-		NodeListChanged?.Invoke( nodeId, false );
+		NodeListChanged?.Invoke( nodeId, false, initialized );
 
 	}
 
 	public virtual void RemoveAllNodes()
 	{
 		nodes.Clear();
+		initialized = false;
 	}
 
 	/// <summary>
@@ -409,7 +418,7 @@ public abstract class BaseNodeData
 
 	protected GUISkin guiSkin;
 
-	public int Id { get; set; }
+	public int Id { get; private set; }
 
 	// Node position
 	protected Rect rect = Rect.zero;
@@ -448,8 +457,10 @@ public abstract class BaseNodeData
 	/// </summary>
 	/// <param name="nodeId"> the node that was added or removed </param>
 	/// <param name="added"> was the noded added? </param>
-	public void NodeListChanged( int nodeId, bool added )
+	public void NodeListChanged( int nodeId, bool added, bool initalized )
 	{
+
+		if ( !initalized ) return;
 
 		if ( added && nodeId <= Id )
 			Id++;
