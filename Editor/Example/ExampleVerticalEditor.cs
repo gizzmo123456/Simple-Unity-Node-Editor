@@ -23,4 +23,8 @@ public class ExampleVerticalNodeData : BaseVerticalNodeData
         GUI.Label( new Rect( 0, 0, 300, 300 ), exampleText );
     }
 
+    protected override void NodeListChangeAction ( int fromId, int toId )
+    {
+    }
+
 }
