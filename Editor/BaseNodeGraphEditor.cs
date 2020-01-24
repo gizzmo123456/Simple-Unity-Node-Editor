@@ -12,7 +12,6 @@ public abstract class BaseNodeGraphEditor<T> : BaseNodeEditor<T> where T : BaseN
 	public enum ConnectNodesType { To, From, Cancel }
 	public enum ConnectNodesStatus { Started, Canceled, Connected, Disconnected }
 
-	protected Rect scrolViewInnerRect = Rect.zero;
 	protected virtual int EdgeExtendMargin { get => 25; }
 	protected virtual float EdgeExtendSpeed { get => 0.333f; }
 	protected virtual float EdgeScrolSpeed { get => 2.5f; }
@@ -54,13 +53,43 @@ public abstract class BaseNodeGraphEditor<T> : BaseNodeEditor<T> where T : BaseN
 
 	}
 
-	protected override Rect GetPannelViewRect ()
+	protected override void CalculatePanelInnerRect ()
 	{
 
-		if ( scrolViewInnerRect == Rect.zero )
-			scrolViewInnerRect = new Rect( Vector2.zero, panelRect.size - new Vector2(20, 20));
 
-		return scrolViewInnerRect;
+		Vector2 minPosition = Vector2.zero;
+		Vector2 maxPosition = Vector2.zero;
+
+		
+		for ( int i = 0; i < nodes.Count; i++ )
+		{
+			// find the min and max node position, to update the scroll view inner size
+			Vector2 nodeSize = nodes[ i ].GetNodeSize();
+			Vector2 nodePosition = nodes[i].GetNodePosition();
+
+			Vector2 minNodePosition = nodePosition - nodeSize;
+			Vector2 maxNodePosition = nodePosition + ( nodeSize * 2f );
+
+			minPosition.x = Mathf.Min( minPosition.x, minNodePosition.x );
+			minPosition.y = Mathf.Min( minPosition.y, minNodePosition.y );
+
+			maxPosition.x = Mathf.Max( maxPosition.x, maxNodePosition.x );
+			maxPosition.y = Mathf.Max( maxPosition.y, maxNodePosition.y );
+
+		}
+
+		// update scroll view inner size :)
+		Vector2 innerPanelSize = maxPosition - minPosition;
+
+		// make sure that the inner pannel size is not smaller that the panel its self.
+		innerPanelSize.x = Mathf.Max( innerPanelSize.x, panelRect.width );
+		innerPanelSize.y = Mathf.Max( innerPanelSize.y, panelRect.height );
+
+		panelInnerRect.size = innerPanelSize;
+
+		panelScrollPosition.x = (( Mathf.Abs( minPosition.x ) / innerPanelSize.x) * innerPanelSize.x);
+		panelScrollPosition.y = (( Mathf.Abs( minPosition.y ) / innerPanelSize.y) * innerPanelSize.y);
+		lastScrolBarPosition = panelScrollPosition;	// prevent the nodes from having there position updating
 	}
 
 	/// <summary>
@@ -77,9 +106,9 @@ public abstract class BaseNodeGraphEditor<T> : BaseNodeEditor<T> where T : BaseN
 		Vector2 scrolAmount = Vector2.zero;
 
 		// extend the scrole view
-		if ( nodePosition.x + nodeSize.x > scrolViewInnerRect.width - EdgeExtendMargin )
+		if ( nodePosition.x + nodeSize.x > panelInnerRect.width - EdgeExtendMargin )
 		{
-			extendAmount.x = nodePosition.x + nodeSize.x - (scrolViewInnerRect.width - EdgeExtendMargin);
+			extendAmount.x = nodePosition.x + nodeSize.x - (panelInnerRect.width - EdgeExtendMargin);
 
 			moveNodeAmount.x -= extendAmount.x * EdgeExtendSpeed * Time.deltaTime;
 			scrolAmount.x += extendAmount.x * EdgeScrolSpeed * Time.deltaTime;
@@ -94,9 +123,9 @@ public abstract class BaseNodeGraphEditor<T> : BaseNodeEditor<T> where T : BaseN
 			scrolAmount.x += extendAmount.x * EdgeScrolSpeed * Time.deltaTime;
 		}
 
-		if ( nodePosition.y + nodeSize.y > scrolViewInnerRect.height - EdgeExtendMargin )
+		if ( nodePosition.y + nodeSize.y > panelInnerRect.height - EdgeExtendMargin )
 		{
-			extendAmount.y = nodePosition.y + nodeSize.y - ( scrolViewInnerRect.height - EdgeExtendMargin );
+			extendAmount.y = nodePosition.y + nodeSize.y - ( panelInnerRect.height - EdgeExtendMargin );
 
 			moveNodeAmount.y += extendAmount.y * EdgeExtendSpeed * Time.deltaTime;
 			scrolAmount.y += extendAmount.y * EdgeScrolSpeed * Time.deltaTime;
@@ -114,7 +143,7 @@ public abstract class BaseNodeGraphEditor<T> : BaseNodeEditor<T> where T : BaseN
 		extendAmount.x = Mathf.Max( 0, extendAmount.x );
 		extendAmount.y = Mathf.Max( 0, extendAmount.y );
 
-		scrolViewInnerRect.size += extendAmount * EdgeExtendSpeed;
+		panelInnerRect.size += extendAmount * EdgeExtendSpeed;
 		panelScrollPosition += scrolAmount;
 		MoveAllNodes( moveNodeAmount - scrolAmount, nodeId );
 

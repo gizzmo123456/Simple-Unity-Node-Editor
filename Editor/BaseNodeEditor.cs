@@ -27,17 +27,19 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
 	protected bool initialized = false;
 
 	public Rect panelRect { get; set; }
+	protected Rect panelInnerRect = Rect.zero;
+	protected Vector2 panelScrollPosition;
+
 	public virtual Vector2 topLeftpadding { get => new Vector2( 18, 18 ); }
 	public virtual Vector2 bottomRightpadding { get => new Vector2( 18, 18 ); }
 
-	protected Vector2 panelScrollPosition;
 
 	protected List<T> nodes;
 	public int NodeCount => nodes.Count;
 	protected int pressedNode = -1; // < 0 == none
 	protected int releasedNode = -1; // < 0 == none
 
-	Vector2 lastScrolBarPosition = Vector2.zero;
+	protected Vector2 lastScrolBarPosition = Vector2.zero;
 
 	public bool repaint = false;
 
@@ -82,7 +84,7 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
 		Rect scrollRect = panelRect;
 		scrollRect.size += new Vector2( 18, 18 );
 
-		panelScrollPosition = GUI.BeginScrollView( scrollRect, panelScrollPosition, GetPannelViewRect() );
+		panelScrollPosition = GUI.BeginScrollView( scrollRect, panelScrollPosition, panelInnerRect );
 		GUI.EndScrollView();
 
 		Vector2 scrolDelta = panelScrollPosition - lastScrolBarPosition;
@@ -142,9 +144,9 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
 	/// The viewable area within the pannel. if larger than pannel rect scroll bars will be added :D
 	/// </summary>
 	/// <returns></returns>
-	protected virtual Rect GetPannelViewRect()
+	protected virtual void CalculatePanelInnerRect()
 	{
-		return new Rect(Vector2.zero, panelRect.size*2);
+		panelInnerRect = new Rect(Vector2.zero, panelRect.size*2);
 	}
 
 	protected virtual Vector2 GetPanelOffset()
@@ -378,10 +380,16 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
 			Debug.LogWarning( "NodeGraph: No Save data found!" );
 			return;
 		}
+
 		// graph data and nodes should be 1 to 1, but just in case use the min count to prevent any array index out range :)
-		for ( int i = 0; i < Mathf.Min(graphData.Count, nodes.Count); i++ )
-			nodes[ i ].SetNodePosition(graphData[i].nodePosition);
-		
+		for ( int i = 0; i < Mathf.Min( graphData.Count, nodes.Count ); i++ )
+		{
+			// set position
+			nodes[ i ].SetNodePosition( graphData[i].nodePosition );
+		}
+
+		CalculatePanelInnerRect();
+
 	}
 
 	/// <summary>

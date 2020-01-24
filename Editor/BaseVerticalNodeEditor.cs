@@ -34,10 +34,10 @@ public abstract class BaseVerticalEditor<T> : BaseNodeEditor<T> where T : BaseVe
 
     }
 
-    protected override Rect GetPannelViewRect ()
+    protected override void CalculatePanelInnerRect ()
     {
         // make the inner pannel of the pannel view the same height as the amount of nodes
-        return new Rect( Vector2.zero, new Vector2(panelRect.width, nodes.Count * nodeHeight) );
+        panelInnerRect = new Rect( Vector2.zero, new Vector2(panelRect.width, nodes.Count * nodeHeight) );
     }
 
     protected override Vector2 NodeStartPosition ()
