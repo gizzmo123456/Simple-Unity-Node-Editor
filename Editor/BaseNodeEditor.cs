@@ -352,15 +352,20 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
 		
 		if ( graphSavedData == null ) return;
 
+		bool graphUpdated = false;
+
 		// Add/Update the current node graph
 		for ( int i = 0; i < nodes.Count; i++ )
-			graphSavedData.UpdateGraphData( graphName, new NodeGraphSaveData.GraphSaveGroup.Graph( nodes[ i ].GetNodePosition() ), i );
+			graphUpdated |= graphSavedData.UpdateGraphData( graphName, new NodeGraphSaveData.GraphSaveGroup.Graph( nodes[ i ].GetNodePosition() ), i );
 
 
 		// since i have not used a serialized object for node saved data we MUST mark the scriptable object as dirty manually
 		// plus we DONT want an undo step adding for this operation.
-		EditorUtility.SetDirty( graphSavedData ); 
-		AssetDatabase.SaveAssets();
+		if ( graphUpdated )
+		{
+			EditorUtility.SetDirty( graphSavedData );
+			AssetDatabase.SaveAssets();
+		}
 
 		Debug.Log( "NodeGraph Saved!" );
 

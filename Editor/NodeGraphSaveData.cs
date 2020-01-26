@@ -16,12 +16,13 @@ public class NodeGraphSaveData : ScriptableObject
     /// <param name="saveDataName"> the name of the graph to save to</param>
     /// <param name="graphData">the data to save</param>
     /// <param name="id">the index to save to, if less than 0 appends to end, if greater than length inserts defualt values between data end and id, if id exist data is over writen</param>
-    public void UpdateGraphData ( string saveDataName, NodeGraphSaveData.GraphSaveGroup.Graph graphData, int id )
+    /// <returns>true if the graph data changed</returns> 
+    public bool UpdateGraphData ( string saveDataName, NodeGraphSaveData.GraphSaveGroup.Graph graphData, int id )
     {
 
         if ( IsCached( saveDataName ) )
         {
-            UpdateCachedGraph( graphData, id );
+            return UpdateCachedGraph( graphData, id );
         }
 
         // look it up and cache it!
@@ -30,30 +31,34 @@ public class NodeGraphSaveData : ScriptableObject
             if ( data[ i ].graphName == saveDataName )
             {
                 cachedDataIndex = i;
-                UpdateCachedGraph( graphData, id );
-                return;
+                return UpdateCachedGraph( graphData, id );
+                
             }
         }
 
         cachedDataIndex = data.Count;
         data.Add( new NodeGraphSaveData.GraphSaveGroup( saveDataName ) );
 
-        UpdateCachedGraph( graphData, id );
+        return UpdateCachedGraph( graphData, id );
 
     }
 
-    private void UpdateCachedGraph( NodeGraphSaveData.GraphSaveGroup.Graph graphData, int id)
+    private bool UpdateCachedGraph( NodeGraphSaveData.GraphSaveGroup.Graph graphData, int id)
     {
 
         int graphSize = data[ cachedDataIndex ].graph.Count;
+        bool updated = false;
 
         if ( id < 0 || id == graphSize )  // apend data.
         {
             data[ cachedDataIndex ].graph.Add( graphData );
+            updated = true;
         }
         else if ( id < graphSize )        // update
         {
-            data[ cachedDataIndex ].graph[ id ] = graphData;
+            updated = !data[ cachedDataIndex ].graph[ id ].CompareTo( graphData );
+            if ( updated )
+                data[ cachedDataIndex ].graph[ id ] = graphData;
         }
         else if ( id > graphSize )       // Add range and apend to end
         {
@@ -65,9 +70,10 @@ public class NodeGraphSaveData : ScriptableObject
             }
 
             data[ cachedDataIndex ].graph.Add( graphData );
-
+            updated = true;
         }
 
+        return updated;
 
     }
 
@@ -117,6 +123,11 @@ public class NodeGraphSaveData : ScriptableObject
             public Graph ( Vector2 pos )
             {
                 nodePosition = pos;
+            }
+
+            public bool CompareTo( Graph other )
+            {
+                return other.nodePosition == nodePosition;
             }
         }
 
