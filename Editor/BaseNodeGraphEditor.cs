@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
-public abstract class BaseNodeGraphEditor<T> : BaseNodeEditor<T> where T : BaseNodeGraphData
+public class BaseNodeGraphEditor<T> : BaseNodeEditor<T> where T : BaseNodeGraphData
 {
 
 	public delegate void nodeConnection ( ConnectNodesStatus connectedStatus, int fromNodeId, int fromSlotId, int toNodeId, int toSlotId);
