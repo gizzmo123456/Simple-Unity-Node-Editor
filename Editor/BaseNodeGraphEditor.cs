@@ -376,7 +376,11 @@ public abstract class BaseNodeGraphData : BaseNodeData
 
 	public virtual NodePin_Output.BezierControlePointOffset BezierControlePointOffset { get => NodePin_Output.BezierControlePointOffset.Horizontal; }
 
-	public BaseNodeGraphData ( string _title, bool _dragable ) : base(_title, _dragable) {}
+	public BaseNodeGraphData ( string _title, bool _dragable ) : base(_title, _dragable) 
+	{
+		GenerateNodeSize();
+	}
+
 	public BaseNodeGraphData ( string _title, bool _dragable, int _max_inputPins, int _max_outputPins) : this( _title, _dragable )
 	{
 		max_inputPins = _max_inputPins;
@@ -398,7 +402,6 @@ public abstract class BaseNodeGraphData : BaseNodeData
 
 	protected override void GenerateNodeSize ()
 	{
-		Vector2 maxSize = new Vector2( 400, 800 );
 		Vector2 nodeSize = new Vector2( 300, 30 );
 
 		// get the node size by the amount of pins it has.

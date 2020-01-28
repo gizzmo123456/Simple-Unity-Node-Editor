@@ -42,6 +42,7 @@
 
 [ ] Fix node outputs using itself for pin size it should use the node that it is connecting to.
 [ ] Finish applying LockNodesInPlaymode. It might be worth moving this in to the node data.
+[Fixed] Fix BaseNodeGraphData, generating incorrect node size when there is zero pins.
 
 # ##
 [ ] move node size functions into nodeData
