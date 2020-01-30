@@ -751,6 +751,7 @@ public class NodePin_Output : NodePin_Input
 	public enum BezierControlePointOffset { Horizontal, Vertical }	//TODO: Bezier curve should have there own class :)
 
 	List<NodeConnectionData> connections = new List<NodeConnectionData>();
+	public int ConnectionCount => connections.Count;
 
 	public bool alwaysForwardControlPoints = true;
 
