@@ -203,6 +203,19 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
 	}
 
 	/// <summary>
+	/// Checks if a new already exist (via the nodes compareNode function)
+	/// </summary>
+	public bool NodeExist ( T nodeData )
+	{
+		foreach ( T node in nodes )
+			if ( node.CompareNode( nodeData ) )
+				return true;
+
+		return false;
+
+	}
+
+	/// <summary>
 	/// Gets node at id
 	/// </summary>
 	/// <returns></returns>
@@ -219,6 +232,9 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
 
 	public virtual T AddNode ( T data )
 	{
+
+		if ( NodeExist( data ) )
+			Debug.LogWarning("NodeGraph: Node already exist, use 'NodeExist( node )' to check if the nde already exist! (Status: Node Added)");
 
 		int newNodeId = nodes.Count;
 
@@ -591,5 +607,7 @@ public abstract class BaseNodeData
 	{
 		return new Rect( Vector2.zero, NodeRect.size );
 	}
+
+	public abstract bool CompareNode ( BaseNodeData otherNode );
 
 }
