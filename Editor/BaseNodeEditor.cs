@@ -225,6 +225,19 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
 		return nodes[ id ];
 	}
 
+	/// <summary>
+	/// Get the node ID for node data (uses the CompareNode function to determine the node ID)
+	/// </summary>
+	/// <returns>id if found -1 if not</returns>
+	public int GetNodeId(T nodeData)
+	{
+		for ( int i = 0; i < NodeCount; i++ )
+			if ( nodeData.CompareNode( nodes[ i ] ) )
+				return i;
+
+		return -1;
+	}
+
 	public T GetLastNode()
 	{
 		return nodes[ nodes.Count - 1 ];
