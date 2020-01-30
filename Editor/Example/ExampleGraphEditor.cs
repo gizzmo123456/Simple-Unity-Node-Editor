@@ -34,4 +34,9 @@ public class ExampleNodeGraphData : BaseNodeGraphData
 	{
 		GUI.Label( new Rect( 0, 0, 300, 300 ), exampleText );
 	}
+
+	public override bool CompareNode ( BaseNodeData otherNode )
+	{
+		return ( (ExampleNodeGraphData)otherNode ).exampleText == exampleText;
+	}
 }

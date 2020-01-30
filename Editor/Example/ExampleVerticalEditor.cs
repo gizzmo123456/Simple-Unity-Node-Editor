@@ -27,4 +27,9 @@ public class ExampleVerticalNodeData : BaseVerticalNodeData
     {
     }
 
+    public override bool CompareNode ( BaseNodeData otherNode )
+    {
+        return ( (ExampleVerticalNodeData)otherNode ).exampleText == exampleText;
+    }
+
 }
