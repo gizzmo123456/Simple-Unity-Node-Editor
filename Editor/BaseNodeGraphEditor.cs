@@ -680,7 +680,7 @@ public abstract class BaseNodeGraphData : BaseNodeData
 		return new Rect( GetPinLocalPosition( pinId, pinMode ), pinSize );
 	}
 
-	public void AddConnection (int from_pinId, int toNodeId, int toSlotId)
+	public virtual void AddConnection (int from_pinId, int toNodeId, int toSlotId)
 	{
 		nodeConnections_output[ from_pinId ].AddConnection( toNodeId, toSlotId );
 	}
