@@ -4,7 +4,7 @@ using UnityEngine;
 
 
 [System.Obsolete( "It has no functions any more! Use BaseNodeGraphEditor and use 'BaseDialogueGraphVertPinData' as it minimal T type" )]
-public abstract class BaseNodeGraphVertPinsEditor<T> : BaseNodeGraphEditor<T> where T : BaseDialogueGraphVertPinData
+public abstract class BaseNodeGraphVertPinsEditor<T> : BaseNodeGraphEditor<T> where T : BaseGraphVertPinData
 {
 
 	public BaseNodeGraphVertPinsEditor ( int uid ) : base( uid ) { }
@@ -12,14 +12,14 @@ public abstract class BaseNodeGraphVertPinsEditor<T> : BaseNodeGraphEditor<T> wh
 
 }
 
-public abstract class BaseDialogueGraphVertPinData : BaseNodeGraphData
+public abstract class BaseGraphVertPinData : BaseNodeGraphData
 {
 
-	public BaseDialogueGraphVertPinData ( string _title, bool _dragable ) : base( "", _dragable ) { }
-	public BaseDialogueGraphVertPinData ( string _title, bool _dragable, int _max_inputPins, int _max_outputPins ) : 
+	public BaseGraphVertPinData ( string _title, bool _dragable ) : base( "", _dragable ) { }
+	public BaseGraphVertPinData ( string _title, bool _dragable, int _max_inputPins, int _max_outputPins ) : 
 		base( "", _dragable, _max_inputPins, _max_outputPins ) { }
 
-	public BaseDialogueGraphVertPinData ( string _title, bool _dragable, Vector2 _inputStartPosition, Vector2 _outputStartPosition, Vector2 _pinSize ) :
+	public BaseGraphVertPinData ( string _title, bool _dragable, Vector2 _inputStartPosition, Vector2 _outputStartPosition, Vector2 _pinSize ) :
 		base( "", _dragable, _inputStartPosition, _outputStartPosition, _pinSize )
 	{ }
 

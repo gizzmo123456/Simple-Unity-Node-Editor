@@ -10,7 +10,7 @@ public class ExampleGraphVertPinEditor : BaseNodeGraphVertPinsEditor<ExampleGrap
 
 }
 
-public class ExampleGraphVertPinData : BaseDialogueGraphVertPinData
+public class ExampleGraphVertPinData : BaseGraphVertPinData
 {
 	public string exampleText = "Helloooo World";
 
