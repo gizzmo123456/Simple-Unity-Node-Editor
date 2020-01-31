@@ -17,8 +17,6 @@ public class BaseNodeGraphEditor<T> : BaseNodeEditor<T> where T : BaseNodeGraphD
 	protected virtual float EdgeScrolSpeed { get => 2.5f; }
 	protected int selectedNodeId = -1;
 
-	protected override string NodeStyleName => "";
-
 	bool invokedConnectingFromCallback = false;
 	bool cancelConnection = false;
 	int connectingFromNode = -1;    // < 0 is none 
@@ -763,7 +761,7 @@ public class NodePin_Output : NodePin_Input
 	public BezierControlePointOffset bezierControleOffset = BezierControlePointOffset.Horizontal;
 	public Color pinColor = Color.black;
 
-	public NodePin_Output ( int _id, BaseNodeGraphData _ownerNode, string _connLable, BezierControlePointOffset _bezierControlePointOffset ) : base( _id, _ownerNode, _connLable ) 
+    public NodePin_Output ( int _id, BaseNodeGraphData _ownerNode, string _connLable, BezierControlePointOffset _bezierControlePointOffset ) : base( _id, _ownerNode, _connLable ) 
 	{ 
 		bezierControleOffset = _bezierControlePointOffset;
 	}
