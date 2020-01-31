@@ -576,7 +576,7 @@ public abstract class BaseNodeGraphData : BaseNodeData
 	public void AddPin (string connectionLable, PinMode pinMode) 
 	{
 
-		if ( !CanAddPin( pinMode ) ) return; 
+		if ( !CanAddPin( pinMode ) ) return;
 
 		if ( pinMode == PinMode.Input )
 			nodeConnections_input.Add( new NodePin_Input( nodeConnections_input.Count, this, connectionLable ) );
@@ -798,7 +798,6 @@ public class NodePin_Output : NodePin_Input
 			}
 			else if ( connections[ conId ].connectedNodeId > affterNodeId )
 			{
-				Debug.LogFormat("UPUPUPUPUPUPUPUP {0} :: {1}", connections[ conId ].connectedNodeId , affterNodeId );
 				NodeConnectionData conData = connections[ conId ];
 				conData.UpdateNodeId( updateAmount );
 				connections[ conId ] = conData;
