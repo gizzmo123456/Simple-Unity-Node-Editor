@@ -8,8 +8,6 @@ public abstract class BaseVerticalEditor<T> : BaseNodeEditor<T> where T : BaseVe
     public delegate void nodeMoved ( int fromId, int toId );
     public event nodeMoved NodeMoved;
 
-    protected override string NodeStyleName => "vert_node";
-
     public virtual float nodeHeight { get => 40; }
     public override Vector2 topLeftpadding { get => new Vector2( 25, 18 ); }
 
@@ -133,6 +131,8 @@ public abstract class BaseVerticalNodeData : BaseNodeData
     public int yId;
 
     protected Vector2 nodeSize;     // NOTE: it might be worth having a method back to BaseNodeEditor to get the Viewport info. ie position, scrol position & inner rect size.
+
+    public override string NodeStyleName => "vert_node";
 
 
     public BaseVerticalNodeData ( bool _dragable, Vector2 _nodeSize ) : base( "", _dragable)

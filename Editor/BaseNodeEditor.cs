@@ -16,7 +16,6 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
 
 	protected GUISkin guiSkin;
 
-	protected abstract string NodeStyleName { get; }
 	/// <summary>
 	/// The path to asset must exist! (the asset ie '/NodeGraphData.asset' does not need to exist)
 	/// </summary>
@@ -132,8 +131,8 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
 
 	protected virtual void DrawNode( int nodeId )
 	{
-		if ( NodeStyleName != "" )
-			nodes[ nodeId ].NodeRect = GUI.Window( uniqueID + nodeId, nodes[ nodeId ].NodeRect, NodeWindow, nodes[ nodeId ].title, guiSkin.GetStyle(NodeStyleName) );
+		if ( nodes[nodeId].NodeStyleName != "" )
+			nodes[ nodeId ].NodeRect = GUI.Window( uniqueID + nodeId, nodes[ nodeId ].NodeRect, NodeWindow, nodes[ nodeId ].title, guiSkin.GetStyle(nodes[nodeId].NodeStyleName) );
 		else
 			nodes[ nodeId ].NodeRect = GUI.Window( uniqueID + nodeId, nodes[ nodeId ].NodeRect, NodeWindow, nodes[ nodeId ].title);
 
@@ -464,7 +463,10 @@ public abstract class BaseNodeData
 
 	protected GUISkin guiSkin;
 
-	public int Id { get; private set; }
+    public virtual string NodeStyleName => "";       // Leave empty for default node style
+
+
+    public int Id { get; private set; }
 
 	// Node position
 	protected Rect rect = Rect.zero;
