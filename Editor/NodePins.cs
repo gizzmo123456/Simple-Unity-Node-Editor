@@ -23,10 +23,16 @@ public class NodePin_Input
 
 	}
 
-	public virtual void AddConnection ( int nodeId, int slotId )
+	public virtual bool AddConnection ( int nodeId, int slotId )
 	{
 		if ( CanConnect() )
+		{
 			connections.Add( new NodeConnectionData( PinConnectionType, nodeId, slotId ) );
+			return true;
+		}
+		
+		return false;
+		
 	}
 
 	/// <summary>
@@ -128,10 +134,15 @@ public class NodePin_Output : NodePin_Input
 	/// </summary>
 	/// <param name="nodeId"> the node to connect to </param>
 	/// <param name="slotId"> the slot to connection on the node </param>
-	public override void AddConnection ( int nodeId, int slotId )
+	public override bool AddConnection ( int nodeId, int slotId )
 	{
 		if ( CanConnect() )
+		{
 			connections.Add( new NodeConnectionData( PinConnectionType, nodeId, slotId, curvePoints ) );
+			return true;
+		}
+
+		return false;
 	}
 
 	/// <summary>

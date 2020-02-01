@@ -10,7 +10,7 @@ public class BaseNodeGraphEditor<T> : BaseNodeEditor<T> where T : BaseNodeGraphD
 	public event nodeConnection NodeConnection;
 
 	public enum ConnectNodesType { To, From, Cancel }
-	public enum ConnectNodesStatus { Started, Canceled, Connected, Disconnected }
+	public enum ConnectNodesStatus { Started, Canceled, Connected, Disconnected, Failed }
 
 	protected virtual int EdgeExtendMargin { get => 25; }
 	protected virtual float EdgeExtendSpeed { get => 0.333f; }
@@ -212,7 +212,7 @@ public class BaseNodeGraphEditor<T> : BaseNodeEditor<T> where T : BaseNodeGraphD
 				nodes[ connectingFromNode ].RemoveConnection( connectingFromSlot, connectingToNode, connectingToSlot );
 				NodeConnection?.Invoke( ConnectNodesStatus.Disconnected, connectingFromNode, connectingFromSlot, -1, -1 );
 			}
-			else // Compleat Connection.
+			else																										// Compleat Connection.
 			{
 				nodes[ connectingFromNode ].AddConnection( connectingFromSlot, connectingToNode, connectingToSlot );
 				NodeConnection?.Invoke( ConnectNodesStatus.Connected, connectingFromNode, connectingFromSlot, connectingToNode, connectingToSlot );
@@ -688,9 +688,41 @@ public abstract class BaseNodeGraphData : BaseNodeData
 		return new Rect( GetPinLocalPosition( pinId, pinMode ), pinSize );
 	}
 
-	public virtual void AddConnection (int from_pinId, int toNodeId, int toSlotId)
+	/// <summary>
+	/// Adds a connection from this nodes output toNodeIds slot input
+	/// </summary>
+	/// <param name="fromSlotId"></param>
+	/// <param name="toNodeId"></param>
+	/// <param name="toSlotId"></param>
+	/// <returns></returns>
+	public virtual bool AddConnection (int fromSlotId, int toNodeId, int toSlotId)
 	{
-		nodeConnections_output[ from_pinId ].AddConnection( toNodeId, toSlotId );
+		// check that the toNodeId/SlotId can except the connection
+
+		BaseNodeGraphData toNode = (BaseNodeGraphData)GetOtherNodeFromGrph( toNodeId );
+
+		if (toNode == null)
+		{
+			Debug.LogErrorFormat( "Unable to connect to node {0}. Does not exist.", toNodeId );
+			return false;
+		}
+		else if ( toNode.GetPinCount(BaseNodeGraphData.PinMode.Input) <= toSlotId )
+		{
+			Debug.LogErrorFormat( "Unable to connect to node {0}. Slot {1} does not exist.", toNodeId, toSlotId );
+			return false;
+		}
+		else if (!toNode.NodeConnections_input[toSlotId].CanConnect())
+		{
+			Debug.LogErrorFormat( "Unable to connect to node {0}. Slot {1} connection limits reached.", toNodeId, toSlotId );
+			return false;
+		}
+		else if ( GetPinCount( BaseNodeGraphData.PinMode.Output ) <= fromSlotId )
+		{
+			Debug.LogErrorFormat( "Unable to connect to node {0}. Slot {1} does not exist.", Id, fromSlotId );
+			return false;
+		}
+
+		return nodeConnections_output[ fromSlotId ].AddConnection( toNodeId, toSlotId );
 	}
 
 	public bool HasConnection( int from_pinId, int toNodeId, int toSlotId )
@@ -703,11 +735,6 @@ public abstract class BaseNodeGraphData : BaseNodeData
 	public void RemoveConnection( int pinId, int toNodeId, int toNodeSlot )
 	{
 		nodeConnections_output[ pinId ].RemoveConnection( toNodeId, toNodeSlot );
-	}
-
-	public int GetConnectionCount( PinMode pinMode, int slotId )
-	{
-		return 0;
 	}
 
 	/// <summary>
@@ -727,11 +754,6 @@ public abstract class BaseNodeGraphData : BaseNodeData
 
 		return Vector2.zero;
 
-	}
-
-	public bool CanConnect()
-	{
-		return false;
 	}
 
 }
