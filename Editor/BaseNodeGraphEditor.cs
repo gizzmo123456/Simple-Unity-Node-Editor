@@ -758,7 +758,7 @@ public class NodePin_Output : NodePin_Input
 
 	public enum BezierControlePointOffset { Horizontal, Vertical }	//TODO: Bezier curve should have there own class :)
 
-	List<NodeConnectionData> connections = new List<NodeConnectionData>();
+	List<Output_NodeConnectionData> connections = new List<Output_NodeConnectionData>();
 	public int ConnectionCount => connections.Count;
 
 	public bool alwaysForwardControlPoints = true;
@@ -789,7 +789,7 @@ public class NodePin_Output : NodePin_Input
 
 	public void AddConnection(int nodeId, int slotId)
 	{
-		connections.Add( new NodeConnectionData( nodeId, slotId, curvePoints ) );
+		connections.Add( new Output_NodeConnectionData( nodeId, slotId, curvePoints ) );
 	}
 
 	/// <summary>
@@ -808,7 +808,7 @@ public class NodePin_Output : NodePin_Input
 			}
 			else if ( connections[ conId ].connectedNodeId > affterNodeId )
 			{
-				NodeConnectionData conData = connections[ conId ];
+				Output_NodeConnectionData conData = connections[ conId ];
 				conData.UpdateNodeId( updateAmount );
 				connections[ conId ] = conData;
 
@@ -820,7 +820,7 @@ public class NodePin_Output : NodePin_Input
 
 	public bool HasConnection(int nodeId, int slotId)
 	{
-		foreach ( NodeConnectionData conn in connections )
+		foreach ( Output_NodeConnectionData conn in connections )
 			if ( conn.connectedNodeId == nodeId && conn.connectedSlotId == slotId )
 				return true;
 
@@ -859,7 +859,7 @@ public class NodePin_Output : NodePin_Input
 		
 		for (int i = 0; i < connections.Count; i++)
 		{
-			NodeConnectionData connection = connections[ i ];
+			Output_NodeConnectionData connection = connections[ i ];
 			// GenerateCurve if a node has moved.
 			BaseNodeGraphData connectedNode = getNode( connection.connectedNodeId );
 
@@ -961,7 +961,79 @@ public class NodePin_Output : NodePin_Input
 
 }
 
-struct NodeConnectionData
+interface INodeConnectionData
+{
+	void SetConnectedNodeId ( int nodeId );
+	void SetConnectedSlotId ( int slotId );
+	int GetConnectedNodeId ();
+	int GetConnectedSlotId ();
+
+	void UpdateNodeId ( int amountToUpdate );
+	void UpdateSlotId ( int amountToUpdate );
+
+}
+
+struct Input_NodeConnectionData : INodeConnectionData
+{
+	public int connectedNodeId;
+	public int connectedSlotId;
+
+	public Input_NodeConnectionData( int nodeId, int slotId )
+	{
+		connectedNodeId = nodeId;
+		connectedSlotId = slotId;
+	}
+
+	#region INodeConnectionData implermentation
+
+
+	#region Sets
+
+	public void SetConnectedNodeId ( int newNodeId )
+	{
+		connectedNodeId = newNodeId;
+	}
+
+	public void SetConnectedSlotId ( int newSlotId )
+	{
+		connectedSlotId = newSlotId;
+	}
+
+	#endregion
+
+	#region Gets
+
+	public int GetConnectedNodeId ()
+	{
+		return connectedNodeId;
+	}
+
+	public int GetConnectedSlotId ()
+	{
+		return connectedSlotId;
+	}
+
+	#endregion
+
+	#region Updates
+
+	public void UpdateNodeId ( int amountToUpdate )
+	{
+		connectedNodeId += amountToUpdate;
+	}
+
+	public void UpdateSlotId ( int amountToUpdate )
+	{
+		connectedSlotId += amountToUpdate;
+	}
+
+	#endregion
+
+	#endregion
+
+}
+
+struct Output_NodeConnectionData : INodeConnectionData
 {
 	public int connectedNodeId;     // the node id to connect to.
 	public int connectedSlotId;     // the input slot that the node is connected to.
@@ -970,7 +1042,7 @@ struct NodeConnectionData
 
 	public Vector2 inputPin_startPosition;
 
-	public NodeConnectionData(int connNodeId, int connSlotId, int curvePoints)
+	public Output_NodeConnectionData(int connNodeId, int connSlotId, int curvePoints)
 	{
 		connectedNodeId = connNodeId;
 		connectedSlotId = connSlotId;
@@ -979,15 +1051,51 @@ struct NodeConnectionData
 
 	}
 
-	public void SetNodeId( int newNodeId )
+	#region INodeConnectionData implermentation
+
+	#region Sets
+
+	public void SetConnectedNodeId( int newNodeId )
 	{
 		connectedNodeId = newNodeId;
 	}
+
+	public void SetConnectedSlotId( int newSlotId )
+	{
+		connectedSlotId = newSlotId;
+	}
+
+	#endregion
+
+	#region Gets
+
+	public int GetConnectedNodeId()
+	{
+		return connectedNodeId;
+	}
+
+	public int GetConnectedSlotId()
+	{
+		return connectedSlotId;
+	}
+
+	#endregion
+
+	#region Updates
 
 	public void UpdateNodeId( int amountToUpdate )
 	{
 		connectedNodeId += amountToUpdate;
 	}
+
+	public void UpdateSlotId ( int amountToUpdate )
+	{
+		connectedSlotId += amountToUpdate;
+	}
+
+	#endregion
+
+	#endregion
 
 	public void SetStartPosition( Vector2 position )
 	{
