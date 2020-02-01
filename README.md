@@ -30,14 +30,14 @@
 
 - [x] Add Save/Load  
 - [ ] Add limits to node connections  
-- [ ] Types  
+- - [ ] Types  
 - - [x] Count  
 - - [x] input/output pin count  
 
 # BUGS:  
 - [x] Can only have one Node Editor instance active at a time  
--- Since all need to be draw in 1 set of StartWindow and EndWindows  
--- and they must all have a unique ID  
+ Since all need to be draw in 1 set of StartWindow and EndWindows  
+ and they must all have a unique ID  
 - - [x] Give all windows a unique ID  
 - - [x] Apply position offset to all node positions ect...  
 - [F] Fixed input positions in node graph  
