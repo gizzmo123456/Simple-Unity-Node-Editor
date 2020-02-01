@@ -63,7 +63,7 @@ public class NodePin_Input
 
 	public bool CanConnect ()
 	{
-		return ConnectionCount < ConnectionLimit;
+		return ConnectionLimit < 0 || ConnectionCount < ConnectionLimit;
 	}
 
 	/// <summary>
