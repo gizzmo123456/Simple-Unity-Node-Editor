@@ -248,23 +248,42 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
 	public virtual T AddNode ( T data )
 	{
 
-		if ( NodeExist( data ) )
-			Debug.LogWarning("NodeGraph: Node already exist, use 'NodeExist( node )' to check if the nde already exist! (Status: Node Added)");
-
 		int newNodeId = nodes.Count;
 
-		data.Init( newNodeId, RemoveNode, GetNode, () => initialized ,guiSkin );
+		return InsertNode( newNodeId, data );
+
+	}
+
+	/// <summary>
+	/// Inserts a node at index. correcting node id's and connection id's
+	/// </summary>
+	/// <param name="index"></param>
+	/// <param name="data"></param>
+	/// <returns></returns>
+	public virtual T InsertNode( int index, T data)
+	{
+		if ( index < 0 || index > nodes.Count )
+		{
+			Debug.LogErrorFormat("Unable to add data to index: {0} Out Of Range (0,{1}) appending data to end of list", index, nodes.Count );
+			index = nodes.Count;
+		}
+
+		if ( NodeExist( data ) )
+			Debug.LogWarning( "NodeGraph: Node already exist, use 'NodeExist( node )' to check if the nde already exist! (Status: Node Added)" );
+
+
+		data.Init( index, RemoveNode, GetNode, () => initialized, guiSkin );
 		data.SetNodePosition( NodeStartPosition() );
 
 		nodes.Add( data );
 
-		// invoke the list changed callback befor added the new node to prevent it being updated
-		if (initialized)
-			NodeListChanged?.Invoke( -1, newNodeId );
-		
+		if ( initialized )
+			NodeListChanged?.Invoke( -1, index );
+
 		NodeListChanged += data.NodeListChanged;            // Give the new node Add and Remove notifications
 
 		return data;
+
 	}
 
 	/// <summary>
@@ -516,8 +535,6 @@ public abstract class BaseNodeData
 	{
 
 		NodeListChangeAction( fromId, toId );
-
-		Debug.LogFormat("cID {2}, From {0}, To{1}", fromId, toId, Id);
 
 		if ( (fromId < 0 || fromId > Id) && toId >= 0 && toId <= Id )
 		{

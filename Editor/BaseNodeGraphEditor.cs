@@ -445,28 +445,39 @@ public abstract class BaseNodeGraphData : BaseNodeData
 
 	protected override void NodeListChangeAction ( int fromId, int toId )
 	{
-		// update all the node connections for each output pin!
+		// update all the node connections for each  pin!
+		// batch both groups of connection in a sigle pass.
+		int maxConnections = Mathf.Max( nodeConnections_input.Count, nodeConnections_output.Count );
 
-		for (int oPinId = 0; oPinId < nodeConnections_output.Count; oPinId++ )
+		for (int pinId = 0; pinId < maxConnections; pinId++ )
 		{
 
-			if (toId < 0)   // node removed
-			{
-				nodeConnections_output[ oPinId ].UpdateConnectedNodeIds( fromId, -1, true );	// decrese all connections from FromId, removing FromId connections
-			}
-			else if ( fromId < 0 ) // node added
-			{
-				nodeConnections_output[ oPinId ].UpdateConnectedNodeIds( toId, 1, false );		// increse all connections from toId
-			}
-			else // node moved.
-			{
-				// this could be optermized a lil better :) ie. only update the range
-				nodeConnections_output[oPinId].UpdateConnectedNodeIds( fromId, -1, false );     // decrese all connections from FromId, keeping FromId connections
-				nodeConnections_output[oPinId].UpdateConnectedNodeIds( toId, 1, false );        // increse all connections from toId
-			}
+			if ( pinId < nodeConnections_input.Count )
+				NodeListConnectionAction( nodeConnections_input[ pinId ], fromId, toId );
+
+			if ( pinId < nodeConnections_output.Count )
+				NodeListConnectionAction( nodeConnections_output[ pinId ], fromId, toId );
 
 		}
 		
+	}
+
+	private void NodeListConnectionAction( NodePin_Input nodePin, int fromId, int toId )
+	{
+		if ( toId < 0 )   // node removed
+		{
+			nodePin.UpdateConnectedNodeIds( fromId, -1, true );    // decrese all connections from FromId, removing FromId connections
+		}
+		else if ( fromId < 0 ) // node added
+		{
+			nodePin.UpdateConnectedNodeIds( toId, 1, false );      // increse all connections from toId
+		}
+		else // node moved.
+		{
+			// this could be optermized a lil better :) ie. only update the range
+			nodePin.UpdateConnectedNodeIds( fromId, -1, false );     // decrese all connections from FromId, keeping FromId connections
+			nodePin.UpdateConnectedNodeIds( toId, 1, false );        // increse all connections from toId
+		}
 	}
 
 	protected override Rect GetNodeContentsPosition ()
