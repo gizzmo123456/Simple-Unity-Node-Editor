@@ -692,37 +692,41 @@ public abstract class BaseNodeGraphData : BaseNodeData
 	}
 
 	/// <summary>
-	/// Adds a connection from this nodes output toNodeIds slot input
+	/// Adds a connection from this nodes output toNodeIds slot input. <br />
+	/// Warning: connection checks are disabled during graph initalization
 	/// </summary>
-	/// <param name="fromSlotId"></param>
-	/// <param name="toNodeId"></param>
-	/// <param name="toSlotId"></param>
-	/// <returns></returns>
+	/// <param name="fromSlotId"> the output slot on this pin</param>
+	/// <param name="toNodeId"> the node we want to connect to </param>
+	/// <param name="toSlotId"> the input slot id on the node we want to connect to </param>
+	/// <returns> returns true if seccessful false otherwise </returns>
 	public virtual bool AddConnection (int fromSlotId, int toNodeId, int toSlotId)
 	{
 		// check that the toNodeId/SlotId can except the connection
 
 		BaseNodeGraphData toNode = (BaseNodeGraphData)GetOtherNodeFromGrph( toNodeId );
 
-		if (toNode == null)
+		if ( GraphIsInitalized() )
 		{
-			Debug.LogErrorFormat( "Unable to connect to node {0}. Does not exist.", toNodeId );
-			return false;
-		}
-		else if ( toNode.GetPinCount(BaseNodeGraphData.PinMode.Input) <= toSlotId )
-		{
-			Debug.LogErrorFormat( "Unable to connect to node {0}. Slot {1} does not exist.", toNodeId, toSlotId );
-			return false;
-		}
-		else if (!toNode.NodeConnections_input[toSlotId].CanConnect())
-		{
-			Debug.LogErrorFormat( "Unable to connect to node {0}. Slot {1} connection limits reached.", toNodeId, toSlotId );
-			return false;
-		}
-		else if ( GetPinCount( BaseNodeGraphData.PinMode.Output ) <= fromSlotId )
-		{
-			Debug.LogErrorFormat( "Unable to connect to node {0}. Slot {1} does not exist.", Id, fromSlotId );
-			return false;
+			if ( toNode == null )
+			{
+				Debug.LogErrorFormat( "Unable to connect to node {0}. Does not exist.", toNodeId );
+				return false;
+			}
+			else if ( toNode.GetPinCount( BaseNodeGraphData.PinMode.Input ) <= toSlotId )
+			{
+				Debug.LogErrorFormat( "Unable to connect to node {0}. Slot {1} does not exist.", toNodeId, toSlotId );
+				return false;
+			}
+			else if ( !toNode.NodeConnections_input[ toSlotId ].CanConnect() )
+			{
+				Debug.LogErrorFormat( "Unable to connect to node {0}. Slot {1} connection limits reached.", toNodeId, toSlotId );
+				return false;
+			}
+			else if ( GetPinCount( BaseNodeGraphData.PinMode.Output ) <= fromSlotId )
+			{
+				Debug.LogErrorFormat( "Unable to connect to node {0}. Slot {1} does not exist.", Id, fromSlotId );
+				return false;
+			}
 		}
 
 		return nodeConnections_output[ fromSlotId ].AddConnection( toNodeId, toSlotId );

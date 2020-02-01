@@ -5,7 +5,7 @@ using UnityEditor;
 
 public abstract class BaseNodeEditor<T> where T : BaseNodeData
 {
-
+	
 	public delegate void nodeSelected ( int nodeId, Vector2 mousePosition, bool pressed );
 	public event nodeSelected nodePressed;
 
@@ -250,7 +250,7 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
 
 		int newNodeId = nodes.Count;
 
-		data.Init( newNodeId, RemoveNode, GetNode, guiSkin );
+		data.Init( newNodeId, RemoveNode, GetNode, () => initialized ,guiSkin );
 		data.SetNodePosition( NodeStartPosition() );
 
 		nodes.Add( data );
@@ -457,9 +457,11 @@ public abstract class BaseNodeData
 
 	public delegate void NodeAction ( int nodeId );
 	public delegate BaseNodeData GetNodeAction( int nodeId );
+	public delegate bool GraphInitalized ();
 
 	protected NodeAction RemoveNodeFromGraph;
 	protected GetNodeAction GetOtherNodeFromGrph;
+	protected GraphInitalized GraphIsInitalized;
 
 	protected GUISkin guiSkin;
 
@@ -489,15 +491,17 @@ public abstract class BaseNodeData
 	/// <summary>
 	/// Initalizes the node, should be called directly affter adding the node!
 	/// </summary>
-	public virtual void Init( int nodeId, NodeAction removeNodeFunt, GetNodeAction getOtherNodeFunt, GUISkin _guiSkin)
+	public virtual void Init( int nodeId, NodeAction removeNodeFunt, GetNodeAction getOtherNodeFunt, GraphInitalized graphInitalized, GUISkin _guiSkin)
 	{
 
 		Id = nodeId;
 
 		RemoveNodeFromGraph = removeNodeFunt;
 		GetOtherNodeFromGrph = getOtherNodeFunt;
-		guiSkin = _guiSkin;
+		GraphIsInitalized = graphInitalized;
 
+		guiSkin = _guiSkin;
+		
 	}
 
 	/// <summary>
