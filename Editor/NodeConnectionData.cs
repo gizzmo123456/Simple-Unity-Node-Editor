@@ -23,7 +23,7 @@ interface INodeConnectionData
 
 public enum NodeConnectionType{ Input, Output }
 
-struct NodeConnectionData : INodeConnectionData
+public struct NodeConnectionData : INodeConnectionData
 {
 	public int connectedNodeId;     // the node id to connect to.
 	public int connectedSlotId;     // the input slot that the node is connected to.
@@ -33,13 +33,17 @@ struct NodeConnectionData : INodeConnectionData
 	public Vector2[] connectionCurve;
 	public Vector2 inputPin_startPosition;
 
-	public NodeConnectionData ( NodeConnectionType connType, int connNodeId, int connSlotId, int curvePoints )
+	public NodeConnectionData ( NodeConnectionType connType, int connNodeId, int connSlotId, int curvePoints = -1 )
 	{
 		connectedNodeId = connNodeId;
 		connectedSlotId = connSlotId;
 		connectionType = connType;
-		connectionCurve = new Vector2[ curvePoints + 1 ];
 		inputPin_startPosition = Vector2.zero;
+
+		if ( curvePoints >= 0 )
+			connectionCurve = new Vector2[ curvePoints + 1 ];
+		else
+			connectionCurve = new Vector2[ 0 ];
 
 	}
 
