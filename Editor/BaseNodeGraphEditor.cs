@@ -230,7 +230,7 @@ public class BaseNodeGraphEditor<T> : BaseNodeEditor<T> where T : BaseNodeGraphD
 			// Draw curve to mouse.
 			Color curveColour = nodes[ connectingFromNode ].NodeConnections_output[ connectingFromSlot ].pinColor;
 			// Fake the output to mouse when connecting nodes.
-			NodePin_Output curve = new NodePin_Output(0, null, "", nodes[ connectingFromNode ].BezierControlePointOffset, curveColour );
+			NodePin_Output curve = new NodePin_Output(0, null, "", nodes[ connectingFromNode ].BezierControlePointOffset, curveColour, -1 );
 
 			Vector2 startPos = nodes[ connectingFromNode ].GetPinPosition( connectingFromSlot, BaseNodeGraphData.PinMode.Output ) + nodes[connectingFromNode].GetConnectionOffset( BaseNodeGraphData.PinMode.Output );
 			Vector2 endPos = startPos;
@@ -591,9 +591,9 @@ public abstract class BaseNodeGraphData : BaseNodeData
 		if ( !CanAddPin( pinMode ) ) return;
 
 		if ( pinMode == PinMode.Input )
-			nodeConnections_input.Add( new NodePin_Input( nodeConnections_input.Count, this, connectionLable ) );
+			nodeConnections_input.Add( new NodePin_Input( nodeConnections_input.Count, this, connectionLable, connectionLimits ) );
 		else
-			nodeConnections_output.Add( new NodePin_Output( nodeConnections_output.Count, this, connectionLable, BezierControlePointOffset ) );
+			nodeConnections_output.Add( new NodePin_Output( nodeConnections_output.Count, this, connectionLable, BezierControlePointOffset, connectionLimits ) );
 
 		GeneratePinSizeAndPosition();
 
@@ -610,7 +610,7 @@ public abstract class BaseNodeGraphData : BaseNodeData
 	{
 
 		if ( CanAddPin( PinMode.Output ) )
-			nodeConnections_output.Add( new NodePin_Output( nodeConnections_output.Count, this, connectionLable, BezierControlePointOffset, pinColor ) );
+			nodeConnections_output.Add( new NodePin_Output( nodeConnections_output.Count, this, connectionLable, BezierControlePointOffset, pinColor, connectionLimits ) );
 
 		GeneratePinSizeAndPosition();
 

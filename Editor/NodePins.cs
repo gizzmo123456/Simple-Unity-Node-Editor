@@ -63,7 +63,7 @@ public class NodePin_Input
 
 	public bool CanConnect ()
 	{
-		return ConnectionLimit < ConnectionCount;
+		return ConnectionCount < ConnectionLimit;
 	}
 
 	/// <summary>
@@ -113,12 +113,12 @@ public class NodePin_Output : NodePin_Input
 	public BezierControlePointOffset bezierControleOffset = BezierControlePointOffset.Horizontal;
 	public Color pinColor = Color.black;
 
-	public NodePin_Output ( int _id, BaseNodeGraphData _ownerNode, string _connLable, BezierControlePointOffset _bezierControlePointOffset ) : base( _id, _ownerNode, _connLable )
+	public NodePin_Output ( int _id, BaseNodeGraphData _ownerNode, string _connLable, BezierControlePointOffset _bezierControlePointOffset, int _connLimit = -1 ) : base( _id, _ownerNode, _connLable, _connLimit )
 	{
 		bezierControleOffset = _bezierControlePointOffset;
 	}
 
-	public NodePin_Output ( int _id, BaseNodeGraphData _ownerNode, string _connLable, BezierControlePointOffset _bezierControlePointOffset, Color _pinColor ) : base( _id, _ownerNode, _connLable )
+	public NodePin_Output ( int _id, BaseNodeGraphData _ownerNode, string _connLable, BezierControlePointOffset _bezierControlePointOffset, Color _pinColor, int _connLimit = -1 ) : base( _id, _ownerNode, _connLable, _connLimit )
 	{
 		pinColor = _pinColor;
 		bezierControleOffset = _bezierControlePointOffset;
