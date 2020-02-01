@@ -745,17 +745,21 @@ public class NodePin_Input
 	protected virtual NodeConnectionType PinConnectionType => NodeConnectionType.Input;
 	protected List<NodeConnectionData> connections = new List<NodeConnectionData>();
 	public int ConnectionCount => connections.Count;
+	public int ConnectionLimit { get; private set; }	// if limit is < 0 there is no limit.
 
-	public NodePin_Input (int _id, BaseNodeGraphData _ownerNode, string connLable)
+	public NodePin_Input (int _id, BaseNodeGraphData _ownerNode, string _connLable, int _connLimit = -1)
 	{
 		id = _id;
 		ownerNode = _ownerNode;
-		connectionLable = connLable;
+		connectionLable = _connLable;
+		ConnectionLimit = _connLimit;
+
 	}
 
 	public virtual void AddConnection ( int nodeId, int slotId )
 	{
-		connections.Add( new NodeConnectionData( PinConnectionType, nodeId, slotId ) );
+		if ( CanConnect() )
+			connections.Add( new NodeConnectionData( PinConnectionType, nodeId, slotId ) );
 	}
 
 	/// <summary>
@@ -782,6 +786,11 @@ public class NodePin_Input
 
 		}
 
+	}
+
+	public bool CanConnect()
+	{
+		return ConnectionLimit < ConnectionCount ;
 	}
 
 	/// <summary>
@@ -854,7 +863,8 @@ public class NodePin_Output : NodePin_Input
 	/// <param name="slotId"> the slot to connection on the node </param>
 	public override void AddConnection ( int nodeId, int slotId )
 	{
-		connections.Add( new NodeConnectionData( PinConnectionType, nodeId, slotId, curvePoints ) );
+		if ( CanConnect() )
+			connections.Add( new NodeConnectionData( PinConnectionType, nodeId, slotId, curvePoints ) );
 	}
 
 	/// <summary>
