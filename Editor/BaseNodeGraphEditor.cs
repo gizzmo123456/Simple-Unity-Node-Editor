@@ -370,7 +370,9 @@ public abstract class BaseNodeGraphData : BaseNodeData
 
 	public Vector2 inputPin_localStartPosition = new Vector2( 0, 15f );
 	public Vector2 outputPin_localStartPosition = new Vector2( 20, 15f );
-	public Vector2 pinSize = new Vector2( 20, 18 );
+
+	public Vector2 input_pinSize = new Vector2 ( 20, 18 );
+	public Vector2 output_pinSize = new Vector2( 20, 18 );
 
 	public virtual NodePin_Output.BezierControlePointOffset BezierControlePointOffset { get => NodePin_Output.BezierControlePointOffset.Horizontal; }
 
@@ -393,7 +395,7 @@ public abstract class BaseNodeGraphData : BaseNodeData
 	{
 		inputPin_localStartPosition = _inputStartPosition;
 		outputPin_localStartPosition = _outputStartPosition;
-		pinSize = _pinSize;
+		output_pinSize = _pinSize;
 	}
 
 	#region BaseNodeData
@@ -418,12 +420,12 @@ public abstract class BaseNodeGraphData : BaseNodeData
 		GenerateNodeSize();
 
 
-		pinSize.x = rect.width / 4f;
+		output_pinSize.x = rect.width / 4f;
 
-		inputPin_localStartPosition.x = -pinSize.x;
+		inputPin_localStartPosition.x = -output_pinSize.x;
 		inputPin_localStartPosition.y = 5;
 
-		outputPin_localStartPosition.x = -pinSize.x + rect.width - pinSize.x;
+		outputPin_localStartPosition.x = -output_pinSize.x + rect.width - output_pinSize.x;
 		outputPin_localStartPosition.y = 5;
 
 	}
@@ -632,7 +634,7 @@ public abstract class BaseNodeGraphData : BaseNodeData
 
 	protected virtual Vector2 GetPinOffset( int pinId, PinMode pinMode )
 	{
-		Vector2 pinOffset = pinSize;
+		Vector2 pinOffset = output_pinSize;
 		pinOffset.y += pinOffset.y * pinId;
 		
 		return pinOffset;
@@ -675,7 +677,7 @@ public abstract class BaseNodeGraphData : BaseNodeData
 
 	public Rect GetPinRect (int pinId, PinMode pinMode)
 	{
-		return new Rect( GetPinLocalPosition( pinId, pinMode ), pinSize );
+		return new Rect( GetPinLocalPosition( pinId, pinMode ), output_pinSize );
 	}
 
 	public virtual void AddConnection (int from_pinId, int toNodeId, int toSlotId)
@@ -710,9 +712,9 @@ public abstract class BaseNodeGraphData : BaseNodeData
 		switch( pinMode )
 		{
 			case PinMode.Input:
-				return new Vector2( 0, pinSize.y / 2f );
+				return new Vector2( 0, output_pinSize.y / 2f );
 			case PinMode.Output:
-				return new Vector2( pinSize.x, pinSize.y / 2f );
+				return new Vector2( output_pinSize.x, output_pinSize.y / 2f );
 		}
 
 		return Vector2.zero;
