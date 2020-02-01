@@ -13,81 +13,31 @@ interface INodeConnectionData
 	void UpdateNodeId ( int amountToUpdate );
 	void UpdateSlotId ( int amountToUpdate );
 
-}
+	NodeConnectionType GetConnectionType ();
 
-struct Input_NodeConnectionData : INodeConnectionData
-{
-	public int connectedNodeId;
-	public int connectedSlotId;
+	bool CompareConnection ( NodeConnectionData otherConnection );
+	bool CompareConnectionType ( NodeConnectionData otherConnection );
 
-	public Input_NodeConnectionData ( int nodeId, int slotId )
-	{
-		connectedNodeId = nodeId;
-		connectedSlotId = slotId;
-	}
-
-	#region INodeConnectionData implermentation
-
-
-	#region Sets
-
-	public void SetConnectedNodeId ( int newNodeId )
-	{
-		connectedNodeId = newNodeId;
-	}
-
-	public void SetConnectedSlotId ( int newSlotId )
-	{
-		connectedSlotId = newSlotId;
-	}
-
-	#endregion
-
-	#region Gets
-
-	public int GetConnectedNodeId ()
-	{
-		return connectedNodeId;
-	}
-
-	public int GetConnectedSlotId ()
-	{
-		return connectedSlotId;
-	}
-
-	#endregion
-
-	#region Updates
-
-	public void UpdateNodeId ( int amountToUpdate )
-	{
-		connectedNodeId += amountToUpdate;
-	}
-
-	public void UpdateSlotId ( int amountToUpdate )
-	{
-		connectedSlotId += amountToUpdate;
-	}
-
-	#endregion
-
-	#endregion
 
 }
 
-struct Output_NodeConnectionData : INodeConnectionData
+public enum NodeConnectionType{ Input, Output }
+
+struct NodeConnectionData : INodeConnectionData
 {
 	public int connectedNodeId;     // the node id to connect to.
 	public int connectedSlotId;     // the input slot that the node is connected to.
 
-	public Vector2[] connectionCurve;
+	public NodeConnectionType connectionType;
 
+	public Vector2[] connectionCurve;
 	public Vector2 inputPin_startPosition;
 
-	public Output_NodeConnectionData ( int connNodeId, int connSlotId, int curvePoints )
+	public NodeConnectionData ( NodeConnectionType connType, int connNodeId, int connSlotId, int curvePoints )
 	{
 		connectedNodeId = connNodeId;
 		connectedSlotId = connSlotId;
+		connectionType = connType;
 		connectionCurve = new Vector2[ curvePoints + 1 ];
 		inputPin_startPosition = Vector2.zero;
 
@@ -121,6 +71,11 @@ struct Output_NodeConnectionData : INodeConnectionData
 		return connectedSlotId;
 	}
 
+	public NodeConnectionType GetConnectionType()
+	{
+		return connectionType;
+	}
+
 	#endregion
 
 	#region Updates
@@ -146,10 +101,22 @@ struct Output_NodeConnectionData : INodeConnectionData
 
 	public bool PinMoved ( Vector2 position )
 	{
+
 		bool moved = position != inputPin_startPosition;
-
-
 		return moved;
+
+	}
+
+	public bool CompareConnection ( NodeConnectionData otherConnection )
+	{
+		return connectionType  == otherConnection.connectionType  &&
+			   connectedNodeId == otherConnection.connectedNodeId &&
+			   connectedSlotId == otherConnection.connectedSlotId;
+	}
+
+	public bool CompareConnectionType ( NodeConnectionData otherConnection )
+	{
+		return connectionType == otherConnection.connectionType;
 	}
 
 }
