@@ -742,11 +742,73 @@ public class NodePin_Input
 	public BaseNodeGraphData ownerNode;
 	public string connectionLable;
 
-	public NodePin_Input(int _id, BaseNodeGraphData _ownerNode, string connLable)
+	protected virtual NodeConnectionType PinConnectionType => NodeConnectionType.Input;
+	protected List<NodeConnectionData> connections = new List<NodeConnectionData>();
+	public int ConnectionCount => connections.Count;
+
+	public NodePin_Input (int _id, BaseNodeGraphData _ownerNode, string connLable)
 	{
 		id = _id;
 		ownerNode = _ownerNode;
 		connectionLable = connLable;
+	}
+
+	public virtual void AddConnection ( int nodeId, int slotId )
+	{
+		connections.Add( new NodeConnectionData( PinConnectionType, nodeId, slotId ) );
+	}
+
+	/// <summary>
+	/// Updated the output connection id (intended for remove node)
+	/// </summary>
+	/// <param name="affterNodeId"> all nodes id's after this id will be updated </param>
+	/// <param name="updateAmount"> the amount to update the node id by </param>
+	/// <param name="removeAffterNodeId">Should the node at 'afterNodeId' be removed?</param>
+	public void UpdateConnectedNodeIds ( int affterNodeId, int updateAmount, bool removeAffterNodeId )
+	{
+		for ( int conId = connections.Count - 1; conId >= 0; --conId )
+		{
+			if ( removeAffterNodeId && affterNodeId == connections[ conId ].connectedNodeId )
+			{
+				connections.RemoveAt( conId );
+			}
+			else if ( connections[ conId ].connectedNodeId > affterNodeId )
+			{
+				NodeConnectionData conData = connections[ conId ];
+				conData.UpdateNodeId( updateAmount );
+				connections[ conId ] = conData;
+
+			}
+
+		}
+
+	}
+
+	/// <summary>
+	/// Find if this pin has a connection to node and pin
+	/// </summary>
+	/// <returns> True if found Flase otherwise</returns>
+	public bool HasConnection ( int nodeId, int slotId )
+	{
+		foreach ( NodeConnectionData conn in connections )
+			if ( conn.connectedNodeId == nodeId && conn.connectedSlotId == slotId )
+				return true;
+
+		return false;
+
+	}
+
+	/// <summary>
+	/// Remove the connection from the pin
+	/// </summary>
+	public void RemoveConnection ( int inputNodeId, int slotId )
+	{
+		for ( int i = 0; i < connections.Count; i++ )
+			if ( connections[ i ].connectedNodeId == inputNodeId && connections[ i ].connectedSlotId == slotId )
+			{
+				connections.RemoveAt( i );
+				return;
+			}
 	}
 
 }
@@ -756,10 +818,8 @@ public class NodePin_Output : NodePin_Input
 	public delegate bool isVisableFunct ( Vector2 position );
 	public delegate BaseNodeGraphData getNodeFunct ( int nodeId );
 
-	public enum BezierControlePointOffset { Horizontal, Vertical }	//TODO: Bezier curve should have there own class :)
-
-	List<Output_NodeConnectionData> connections = new List<Output_NodeConnectionData>();
-	public int ConnectionCount => connections.Count;
+	public enum BezierControlePointOffset { Horizontal, Vertical }  //TODO: Bezier curve should have there own class :)
+	protected override NodeConnectionType PinConnectionType => NodeConnectionType.Output;
 
 	public bool alwaysForwardControlPoints = true;
 
@@ -787,55 +847,14 @@ public class NodePin_Output : NodePin_Input
 
 	}
 
-	public void AddConnection(int nodeId, int slotId)
-	{
-		connections.Add( new Output_NodeConnectionData( nodeId, slotId, curvePoints ) );
-	}
-
 	/// <summary>
-	/// Updated the output connection id (intended for remove node)
+	/// Addes a new connection to the pin
 	/// </summary>
-	/// <param name="affterNodeId"> all nodes id's after this id will be updated </param>
-	/// <param name="updateAmount"> the amount to update the node id by </param>
-	/// <param name="removeAffterNodeId">Should the node at 'afterNodeId' be removed?</param>
-	public void UpdateConnectedNodeIds( int affterNodeId, int updateAmount, bool removeAffterNodeId )
+	/// <param name="nodeId"> the node to connect to </param>
+	/// <param name="slotId"> the slot to connection on the node </param>
+	public override void AddConnection ( int nodeId, int slotId )
 	{
-		for ( int conId = connections.Count - 1; conId >= 0; --conId )
-		{
-			if ( removeAffterNodeId && affterNodeId == connections[conId].connectedNodeId)
-			{
-				connections.RemoveAt( conId );
-			}
-			else if ( connections[ conId ].connectedNodeId > affterNodeId )
-			{
-				Output_NodeConnectionData conData = connections[ conId ];
-				conData.UpdateNodeId( updateAmount );
-				connections[ conId ] = conData;
-
-			}
-
-		}
-
-	}
-
-	public bool HasConnection(int nodeId, int slotId)
-	{
-		foreach ( Output_NodeConnectionData conn in connections )
-			if ( conn.connectedNodeId == nodeId && conn.connectedSlotId == slotId )
-				return true;
-
-		return false;
-
-	}
-
-	public void RemoveConnection(int inputNodeId, int slotId)
-	{
-		for ( int i = 0; i < connections.Count; i++ )
-			if ( connections[i].connectedNodeId == inputNodeId && connections[i].connectedSlotId == slotId )
-			{
-				connections.RemoveAt( i );
-				return;
-			}
+		connections.Add( new NodeConnectionData( PinConnectionType, nodeId, slotId, curvePoints ) );
 	}
 
 	/// <summary>
@@ -859,7 +878,7 @@ public class NodePin_Output : NodePin_Input
 		
 		for (int i = 0; i < connections.Count; i++)
 		{
-			Output_NodeConnectionData connection = connections[ i ];
+			NodeConnectionData connection = connections[ i ];
 			// GenerateCurve if a node has moved.
 			BaseNodeGraphData connectedNode = getNode( connection.connectedNodeId );
 
