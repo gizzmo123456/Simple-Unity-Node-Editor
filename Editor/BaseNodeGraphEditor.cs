@@ -579,7 +579,13 @@ public abstract class BaseNodeGraphData : BaseNodeData
 
 	}
 
-	public void AddPin (string connectionLable, PinMode pinMode) 
+	/// <summary>
+	/// Addes a new pin to nodes, maintatining the pin count limits
+	/// </summary>
+	/// <param name="connectionLable"> the lable to be displaed on the pin </param>
+	/// <param name="pinMode"> is it an input or output pin </param>
+	/// <param name="connectionLimits"> The max connections allow on the pin < 0 is unlimited </param>
+	public void AddPin (string connectionLable, PinMode pinMode, int connectionLimits = -1) 
 	{
 
 		if ( !CanAddPin( pinMode ) ) return;
@@ -593,8 +599,14 @@ public abstract class BaseNodeGraphData : BaseNodeData
 
 	}
 
-	[System.Obsolete] // i think that types will make this obsolete :)
-	public void AddOutputPin ( string connectionLable, Color pinColor )
+	/// <summary>
+	/// Addes an output pin to the node.
+	/// </summary>
+	/// <param name="connectionLable"> the lable to be displayed on the pin </param>
+	/// <param name="pinColor"> the color of pin </param>
+	/// <param name="connectionLimits"> The max connections allow on the pin < 0 is unlimited </param>
+	[System.Obsolete] // i think that types will make this obsolete :) (as the color will be defined by the pin type.)
+	public void AddOutputPin ( string connectionLable, Color pinColor, int connectionLimits = -1 )
 	{
 
 		if ( CanAddPin( PinMode.Output ) )
