@@ -1,5 +1,8 @@
 ﻿# Simple Node window class for unity!
 
+### Docs coming soon!!
+
+
 
 
 # TODO:
@@ -12,9 +15,9 @@
 [C] Add Scrol bar to node window  
 
 [C] Add some basic UI bits  
-&nbsp;    [C] Pannel Frame  
-&nbsp;    [R] Text types, ie. normal, bold ect...  
-&nbsp;    [R] Node Frame  
+- [C] Pannel Frame  
+- [R] Text types, ie. normal, bold ect...  
+- [R] Node Frame  
 [C] Add handle position to nodes  
 
 [C] Add Connections to BaseNodeGraphEditor and its base data nodes  
@@ -27,28 +30,28 @@
 
 [C] Add Save/Load  
 [ ] Add limits to node connections  
-&nbsp;    [ ] Types  
-&nbsp;    [ ] Count  
-&nbsp;    [C] input/output pin count  
+- [ ] Types  
+- [C] Count  
+- [C] input/output pin count  
 
 # BUGS:  
 [C] Can only have one Node Editor instance active at a time  
-&nbsp;&nbsp;&nbsp;&nbsp;    Since all need to be draw in 1 set of StartWindow and EndWindows  
-&nbsp;&nbsp;&nbsp;&nbsp;    and they must all have a unique ID  
-&nbsp;    [C] Give all windows a unique ID  
-&nbsp;    [C] Apply position offset to all node positions ect...  
+-- Since all need to be draw in 1 set of StartWindow and EndWindows  
+-- and they must all have a unique ID  
+- [C] Give all windows a unique ID  
+- [C] Apply position offset to all node positions ect...  
 [F] Fixed input positions in node graph  
 [F] Fixed NodeConnectionData inputPin_startPosition not updateing  
 
-[ ] Fix node outputs using itself for pin size it should use the node that it is connecting to.
+[C] Fix node outputs using itself for pin size it should use the node that it is connecting to.
 [ ] Finish applying LockNodesInPlaymode. It might be worth moving this in to the node data.
 [Fixed] Fix BaseNodeGraphData, generating incorrect node size when there is zero pins.
 
 # ##
-[ ] move node size functions into nodeData
-[ ] move the node window into nodeData
+[C] move node size functions into nodeData
+[C] move the node window into nodeData
 this will alow different nodes data to to exist in the same graph and each one will be its own node type.
-[ ] futher move add a base class for all the serialized data and functions :)
+[R] futher more add a base class for all the serialized data and functions :)
 
 ## Refacter
 Any functions that are specific to nodes need to be moved into the node data class
