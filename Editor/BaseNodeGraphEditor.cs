@@ -32,6 +32,15 @@ public class BaseNodeGraphEditor<T> : BaseNodeEditor<T> where T : BaseNodeGraphD
 		nodePressed += NodePressed;	
 	}
 
+	public override void Initialize ()
+	{
+
+		for ( int i = 0; i < NodeCount; i++ )
+			nodes[ i ].InitalizeConnection();
+
+		base.Initialize();
+	}
+
 	public override void Draw ( EditorWindow window )
 	{
 		base.Draw( window );
@@ -739,9 +748,38 @@ public abstract class BaseNodeGraphData : BaseNodeData
 				Debug.LogErrorFormat( "Unable to connect to node {0}. Slot {1} does not exist.", Id, fromSlotId );
 				return false;
 			}
+
+			// add the connection data to the In node pin ( toNode )
+			toNode.AddInputConnection( toSlotId, Id, fromSlotId );
+
 		}
 
 		return nodeConnections_output[ fromSlotId ].AddConnection( toNodeId, toSlotId );
+	}
+
+	/// <summary>
+	/// Sets up all nodes input data. (Only available during Graph init)
+	/// </summary>
+	public virtual void InitalizeConnection ()
+	{
+		if ( GraphIsInitalized() ) return;
+
+		// loop all output connections and add the input data to the required nodes inputs
+
+		for ( int pid = 0; pid < nodeConnections_input.Count; pid++ )
+		{
+			for ( int cid = 0; cid < nodeConnections_input[pid].ConnectionCount; cid++ )
+			{
+				BaseNodeGraphData toNode = (BaseNodeGraphData)GetOtherNodeFromGrph( nodeConnections_input[pid][cid].connectedNodeId );
+				toNode.AddInputConnection( nodeConnections_input[ pid ][ cid ].connectedSlotId, Id, pid );
+			}
+		}
+
+	}
+
+	protected virtual void AddInputConnection(int toSlotId, int fromNodeId, int fromSlotId )
+	{
+		nodeConnections_input[ toSlotId ].AddConnection( fromNodeId, fromSlotId );
 	}
 
 	public bool HasConnection( int from_pinId, int toNodeId, int toSlotId )

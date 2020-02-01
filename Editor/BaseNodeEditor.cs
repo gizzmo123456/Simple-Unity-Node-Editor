@@ -62,6 +62,9 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
 	/// </summary>
 	public virtual void Initialize()
 	{
+
+		// Finish setting up the connection data for inputs.
+
 		initialized = true;
 	}
 
