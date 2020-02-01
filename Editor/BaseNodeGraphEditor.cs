@@ -214,8 +214,11 @@ public class BaseNodeGraphEditor<T> : BaseNodeEditor<T> where T : BaseNodeGraphD
 			}
 			else																										// Compleat Connection.
 			{
-				nodes[ connectingFromNode ].AddConnection( connectingFromSlot, connectingToNode, connectingToSlot );
-				NodeConnection?.Invoke( ConnectNodesStatus.Connected, connectingFromNode, connectingFromSlot, connectingToNode, connectingToSlot );
+				bool connectedStatus = nodes[ connectingFromNode ].AddConnection( connectingFromSlot, connectingToNode, connectingToSlot );
+				if ( connectedStatus )
+					NodeConnection?.Invoke( ConnectNodesStatus.Connected, connectingFromNode, connectingFromSlot, connectingToNode, connectingToSlot );
+				else
+					NodeConnection?.Invoke( ConnectNodesStatus.Failed, connectingFromNode, connectingFromSlot, connectingToNode, connectingToSlot );
 			}
 
 			// reset connecting :)
