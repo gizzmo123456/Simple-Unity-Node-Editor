@@ -11,6 +11,7 @@ public class NodePin_Input
 
 	protected virtual NodeConnectionType PinConnectionType => NodeConnectionType.Input;
 	protected List<NodeConnectionData> connections = new List<NodeConnectionData>();
+	public NodeConnectionData this[int indx] => connections[indx];
 	public int ConnectionCount => connections.Count;
 	public int ConnectionLimit { get; private set; }    // if limit is < 0 there is no limit.
 
