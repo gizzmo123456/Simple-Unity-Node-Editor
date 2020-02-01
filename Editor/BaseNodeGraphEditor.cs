@@ -395,6 +395,7 @@ public abstract class BaseNodeGraphData : BaseNodeData
 	{
 		inputPin_localStartPosition = _inputStartPosition;
 		outputPin_localStartPosition = _outputStartPosition;
+		input_pinSize = _pinSize;
 		output_pinSize = _pinSize;
 	}
 
@@ -634,7 +635,13 @@ public abstract class BaseNodeGraphData : BaseNodeData
 
 	protected virtual Vector2 GetPinOffset( int pinId, PinMode pinMode )
 	{
-		Vector2 pinOffset = output_pinSize;
+		Vector2 pinOffset;
+
+		if ( pinMode == PinMode.Output )
+			pinOffset = output_pinSize;
+		else
+			pinOffset = input_pinSize;
+
 		pinOffset.y += pinOffset.y * pinId;
 		
 		return pinOffset;
@@ -677,7 +684,8 @@ public abstract class BaseNodeGraphData : BaseNodeData
 
 	public Rect GetPinRect (int pinId, PinMode pinMode)
 	{
-		return new Rect( GetPinLocalPosition( pinId, pinMode ), output_pinSize );
+		Vector2 pinSize = pinMode == PinMode.Output ? output_pinSize : input_pinSize;
+		return new Rect( GetPinLocalPosition( pinId, pinMode ), pinSize );
 	}
 
 	public virtual void AddConnection (int from_pinId, int toNodeId, int toSlotId)
@@ -712,7 +720,7 @@ public abstract class BaseNodeGraphData : BaseNodeData
 		switch( pinMode )
 		{
 			case PinMode.Input:
-				return new Vector2( 0, output_pinSize.y / 2f );
+				return new Vector2( 0, input_pinSize.y / 2f );
 			case PinMode.Output:
 				return new Vector2( output_pinSize.x, output_pinSize.y / 2f );
 		}

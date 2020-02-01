@@ -36,9 +36,10 @@ public abstract class BaseGraphVertPinData : BaseNodeGraphData
 
 		GenerateNodeSize();
 
-		output_pinSize.x = ( rect.width / NodeConnections_output.Count ) - (25f / NodeConnections_output.Count );
+		input_pinSize.x  = ( rect.width / NodeConnections_input.Count  ) - ( 25f / NodeConnections_input.Count  );
+		output_pinSize.x = ( rect.width / NodeConnections_output.Count ) - ( 25f / NodeConnections_output.Count );
 
-		inputPin_localStartPosition.x = -output_pinSize.x + 12;
+		inputPin_localStartPosition.x = -input_pinSize.x + 12;
 		inputPin_localStartPosition.y = 0;
 
 		outputPin_localStartPosition.x = -output_pinSize.x + 12;
@@ -67,7 +68,7 @@ public abstract class BaseGraphVertPinData : BaseNodeGraphData
 		switch ( pinMode )
 		{
 			case PinMode.Input:
-			pinOffset.x = output_pinSize.x;
+			pinOffset.x = input_pinSize.x;
 			break;
 			case PinMode.Output:
 			pinOffset = output_pinSize;
@@ -84,7 +85,7 @@ public abstract class BaseGraphVertPinData : BaseNodeGraphData
 		switch ( pinMode )
 		{
 			case PinMode.Input:
-			return new Vector2( output_pinSize.x / 2f, 0 );
+			return new Vector2( input_pinSize.x / 2f, 0 );
 			case PinMode.Output:
 			return new Vector2( output_pinSize.x / 2f, output_pinSize.y );
 		}
