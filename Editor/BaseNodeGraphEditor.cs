@@ -868,7 +868,7 @@ public class NodePin_Output : NodePin_Input
 				Debug.LogErrorFormat( "Unable to draw connection from node {0} to node {1}. Node {1} does not exist", id, connection.connectedNodeId );
 				continue;
 			}
-
+			
 			// skip if both nodes are not visable
 			if ( !isVisable( ownerNode.NodeRect.position ) && !isVisable( connectedNode.NodeRect.position ) )
 				continue;
@@ -879,7 +879,7 @@ public class NodePin_Output : NodePin_Input
 			{
 
 				GenerateBezierCurve( curveStartPosition,
-									 connectedNode.GetPinPosition( connection.connectedSlotId, BaseNodeGraphData.PinMode.Input ) + ownerNode.GetConnectionOffset( BaseNodeGraphData.PinMode.Input ), 
+									 connectedNode.GetPinPosition( connection.connectedSlotId, BaseNodeGraphData.PinMode.Input ) + connectedNode.GetConnectionOffset( BaseNodeGraphData.PinMode.Input ), 
 									 ref connection.connectionCurve );
 
 				connection.SetStartPosition( connectedNode.NodeRect.position );  // Update start position.
@@ -948,7 +948,11 @@ public class NodePin_Output : NodePin_Input
 
 				Vector3[] verts = { connectionPoints[ i - 1 ], connectionPoints[ i ], endPoint + perb, startPoint + perb };
 				Handles.DrawSolidRectangleWithOutline( verts, lineColour, lineColour );
+				//if ( ownerNode != null && ownerNode.Id == 0 )
+
 			}
+
+
 		}
 
 		Handles.color = lastHandleColor;	// put the color back
