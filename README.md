@@ -34,14 +34,17 @@
 - - [x] Count  
 - - [x] input/output pin count  
 
+- [ ] Add snaping and grid
+- [ ] Add Zoom
+
 # BUGS:  
 - [x] Can only have one Node Editor instance active at a time  
  Since all need to be draw in 1 set of StartWindow and EndWindows  
  and they must all have a unique ID  
 - - [x] Give all windows a unique ID  
 - - [x] Apply position offset to all node positions ect...  
-- [F] Fixed input positions in node graph  
-- [F] Fixed NodeConnectionData inputPin_startPosition not updateing  
+- [x] Fixed input positions in node graph  
+- [x] Fixed NodeConnectionData inputPin_startPosition not updateing  
 
 - [x] Fix node outputs using itself for pin size it should use the node that it is connecting to.  
 - [ ] Finish applying LockNodesInPlaymode. It might be worth moving this in to the node data.  
@@ -79,8 +82,6 @@ orginized and serparate from the graph and editor window but designed to be used
 =========== MAYBE MAKE THE EMPTY BASE CLASS AND ADD A NEW CLASS FOR HOZ PINS  
 
 =========== BASE NODE GRAPH VERT PINS  
-
-
 
 
 
