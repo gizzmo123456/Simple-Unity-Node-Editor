@@ -36,6 +36,7 @@
 
 - [ ] Add snaping and grid
 - [ ] Add Zoom
+- [ ] Select multiple nodes]
 
 # BUGS:  
 - [x] Can only have one Node Editor instance active at a time  
