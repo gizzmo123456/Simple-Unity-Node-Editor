@@ -82,13 +82,6 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
 						panelRect.position + panelRect.size + bottomRightpadding, panelRect.position + new Vector2(-topLeftpadding.x, panelRect.size.y + bottomRightpadding.y) };
 		Handles.DrawSolidRectangleWithOutline( v, new Color(0.8f, 0.8f, 0.8f), Color.gray );
 
-		// get scroll position
-		Rect scrollRect = panelRect;
-		scrollRect.size += new Vector2( 18, 18 );
-
-		panelScrollPosition = GUI.BeginScrollView( scrollRect, panelScrollPosition, panelInnerRect );
-		GUI.EndScrollView();
-
 		Vector2 scrolDelta = panelScrollPosition - lastScrolBarPosition;
 		scrolDelta = -scrolDelta;
 
@@ -130,6 +123,19 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
 			repaint = false;
 		}
 
+	}
+
+	/// <summary>
+	/// This must be called if you want scroll bars, and it must be outside of the window Rect.
+	/// </summary>
+	public void DrawScrollBars()
+	{
+		// get scroll position
+		Rect scrollRect = panelRect;
+		scrollRect.size += new Vector2( 18, 18 );
+
+		panelScrollPosition = GUI.BeginScrollView( scrollRect, panelScrollPosition, panelInnerRect );
+		GUI.EndScrollView();
 	}
 
 	protected virtual void DrawNode( int nodeId )
