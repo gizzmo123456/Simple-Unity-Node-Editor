@@ -76,11 +76,11 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
 	/// <param name="window"></param>
 	public virtual void Draw ( EditorWindow window ) 
 	{
-
+		
 		// Draw background box
 		Vector3[] v = { panelRect.position - topLeftpadding,   panelRect.position + new Vector2( panelRect.size.x + bottomRightpadding.x, -topLeftpadding.y ),
 						panelRect.position + panelRect.size + bottomRightpadding, panelRect.position + new Vector2(-topLeftpadding.x, panelRect.size.y + bottomRightpadding.y) };
-		Handles.DrawSolidRectangleWithOutline( v, new Color(0.8f, 0.8f, 0.8f), Color.gray );
+		Handles.DrawSolidRectangleWithOutline( v, new Color(0.8f, 0.8f, 0.8f), Color.black );
 
 		Vector2 scrolDelta = panelScrollPosition - lastScrolBarPosition;
 		scrolDelta = -scrolDelta;
@@ -136,6 +136,24 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
 
 		panelScrollPosition = GUI.BeginScrollView( scrollRect, panelScrollPosition, panelInnerRect );
 		GUI.EndScrollView();
+	}
+
+	public void DrawOverOutterPannle(EditorWindow editorWin) 
+	{
+
+		Rect winRect = editorWin.position;
+
+		Rect tRect = new Rect(0, 0, winRect.width, panelRect.y);
+		Rect lRect = new Rect( 0, 0, panelRect.x, winRect.height );
+		Rect bRect = new Rect( 0, winRect.height + 18, winRect.width, ( panelRect.y + panelRect.height ) - winRect.height );
+		Rect rRect = new Rect( winRect.width + 18, 0, ( panelRect.x + panelRect.width ) - winRect.width, winRect.height );
+
+		Handles.DrawSolidRectangleWithOutline( tRect, Color.gray, Color.gray );
+		Handles.DrawSolidRectangleWithOutline( rRect, Color.gray, Color.gray );
+		Handles.DrawSolidRectangleWithOutline( bRect, Color.gray, Color.gray ); 
+		Handles.DrawSolidRectangleWithOutline( lRect, Color.gray, Color.gray );
+
+
 	}
 
 	protected virtual void DrawNode( int nodeId )
