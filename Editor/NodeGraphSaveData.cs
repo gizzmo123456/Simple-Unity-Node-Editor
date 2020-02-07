@@ -15,14 +15,15 @@ public class NodeGraphSaveData : ScriptableObject
     /// </summary>
     /// <param name="saveDataName"> the name of the graph to save to</param>
     /// <param name="graphData">the data to save</param>
-    /// <param name="id">the index to save to, if less than 0 appends to end, if greater than length inserts defualt values between data end and id, if id exist data is over writen</param>
-    /// <returns>true if the graph data changed</returns> 
-    public bool UpdateGraphData ( string saveDataName, NodeGraphSaveData.GraphSaveGroup.Graph graphData, int id )
+    /// <param name="nodeId">the index to save to, if less than 0 appends to end, if greater than length inserts defualt values between data end and id, if id exist data is over writen</param>
+    /// <param name="uniqueId">The unique id of the node, for most case this can just be the node id, but for cases where the node id can change this needs to be somthink unique to keep trak of nodes durring sessions</param>
+	/// <returns>true if the graph data changed</returns> 
+    public bool UpdateGraphData ( string saveDataName, NodeGraphSaveData.GraphSaveGroup.Graph graphData, int nodeId )
     {
 
         if ( IsCached( saveDataName ) )
         {
-            return UpdateCachedGraph( graphData, id );
+            return UpdateCachedGraph( graphData, nodeId );
         }
 
         // look it up and cache it!
@@ -31,7 +32,7 @@ public class NodeGraphSaveData : ScriptableObject
             if ( data[ i ].graphName == saveDataName )
             {
                 cachedDataIndex = i;
-                return UpdateCachedGraph( graphData, id );
+                return UpdateCachedGraph( graphData, nodeId );
                 
             }
         }
@@ -39,34 +40,34 @@ public class NodeGraphSaveData : ScriptableObject
         cachedDataIndex = data.Count;
         data.Add( new NodeGraphSaveData.GraphSaveGroup( saveDataName ) );
 
-        return UpdateCachedGraph( graphData, id );
+        return UpdateCachedGraph( graphData, nodeId );
 
     }
 
-    private bool UpdateCachedGraph( NodeGraphSaveData.GraphSaveGroup.Graph graphData, int id)
+    private bool UpdateCachedGraph( NodeGraphSaveData.GraphSaveGroup.Graph graphData, int nodeId)
     {
 
         int graphSize = data[ cachedDataIndex ].graph.Count;
         bool updated = false;
 
-        if ( id < 0 || id == graphSize )  // apend data.
+        if ( nodeId < 0 || nodeId == graphSize )  // apend data.
         {
             data[ cachedDataIndex ].graph.Add( graphData );
             updated = true;
         }
-        else if ( id < graphSize )        // update
+        else if ( nodeId < graphSize )        // update
         {
-            updated = !data[ cachedDataIndex ].graph[ id ].CompareTo( graphData );
+            updated = !data[ cachedDataIndex ].graph[ nodeId ].CompareTo( graphData );
             if ( updated )
-                data[ cachedDataIndex ].graph[ id ] = graphData;
+                data[ cachedDataIndex ].graph[ nodeId ] = graphData;
         }
-        else if ( id > graphSize )       // Add range and apend to end
+        else if ( nodeId > graphSize )       // Add range and apend to end
         {
 
-            int elementsToAdd = id - graphSize;
+            int elementsToAdd = nodeId - graphSize;
             for ( int i = 0; i < elementsToAdd; i++ )
             {
-                data[ cachedDataIndex ].graph.Add( new GraphSaveGroup.Graph( Vector2.zero ) );
+                data[ cachedDataIndex ].graph.Add( new GraphSaveGroup.Graph( -1, Vector2.zero ) );
             }
 
             data[ cachedDataIndex ].graph.Add( graphData );
@@ -118,12 +119,15 @@ public class NodeGraphSaveData : ScriptableObject
         [System.Serializable]
         public class Graph
         {
+			public int uniqueId = -1;
             public Vector2 nodePosition = Vector2.zero;
 
-            public Graph ( Vector2 pos )
+            public Graph ( int _uniqueId, Vector2 pos )
             {
                 nodePosition = pos;
-            }
+				uniqueId = _uniqueId;
+
+			}
 
             public bool CompareTo( Graph other )
             {

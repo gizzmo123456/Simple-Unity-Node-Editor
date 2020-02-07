@@ -430,7 +430,7 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
 
 		// Add/Update the current node graph
 		for ( int i = 0; i < nodes.Count; i++ )
-			graphUpdated |= graphSavedData.UpdateGraphData( graphName, new NodeGraphSaveData.GraphSaveGroup.Graph( nodes[ i ].GetNodePosition() ), i );
+			graphUpdated |= graphSavedData.UpdateGraphData( graphName, new NodeGraphSaveData.GraphSaveGroup.Graph( GetSaveNodeUniqueId(i), nodes[ i ].GetNodePosition() ), i );
 
 
 		// since i have not used a serialized object for node saved data we MUST mark the scriptable object as dirty manually
@@ -445,14 +445,20 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
 
 	}
 
+	public int GetSaveNodeUniqueId( int nodeId )
+	{
+		return nodeId;
+	}
+
 	/// <summary>
 	/// Loads and applies graph data for 'graph name'.
 	/// Should be called after the inital nodes have been loaded
 	/// </summary>
 	public virtual void LoadGraphData( string graphName )
 	{
+		List<NodeGraphSaveData.GraphSaveGroup.Graph> uid_graphData = GetNodeGraphSaveData()?.GetGraphData( graphName );
+		NodeGraphSaveData.GraphSaveGroup.Graph[] graphData = uid_graphData.ToArray();
 
-		List<NodeGraphSaveData.GraphSaveGroup.Graph> graphData = GetNodeGraphSaveData()?.GetGraphData( graphName );
 
 		if ( graphData == null )
 		{
@@ -461,10 +467,22 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
 		}
 
 		// graph data and nodes should be 1 to 1, but just in case use the min count to prevent any array index out range :)
-		for ( int i = 0; i < Mathf.Min( graphData.Count, nodes.Count ); i++ )
+		for ( int i = 0; i < Mathf.Min( graphData.Length, nodes.Count ); i++ )
 		{
-			// set position
-			nodes[ i ].SetNodePosition( graphData[i].nodePosition );
+			// find each unique id.
+			for ( int j = 0; j < uid_graphData.Count; j++ )
+			{
+				if ( uid_graphData[ j ].uniqueId == GetSaveNodeUniqueId( i ) )
+				{
+					// set position
+					nodes[ i ].SetNodePosition( graphData[ i ].nodePosition );
+
+					// remove as its unque and we wont find it again + move onto the next node
+					uid_graphData.RemoveAt( j );
+					break;	
+
+				}
+			}
 		}
 
 		CalculatePanelInnerRect();
