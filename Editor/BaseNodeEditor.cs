@@ -470,7 +470,7 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
 			Debug.LogWarning( "NodeGraph: No Save data found!" );
 			return;
 		}
-		Debug.LogErrorFormat( " nodecount {0}", Mathf.Min( graphData.Length, nodes.Count ) );
+
 		// graph data and nodes should be 1 to 1, but just in case use the min count to prevent any array index out range :)
 		for ( int i = 0; i < Mathf.Min( graphData.Length, nodes.Count ); i++ )
 		{
