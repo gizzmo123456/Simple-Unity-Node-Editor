@@ -47,6 +47,23 @@ public class NodeGraphSaveData : ScriptableObject
     private bool UpdateCachedGraph( NodeGraphSaveData.GraphSaveGroup.Graph graphData, int nodeId)
     {
 
+		// find if the alread contaitns the uid in graphData if not append it to the end of the save data.
+
+		for ( int i = 0; i < data[cachedDataIndex].graph.Count; i++ )
+		{
+			if (data[cachedDataIndex].graph[i].uniqueId == graphData.uniqueId)
+			{
+				// overwrite.	// TODO: check that the data has changed!
+				data[ cachedDataIndex ].graph[ i ] = graphData;
+				return true;
+			}
+		}
+
+		// apend to end.
+		data[ cachedDataIndex ].graph.Add( graphData );
+
+		return true;
+
         int graphSize = data[ cachedDataIndex ].graph.Count;
         bool updated = false;
 
