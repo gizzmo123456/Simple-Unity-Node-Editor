@@ -234,7 +234,9 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
 		Rect nodeRect = nodes[ nodeId ].NodeRect;
 
 		return PositionIsVisable( nodeRect.position ) ||
-			   PositionIsVisable( nodeRect.position + (nodeRect.size) );
+			   PositionIsVisable( nodeRect.position + ( nodeRect.size ) ) ||
+			   PositionIsVisable( new Vector2(nodeRect.x, nodeRect.y + nodeRect.height) ) ||
+			   PositionIsVisable( new Vector2(nodeRect.x + nodeRect.width, nodeRect.y) );
 
 
 	}
