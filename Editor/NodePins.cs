@@ -224,9 +224,9 @@ public class NodePin_Output : NodePin_Input
 		Vector2 offset = Vector2.zero;
 
 		if ( bezierControleOffset == BezierControlePointOffset.Horizontal )
-			offset.x = ( to.x - from.x ) * ( 0.75f + ( 0.1f * ( Mathf.Abs( to.y - from.y ) / 150f ) ) );
+			offset.x = ( to.x - from.x ) * ( 0.4f + ( 0.1f * ( Mathf.Abs( to.y - from.y ) / 150f ) ) );
 		else
-			offset.y = ( to.y - from.y ) * ( 0.75f + ( 0.1f * ( Mathf.Abs( to.x - from.x ) / 150f ) ) );
+			offset.y = ( to.y - from.y ) * ( 0.4f + ( 0.1f * ( Mathf.Abs( to.x - from.x ) / 150f ) ) );
 
 		if ( alwaysForwardControlPoints )
 			offset = offset.Abs();
