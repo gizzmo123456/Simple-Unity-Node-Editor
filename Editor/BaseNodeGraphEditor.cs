@@ -197,7 +197,7 @@ public class BaseNodeGraphEditor<T> : BaseNodeEditor<T> where T : BaseNodeGraphD
 			
 			foreach ( NodePin_Output nodeConn in nodes[i].NodeConnections_output )
 			{
-				nodeConn.DrawConnection(GetNode, PositionIsVisable);
+				nodeConn.DrawConnection( panelRect, GetNode );//, PositionIsVisable);
 			}
 		}
 
@@ -248,7 +248,7 @@ public class BaseNodeGraphEditor<T> : BaseNodeEditor<T> where T : BaseNodeGraphD
 				endPos = Event.current.mousePosition;
 
 			curve.GenerateBezierCurve( startPos, endPos, ref connectionPointsToMouse );
-			curve.DrawConnectionLines( connectionPointsToMouse, PositionIsVisable );
+			curve.DrawConnectionLines( connectionPointsToMouse, panelRect );
 
 			// Signal that we have started a new connection.
 			if ( !invokedConnectingFromCallback )

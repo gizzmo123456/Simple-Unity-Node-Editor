@@ -147,13 +147,24 @@ public class NodePin_Output : NodePin_Input
 		return false;
 	}
 
+	private bool IsCurveVisableInDrawArea( Rect drawArea, Vector2 startPos, Vector2 endPos )
+	{
+
+		Rect curveBounds = new Rect( startPos.Min( endPos ), startPos.Max( endPos ) - startPos.Min( endPos ) );
+
+		// is either the draw area with in the curve bounds or curve bounds within the draw area.
+		return drawArea.Contains( curveBounds.position ) || drawArea.Contains( curveBounds.position + curveBounds.size ) ||
+			   curveBounds.Contains( drawArea.position ) || curveBounds.Contains( drawArea.position + drawArea.size );
+
+	}
+
 	/// <summary>
 	/// 
 	/// </summary>
 	/// <param name="startPosition"></param>
 	/// <param name="endPosition"></param>
 	/// <param name="isVisable"></param>
-	public void DrawConnection ( getNodeFunct getNode, isVisableFunct isVisable )
+	public void DrawConnection ( Rect drawArea, getNodeFunct getNode ) //, isVisableFunct isVisable )
 	{
 
 		bool connMoved = false;
@@ -168,9 +179,12 @@ public class NodePin_Output : NodePin_Input
 
 		for ( int i = 0; i < connections.Count; i++ )
 		{
+
 			NodeConnectionData connection = connections[ i ];
+
 			// GenerateCurve if a node has moved.
 			BaseNodeGraphData connectedNode = getNode( connection.connectedNodeId );
+			Vector2 curveEndPosition = connectedNode.GetPinPosition( connection.connectedSlotId, BaseNodeGraphData.PinMode.Input ) + connectedNode.GetConnectionOffset( BaseNodeGraphData.PinMode.Input );
 
 			if ( connectedNode == null )
 			{
@@ -179,7 +193,10 @@ public class NodePin_Output : NodePin_Input
 			}
 
 			// skip if both nodes are not visable
-			if ( !isVisable( ownerNode.NodeRect.position ) && !isVisable( connectedNode.NodeRect.position ) )
+			//if ( !isVisable( ownerNode.NodeRect.position ) && !isVisable( connectedNode.NodeRect.position ) )
+			//	continue;
+
+			if ( !IsCurveVisableInDrawArea( drawArea, curveStartPosition, curveEndPosition ) )
 				continue;
 
 			bool inConnMoved = connection.PinMoved( connectedNode.NodeRect.position );
@@ -188,7 +205,7 @@ public class NodePin_Output : NodePin_Input
 			{
 
 				GenerateBezierCurve( curveStartPosition,
-									 connectedNode.GetPinPosition( connection.connectedSlotId, BaseNodeGraphData.PinMode.Input ) + connectedNode.GetConnectionOffset( BaseNodeGraphData.PinMode.Input ),
+									 curveEndPosition  ,
 									 ref connection.connectionCurve );
 
 				connection.SetStartPosition( connectedNode.NodeRect.position );  // Update start position.
@@ -196,7 +213,7 @@ public class NodePin_Output : NodePin_Input
 
 			}
 
-			DrawConnectionLines( connections[ i ].connectionCurve, isVisable );
+			DrawConnectionLines( connections[ i ].connectionCurve, drawArea );
 
 		}
 
@@ -228,7 +245,7 @@ public class NodePin_Output : NodePin_Input
 		}
 	}
 
-	public void DrawConnectionLines ( Vector2[] connectionPoints, isVisableFunct isVisable )
+	public void DrawConnectionLines ( Vector2[] connectionPoints, Rect drawArea )
 	{
 		if ( connectionPoints.Length < 1 )
 		{
@@ -241,23 +258,20 @@ public class NodePin_Output : NodePin_Input
 		lineColour.a = 0.25f;
 		Handles.color = pinColor;
 
-
 		for ( int i = 1; i < connectionPoints.Length; i++ )
 		{
-			Vector2 lineCenter = connectionPoints[ i - 1 ] + ( ( connectionPoints[ i ] - connectionPoints[ i - 1 ] ) / 2f );
 
-			if ( isVisable( lineCenter ) )
+			Vector2 startPoint = connectionPoints[ i - 1 ];
+			Vector2 endPoint = connectionPoints[ i ];
+
+			if ( drawArea.Contains( startPoint ) || drawArea.Contains( endPoint ) )
 			{
-				// TODO: improve line width
-				Vector2 startPoint = connectionPoints[ i - 1 ];
-				Vector2 endPoint = connectionPoints[ i ];
 
 				Vector2 vect = endPoint - startPoint;
 				Vector2 perb = Vector2.Perpendicular( vect.normalized * curveWidth );
 
 				Vector3[] verts = { connectionPoints[ i - 1 ], connectionPoints[ i ], endPoint + perb, startPoint + perb };
 				Handles.DrawSolidRectangleWithOutline( verts, lineColour, lineColour );
-				//if ( ownerNode != null && ownerNode.Id == 0 )
 
 			}
 
