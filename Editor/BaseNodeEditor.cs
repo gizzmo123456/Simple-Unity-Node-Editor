@@ -476,7 +476,7 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
 		}
 
 		// graph data and nodes should be 1 to 1, but just in case use the min count to prevent any array index out range :)
-		for ( int i = 0; i < Mathf.Min( graphData.Length, nodes.Count ); i++ )
+		for ( int i = 0; i < nodes.Count; i++ )
 		{
 			// find each unique id.
 			for ( int j = 0; j < uid_graphData.Count; j++ )
@@ -484,7 +484,7 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
 				if ( uid_graphData[ j ].uniqueId == GetSaveNodeUniqueId( i ) )
 				{
 					// set position
-					nodes[ i ].SetNodePosition( graphData[ i ].nodePosition );
+					nodes[ i ].SetNodePosition( uid_graphData[ j ].nodePosition );
 
 					// remove as its unque and we wont find it again + move onto the next node
 					uid_graphData.RemoveAt( j );
