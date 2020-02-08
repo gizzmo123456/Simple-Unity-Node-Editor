@@ -107,7 +107,7 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
 			nodes[ i ].MoveNode(scrolDelta);
 
 			// hide node if not viable of if the node has been releassed due to the mouse leaveing the node area.
-			if ( (!PositionIsVisable( nodes[ i ].GetNodeCenter() ) && pressedNode != i ) || (pressedNode < 0 && releasedNode > -1) )
+			if ( (!NodeIsVisable(i) && pressedNode != i ) || (pressedNode < 0 && releasedNode > -1) )
 				continue; 
 
 			DrawNode( i );
@@ -221,10 +221,21 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
 	/// <param name="position">position in Editor Window</param>
 	protected bool PositionIsVisable ( Vector2 position )
 	{
-		//position -= panelRect.position;
 
 		return !(position.x < panelRect.x || position.x > panelRect.x + panelRect.width ||
 			   position.y < panelRect.y || position.y > panelRect.y + panelRect.height);
+
+	}
+
+	protected bool NodeIsVisable( int nodeId )
+	{
+
+		
+		Rect nodeRect = nodes[ nodeId ].NodeRect;
+
+		return PositionIsVisable( nodeRect.position ) ||
+			   PositionIsVisable( nodeRect.position + (nodeRect.size) );
+
 
 	}
 
