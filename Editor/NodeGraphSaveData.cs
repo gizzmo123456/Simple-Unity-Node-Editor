@@ -11,6 +11,37 @@ public class NodeGraphSaveData : ScriptableObject
     int cachedDataIndex = -1; 
 
     /// <summary>
+    /// Creates a new graph. It the graph already exist it will cleared.
+    /// </summary>
+    public void NewGraph( string saveDataName )
+    {
+
+        
+        if ( IsCached( saveDataName ) )
+        {
+            data[ cachedDataIndex ] = new NodeGraphSaveData.GraphSaveGroup( saveDataName );
+            return;
+        }
+
+        // attempt to look it up
+        for ( int i = 0; i < data.Count; i++ )
+        {
+            if ( data[ i ].graphName == saveDataName )
+            {
+                cachedDataIndex = i;
+                data[ cachedDataIndex ] = new NodeGraphSaveData.GraphSaveGroup( saveDataName );
+                return;
+
+            }
+        }
+
+        // else add it!
+        cachedDataIndex = data.Count;
+        data.Add( new NodeGraphSaveData.GraphSaveGroup( saveDataName ) );
+
+    }
+
+    /// <summary>
     /// Adds or updates existing save data.
     /// </summary>
     /// <param name="saveDataName"> the name of the graph to save to</param>
@@ -63,35 +94,6 @@ public class NodeGraphSaveData : ScriptableObject
 		data[ cachedDataIndex ].graph.Add( graphData );
 
 		return true;
-
-        int graphSize = data[ cachedDataIndex ].graph.Count;
-        bool updated = false;
-
-        if ( nodeId < 0 || nodeId == graphSize )  // apend data.
-        {
-            data[ cachedDataIndex ].graph.Add( graphData );
-            updated = true;
-        }
-        else if ( nodeId < graphSize )        // update
-        {
-            updated = !data[ cachedDataIndex ].graph[ nodeId ].CompareTo( graphData );
-            if ( updated )
-                data[ cachedDataIndex ].graph[ nodeId ] = graphData;
-        }
-        else if ( nodeId > graphSize )       // Add range and apend to end
-        {
-
-            int elementsToAdd = nodeId - graphSize;
-            for ( int i = 0; i < elementsToAdd; i++ )
-            {
-                data[ cachedDataIndex ].graph.Add( new GraphSaveGroup.Graph( -1, Vector2.zero ) );
-            }
-
-            data[ cachedDataIndex ].graph.Add( graphData );
-            updated = true;
-        }
-
-        return updated;
 
     }
 

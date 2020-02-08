@@ -413,7 +413,8 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
 	/// Saves the current graph to 'graph name'
 	/// this will overwrite any pre existing data for 'graph name'
 	/// </summary>
-	public virtual void SaveNodeGraph( string graphName )
+	/// <param name="newSaveData">Should it just update the existing saveData or should it start a fresh</param>
+	public virtual void SaveNodeGraph ( string graphName, bool newSaveData = false )
 	{
 
 		if ( nodes.Count == 0 )
@@ -423,10 +424,13 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
 		}
 
 		NodeGraphSaveData graphSavedData = GetNodeGraphSaveData();
-		
+		bool graphUpdated = false;
+
 		if ( graphSavedData == null ) return;
 
-		bool graphUpdated = false;
+		if ( newSaveData )
+			graphSavedData.NewGraph( graphName );
+
 
 		// Add/Update the current node graph
 		for ( int i = 0; i < nodes.Count; i++ )
@@ -505,7 +509,7 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
 
 		if ( savedData == null )
 		{
-			savedData = ScriptableObject.CreateInstance<NodeGraphSaveData>(); //new NodeGraphSaveData();
+			savedData = ScriptableObject.CreateInstance<NodeGraphSaveData>();
 			AssetDatabase.CreateAsset( savedData, SavePath+AssetName );
 
 			if ( savedData == null )
