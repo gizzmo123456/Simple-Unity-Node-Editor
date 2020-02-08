@@ -223,10 +223,13 @@ public class NodePin_Output : NodePin_Input
 	{
 		Vector2 offset = Vector2.zero;
 
+		float xDif = to.x - from.x;
+		float yDif = to.y - from.y;
+
 		if ( bezierControleOffset == BezierControlePointOffset.Horizontal )
-			offset.x = ( to.x - from.x ) * ( 0.4f + ( 0.1f * ( Mathf.Abs( to.y - from.y ) / 150f ) ) );
+			offset.x = xDif * ( 0.35f + (0.1f * Mathf.Abs( yDif ) / 150f ) );
 		else
-			offset.y = ( to.y - from.y ) * ( 0.4f + ( 0.1f * ( Mathf.Abs( to.x - from.x ) / 150f ) ) );
+			offset.y = yDif * ( 0.35f + (0.1f * Mathf.Abs( xDif ) / 150f ) );
 
 		if ( alwaysForwardControlPoints )
 			offset = offset.Abs();
