@@ -7,7 +7,13 @@ public class NodePin_Input
 {
 	public int id;
 	public BaseNodeGraphData ownerNode;
-	public string connectionLable;
+	private string connectionLable;
+	public bool activePin = false;
+	private string activePinMarker = ">";
+	public string ConnectionLable {
+		get { return activePin ? activePinMarker + connectionLable : connectionLable; }
+		set { connectionLable = value; }
+	}
 
 	protected virtual NodeConnectionType PinConnectionType => NodeConnectionType.Input;
 	protected List<NodeConnectionData> connections = new List<NodeConnectionData>();

@@ -521,7 +521,7 @@ public abstract class BaseNodeGraphData : BaseNodeData
 
 			if ( i < nodeInputPins.Length )
 			{
-				lable = nodeInputPins[ i ].connectionLable;
+				lable = nodeInputPins[ i ].ConnectionLable;
 				pinRect = GetPinRect( i, BaseNodeGraphData.PinMode.Input );
 
 				GUI.Box( pinRect, "", guiSkin.GetStyle( "nodePin_box" ) );
@@ -533,7 +533,7 @@ public abstract class BaseNodeGraphData : BaseNodeData
 
 			if ( i < nodeOutputPins.Length )
 			{
-				lable = nodeOutputPins[ i ].connectionLable;
+				lable = nodeOutputPins[ i ].ConnectionLable;
 				pinRect = GetPinRect( i, BaseNodeGraphData.PinMode.Output );
 
 				GUI.Box( pinRect, "", guiSkin.GetStyle( "nodePin_box" ) );
