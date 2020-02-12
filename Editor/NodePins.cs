@@ -8,7 +8,8 @@ public class NodePin_Input
 	public int id;
 	public BaseNodeGraphData ownerNode;
 	private string connectionLable;
-	public bool activePin = false;
+	private bool activePin = false;
+	public bool ActivePin { get => activePin; set => activePin = value; }
 	private string activePinMarker = ">";
 	public string ConnectionLable {
 		get { return activePin ? activePinMarker + connectionLable : connectionLable; }
