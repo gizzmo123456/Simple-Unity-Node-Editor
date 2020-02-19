@@ -1,4 +1,11 @@
-﻿# Simple Node window class for unity!
+﻿# Simple Node Graph
+###### Simple set of classes for creating different types of node graphs in unity!
+
+NodeGraph is a set of classes to inherit form, to create different styles of nodes and graphs  
+There are 3 different types of node each with there own graph window
+
+wip
+
 
 [Node Graph Doxygen Docs](http://blog.ashleysands.co.uk/NodeGraphDocs/)
 ##### Docs coming soon!!
