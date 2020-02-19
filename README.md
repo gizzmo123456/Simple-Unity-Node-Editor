@@ -1,11 +1,12 @@
 ﻿# Simple Node window class for unity!
 
-### Docs coming soon!!
-
+[Node Graph Doxygen Docs](http://blog.ashleysands.co.uk/NodeGraphDocs/)
+##### Docs coming soon!!
 
 
 
 # TODO:
+- [ ] Sort out Readme.md :)
 - [x] Fix issue in BaseNodeEditor.NodeWindow  
 - [x] Add node graph editor  
 - [x] Make BaseVerticalNodeEditor Abstract  
