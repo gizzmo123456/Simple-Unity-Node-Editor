@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NodeGraphSaveData : ScriptableObject
+public class NodeGraphSaveData
 {
 
     public List<NodeGraphSaveData.GraphSaveGroup> data = new List<NodeGraphSaveData.GraphSaveGroup>();
@@ -127,7 +127,9 @@ public class NodeGraphSaveData : ScriptableObject
     public class GraphSaveGroup
     {
         public string graphName;
+
         public List<Graph> graph;
+		public List<GraphComments> comments;
 
         public GraphSaveGroup ( string name )
         {
@@ -153,6 +155,11 @@ public class NodeGraphSaveData : ScriptableObject
                 return other.nodePosition == nodePosition;
             }
         }
+
+		public class GraphComments
+		{
+			// ....
+		}
 
     }
 

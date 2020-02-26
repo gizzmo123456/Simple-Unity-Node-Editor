@@ -16,11 +16,10 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
 
 	protected GUISkin guiSkin;
 
-	/// <summary>
-	/// The path to asset must exist! (the asset ie '/NodeGraphData.asset' does not need to exist)
-	/// </summary>
+	Helpers.SaveLoadFile saveLoad;
+
 	public virtual string SavePath { get => "Assets/Scripts/NodeGraph/Editor/SavedData/"; }
-	public virtual string AssetName { get => "NodeGraphData.asset"; }
+	public virtual string AssetName { get => "NodeGraphData"; }
 
 	protected int uniqueID;
 	protected bool initialized = false;
@@ -420,8 +419,9 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
 			name += "::" + go.transform.parent.name;
 		}
 
-		return name;
+		return name; 
 	}
+
 	/// <summary>
 	/// Saves the current graph to 'graph name'
 	/// this will overwrite any pre existing data for 'graph name'
@@ -454,8 +454,8 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
 		// plus we DONT want an undo step adding for this operation.
 		if ( graphUpdated )
 		{
-			EditorUtility.SetDirty( graphSavedData );
-			AssetDatabase.SaveAssets();
+			saveLoad.ReplaceFile( JsonUtility.ToJson( graphSavedData, false ) );
+			saveLoad.SaveFile();
 		}
 
 		Debug.Log( "NodeGraph Saved!" );
@@ -474,6 +474,7 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
 	public virtual void LoadGraphData( string graphName )
 	{
 		List<NodeGraphSaveData.GraphSaveGroup.Graph> temp_graphData = GetNodeGraphSaveData()?.GetGraphData( graphName );
+
 		List<NodeGraphSaveData.GraphSaveGroup.Graph> uid_graphData = new List<NodeGraphSaveData.GraphSaveGroup.Graph>();
 
 		if (temp_graphData != null && temp_graphData.Count > 0)
@@ -517,22 +518,20 @@ public abstract class BaseNodeEditor<T> where T : BaseNodeData
 	/// <returns></returns>
 	private NodeGraphSaveData GetNodeGraphSaveData()
 	{
+
+		if ( saveLoad == null )
+			saveLoad = new Helpers.SaveLoadFile( SavePath, AssetName, "nsg", true );
+
 		// attampt to load data, if does not exist creat new :)
-		NodeGraphSaveData savedData = (NodeGraphSaveData)AssetDatabase.LoadAssetAtPath( SavePath+AssetName, typeof( NodeGraphSaveData ) );
-
-		if ( savedData == null )
+		if ( Helpers.SaveLoadFile.FileExists( SavePath, AssetName, "nsg" ) )
 		{
-			savedData = ScriptableObject.CreateInstance<NodeGraphSaveData>();
-			AssetDatabase.CreateAsset( savedData, SavePath+AssetName );
+			saveLoad.LoadFile();
 
-			if ( savedData == null )
-			{
-				Debug.LogErrorFormat( "NodeGraph: Unable to create save data. Does the path '{0}' exist?", SavePath );
-			}
+			return JsonUtility.FromJson<NodeGraphSaveData>( saveLoad.AllLines );
 
 		}
 
-		return savedData;
+		return new NodeGraphSaveData();
 
 	}
 
