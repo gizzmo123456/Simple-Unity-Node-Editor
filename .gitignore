@@ -1,8 +1,12 @@
+
 *.meta
 *.psd
+
 !/Editor/Resources/*.meta
 !/Editor/Resources/wins/*.meta
 /Editor/SavedData/*.asset
 
+
 # keep below the resource file so psd.meta files are still ignored in that folder
 *.psd.meta
+**/*.nsg*
