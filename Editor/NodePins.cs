@@ -157,11 +157,13 @@ public class NodePin_Output : NodePin_Input
 	private bool IsCurveVisableInDrawArea( Rect drawArea, Vector2 startPos, Vector2 endPos )
 	{
 
-		Rect curveBounds = new Rect( startPos.Min( endPos ), startPos.Max( endPos ) - startPos.Min( endPos ) );
+		Vector2 topLeft = drawArea.position;
+		Vector2 bottomRight = topLeft + drawArea.size;
 
 		// is either the draw area with in the curve bounds or curve bounds within the draw area.
-		return drawArea.Contains( curveBounds.position ) || drawArea.Contains( curveBounds.position + curveBounds.size ) ||
-			   curveBounds.Contains( drawArea.position ) || curveBounds.Contains( drawArea.position + drawArea.size );
+		return drawArea.Contains( startPos ) || drawArea.Contains( endPos ) ||
+			   ( topLeft.x < startPos.x && bottomRight.x > endPos.x )	    ||
+			   ( topLeft.y < startPos.y && bottomRight.y > endPos.y );
 
 	}
 
