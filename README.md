@@ -7,7 +7,7 @@ There are 3 different types of node each with there own graph window
 wip
 
 
-[Node Graph Doxygen Docs](http://blog.ashleysands.co.uk/NodeGraphDocs/)
+[Node Graph Doxygen Docs](http://random.ashleysands.co.uk/NodeGraphDocs/)
 ##### Docs coming soon!!
 
 
